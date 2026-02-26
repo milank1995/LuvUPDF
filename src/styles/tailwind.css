@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ─── CSS Variables ─── */
+:root {
+  --color-primary: #E8445A;
+  --color-primary-hover: #D63550;
+  --color-primary-light: #FFF0F2;
+  --color-primary-mid: #FFD6DB;
+  --color-dark: #1A1A2E;
+  --color-mid: #4A4A6A;
+  --color-muted: #8888A8;
+  --color-border: #EEEEF5;
+  --color-surface: #F8F8FC;
+  --color-white: #FFFFFF;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-card: 0 2px 16px rgba(26,26,46,0.06);
+  --shadow-hover: 0 8px 32px rgba(232,68,90,0.12);
+  --shadow-upload: 0 4px 24px rgba(26,26,46,0.08);
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-dark);
+  background: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* ─── Upload Zone ─── */
+.upload-zone {
+  border: 2.5px dashed var(--color-primary-mid);
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-light);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--color-primary);
+  background: #FFE8EB;
+  transform: scale(1.005);
+  box-shadow: var(--shadow-hover);
+}
+
+.upload-zone.drag-over {
+  border-style: solid;
+  transform: scale(1.01);
+}
+
+/* ─── Tool Cards ─── */
+.tool-card {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-card);
+}
+
+.tool-card:hover {
+  border-color: var(--color-primary-mid);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
+}
+
+/* ─── Buttons ─── */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232,68,90,0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-dark);
+  border: 1.5px solid var(--color-border);
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-mid);
+  color: var(--color-primary);
+}
+
+/* ─── FAQ Accordion ─── */
+.faq-item {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.faq-item.open {
+  border-color: var(--color-primary-mid);
+  box-shadow: 0 2px 12px rgba(232,68,90,0.08);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-answer.open {
+  max-height: 400px;
+}
+
+/* ─── File List ─── */
+.file-item {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  border-color: var(--color-primary-mid);
+  background: var(--color-primary-light);
+}
+
+/* ─── Step Process ─── */
+.step-connector {
+  position: absolute;
+  top: 28px;
+  left: calc(50% + 48px);
+  right: calc(-50% + 48px);
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary-mid) 0%, var(--color-primary-light) 100%);
+  border-radius: 2px;
+}
+
+/* ─── Badge ─── */
+.badge-free {
+  background: linear-gradient(135deg, #FFF0F2 0%, #FFE0E5 100%);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-mid);
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ─── Section Heading ─── */
+.section-label {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* ─── Animations ─── */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(232,68,90,0.3); }
+  70% { box-shadow: 0 0 0 12px rgba(232,68,90,0); }
+  100% { box-shadow: 0 0 0 0 rgba(232,68,90,0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.float-anim { animation: float-gentle 4s ease-in-out infinite; }
+.float-anim-delay { animation: float-gentle 4s ease-in-out infinite 1.5s; }
+.pulse-anim { animation: pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+.animate-on-scroll {
+  opacity: 1;
+}
+
+.fade-up-in {
+  animation: fade-up 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+/* ─── Gradient Text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #FF7A8A 50%, #E8445A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Hero Background ─── */
+.hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232,68,90,0.08) 0%, transparent 70%),
+              linear-gradient(180deg, #FFFFFF 0%, #FFF8F9 100%);
+}
+
+/* ─── Password Input ─── */
+.password-input {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+  background: var(--color-white);
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(232,68,90,0.1);
+}
+
+/* ─── Progress Bar ─── */
+.progress-bar {
+  background: linear-gradient(90deg, var(--color-primary) 0%, #FF7A8A 100%);
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+
+/* ─── Benefit Card ─── */
+.benefit-card {
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  transition: all 0.25s ease;
+}
+
+.benefit-card:hover {
+  border-color: var(--color-primary-mid);
+  background: var(--color-primary-light);
+  transform: translateY(-3px);
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .step-connector { display: none; }
+}
