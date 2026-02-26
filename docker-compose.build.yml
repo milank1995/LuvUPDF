@@ -1,0 +1,9 @@
+services:
+  pdf-fs-web:
+    build: .
+    image: smitkukadiyabvminfotech/playstore_frontend:pdf_frontend
+    expose:
+      - "3003"
+    env_file:
+      - .env
+    restart: on-failure
