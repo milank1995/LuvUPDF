@@ -4,6 +4,7 @@ const { imageHosts } = imageHostsConfig;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   productionBrowserSourceMaps: true,
   distDir: process.env.DIST_DIR || '.next',  typescript: {
     ignoreBuildErrors: true,
