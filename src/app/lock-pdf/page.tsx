@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import LockPDFUploader from './components/LockPDFUploader';
-import LockPDFContent from './components/LockPDFContent';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { lockPDFData } from './components/lockPDFData';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 
@@ -245,7 +246,7 @@ export default function LockPDFPage() {
         </section>
 
         {/* SEO Content + FAQ */}
-        <LockPDFContent />
+        <PDFToolContent {...lockPDFData} />
       </main>
       <Footer />
     </>
