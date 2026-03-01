@@ -5,14 +5,13 @@ import Icon from '@/components/ui/AppIcon';
 
 const tools = [
   { id: 'merge-pdf', href: '/merge-pdf', icon: 'DocumentPlusIcon', title: 'Merge PDF' },
+  { id: 'split-pdf', href: '/split-pdf', icon: 'ScissorsIcon', title: 'Split PDF' },
+  { id: 'remove-pages', href: '/remove-pages', icon: 'TrashIcon', title: 'Remove Pages' },
+  { id: 'organize-pdf', href: '/organize-pdf', icon: 'Squares2X2Icon', title: 'Organize PDF' },
+  { id: 'compress-pdf', href: '/compress-pdf', icon: 'ArchiveBoxIcon', title: 'Compress PDF' },
+  { id: 'rotate-pdf', href: '/rotate-pdf', icon: 'ArrowPathIcon', title: 'Rotate PDF' },
   { id: 'lock-pdf', href: '/lock-pdf', icon: 'LockClosedIcon', title: 'Lock PDF' },
   { id: 'unlock-pdf', href: '/unlock-pdf', icon: 'LockOpenIcon', title: 'Unlock PDF' },
-  { id: 'rotate-pdf', href: '/rotate-pdf', icon: 'ArrowPathIcon', title: 'Rotate PDF' },
-  { id: 'compress-pdf', href: '/compress-pdf', icon: 'ArrowDownTrayIcon', title: 'Compress PDF' },
-  { id: 'pdf-to-word', href: '/pdf-to-word', icon: 'DocumentArrowDownIcon', title: 'PDF to Word' },
-  { id: 'word-to-pdf', href: '/word-to-pdf', icon: 'DocumentArrowUpIcon', title: 'Word to PDF' },
-  { id: 'ocr-pdf', href: '/ocr-pdf', icon: 'EyeIcon', title: 'OCR PDF' },
-  { id: 'ai-pdf-tools', href: '/ai-pdf-tools', icon: 'SparklesIcon', title: 'AI PDF Tools' },
 ];
 
 const legalLinks = [
