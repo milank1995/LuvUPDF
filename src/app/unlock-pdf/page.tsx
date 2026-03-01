@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import UnlockPDFUploader from './components/UnlockPDFUploader';
-import UnlockPDFContent from './components/UnlockPDFContent';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { unlockPDFData } from './components/unlockPDFData';
 
 export const metadata: Metadata = {
   title: 'Unlock PDF Online Free — Remove PDF Passwords Safely | LuvUPDF',
@@ -205,7 +206,7 @@ export default function UnlockPDFPage() {
         </section>
 
         {/* SEO Content + FAQ */}
-        <UnlockPDFContent />
+        <PDFToolContent {...unlockPDFData} />
       </main>
       <Footer />
     </>
