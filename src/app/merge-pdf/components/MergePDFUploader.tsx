@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import { PDFDocument } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
 
 interface UploadedFile {
@@ -8,6 +9,34 @@ interface UploadedFile {
   name: string;
   size: number;
   type: string;
+  file: File;
+}
+
+const MAX_SIZE = 100 * 1024 * 1024; // 100MB
+
+async function mergePDF(
+  files: UploadedFile[],
+  setProgress: (value: number) => void
+): Promise<Blob> {
+  const mergedPdf = await PDFDocument.create();
+
+  for (let i = 0; i < files.length; i++) {
+    const item = files[i];
+    try {
+      const bytes = await item.file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach((page) => mergedPdf.addPage(page));
+
+      setProgress(Math.round(((i + 1) / files.length) * 100));
+    } catch (error) {
+      console.error(`Failed to load ${item.name}`, error);
+      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
+    }
+  }
+
+  const mergedBytes: any = await mergedPdf.save();
+  return new Blob([mergedBytes], { type: 'application/pdf' });
 }
 
 export default function MergePDFUploader() {
@@ -16,92 +45,144 @@ export default function MergePDFUploader() {
   const [isMerging, setIsMerging] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
+  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
   const handleFiles = useCallback((newFiles: FileList | null) => {
     if (!newFiles) return;
-    const pdfFiles = Array.from(newFiles).filter(
-      (f) => f.type === 'application/pdf' || f.name.endsWith('.pdf')
+
+    const validFiles = Array.from(newFiles).filter(
+      (f) =>
+        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
+        f.size <= MAX_SIZE
     );
-    if (pdfFiles.length === 0) return;
-    const mapped: UploadedFile[] = pdfFiles.map((f) => ({
-      id: `${f.name}-${Date.now()}-${Math.random()}`,
+
+    if (validFiles.length < newFiles.length) {
+      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
+    }
+
+    if (validFiles.length === 0) return;
+
+    const uniqueFiles = validFiles.filter(
+      (f) => !files.some((existing) => existing.name === f.name)
+    );
+
+    if (uniqueFiles.length === 0) return;
+
+    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
+      id: crypto.randomUUID(),
       name: f.name,
       size: f.size,
       type: f.type,
+      file: f,
     }));
+
     setFiles((prev) => [...prev, ...mapped]);
     setIsDone(false);
   }, []);
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     dragCounter.current++;
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     dragCounter.current--;
     if (dragCounter.current === 0) setIsDragging(false);
-  };
+  }, []);
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current = 0;
-    setIsDragging(false);
-    handleFiles(e.dataTransfer.files);
-  };
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      dragCounter.current = 0;
+      setIsDragging(false);
+      handleFiles(e.dataTransfer.files);
+    },
+    [handleFiles]
+  );
 
-  const removeFile = (id: string) => {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
-    setIsDone(false);
-  };
+  const removeFile = useCallback(
+    (id: string) => {
+      if (isMerging) return;
+      setFiles((prev) => prev.filter((f) => f.id !== id));
+      setIsDone(false);
+    },
+    [isMerging]
+  );
 
-  const moveFile = (index: number, direction: 'up' | 'down') => {
-    setFiles((prev) => {
-      const arr = [...prev];
-      const swapIndex = direction === 'up' ? index - 1 : index + 1;
-      if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-      [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-      return arr;
-    });
-  };
+  const moveFile = useCallback(
+    (index: number, direction: 'up' | 'down') => {
+      if (isMerging) return;
+      setFiles((prev) => {
+        const arr = [...prev];
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
+        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
+        return arr;
+      });
+    },
+    [isMerging]
+  );
 
-  const formatSize = (bytes: number) => {
+  const formatSize = useCallback((bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
+  }, []);
 
-  const handleMerge = () => {
+  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+
+  const handleMerge = useCallback(async () => {
     if (files.length < 2) return;
-    setIsMerging(true);
-    setProgress(0);
-    // Mock progress simulation
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsMerging(false);
-          setIsDone(true);
-          return 100;
-        }
-        return prev + Math.random() * 15 + 5;
-      });
-    }, 200);
-  };
 
-  const handleReset = () => {
+    try {
+      setIsMerging(true);
+      setProgress(0);
+
+      const blob = await mergePDF(files, setProgress);
+      setMergedBlob(blob);
+      setIsDone(true);
+    } catch (err: any) {
+      alert(err.message || 'Failed to merge PDFs');
+    } finally {
+      setIsMerging(false);
+    }
+  }, [files]);
+
+  const handleReset = useCallback(() => {
     setFiles([]);
     setIsDone(false);
     setProgress(0);
-  };
+    setIsMerging(false);
+    setMergedBlob(null);
+  }, []);
+
+  const handleDownload = useCallback(() => {
+    try {
+      if (!mergedBlob) return;
+      const url = URL.createObjectURL(mergedBlob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'merged.pdf';
+
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (err: any) {
+      alert(err.message || 'Failed to merge PDFs');
+    }
+  }, [mergedBlob]);
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -128,6 +209,7 @@ export default function MergePDFUploader() {
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
+
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
             style={{
@@ -139,15 +221,21 @@ export default function MergePDFUploader() {
               name="ArrowUpTrayIcon"
               size={28}
               variant="solid"
-              style={{ color: isDragging ? 'white' : '#E8445A' } as React.CSSProperties}
+              style={
+                {
+                  color: isDragging ? 'white' : '#E8445A',
+                } as React.CSSProperties
+              }
             />
           </div>
+
           <h3
             className="font-heading font-bold mb-2"
             style={{ fontSize: '18px', color: '#1A1A2E' }}
           >
             {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
           </h3>
+
           <p
             style={{
               color: '#8888A8',
@@ -158,6 +246,7 @@ export default function MergePDFUploader() {
           >
             or click to browse — supports multiple files
           </p>
+
           <div
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
             style={{
@@ -171,6 +260,7 @@ export default function MergePDFUploader() {
             <Icon name="DocumentPlusIcon" size={16} variant="solid" />
             Select PDF Files
           </div>
+
           <p
             style={{
               color: '#8888A8',
@@ -189,22 +279,24 @@ export default function MergePDFUploader() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected
+              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
             </h3>
+
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all"
+              disabled={isMerging}
+              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 color: '#E8445A',
                 background: '#FFF0F2',
                 border: '1px solid #FFD6DB',
                 fontFamily: 'var(--font-heading)',
-                cursor: 'pointer',
               }}
             >
               <Icon name="PlusIcon" size={14} />
               Add More
             </button>
+
             <input
               ref={fileInputRef}
               type="file"
@@ -244,7 +336,13 @@ export default function MergePDFUploader() {
                   >
                     {file.name}
                   </p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: '#8888A8' }}>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '11px',
+                      color: '#8888A8',
+                    }}
+                  >
                     {formatSize(file.size)}
                   </p>
                 </div>
@@ -253,7 +351,7 @@ export default function MergePDFUploader() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0}
+                    disabled={i === 0 || isMerging}
                     className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
                     style={{
                       background: '#F8F8FC',
@@ -265,9 +363,10 @@ export default function MergePDFUploader() {
                   >
                     <Icon name="ChevronUpIcon" size={13} />
                   </button>
+
                   <button
                     onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1}
+                    disabled={i === files.length - 1 || isMerging}
                     className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
                     style={{
                       background: '#F8F8FC',
@@ -279,9 +378,11 @@ export default function MergePDFUploader() {
                   >
                     <Icon name="ChevronDownIcon" size={13} />
                   </button>
+
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1"
+                    disabled={isMerging}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
                     style={{
                       background: '#FFF0F2',
                       color: '#E8445A',
@@ -302,7 +403,11 @@ export default function MergePDFUploader() {
             <div className="mb-4">
               <div className="flex items-center justify-between mb-1.5">
                 <span
-                  style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#4A4A6A' }}
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '13px',
+                    color: '#4A4A6A',
+                  }}
                 >
                   Merging files...
                 </span>
@@ -314,7 +419,7 @@ export default function MergePDFUploader() {
                     color: '#E8445A',
                   }}
                 >
-                  {Math.min(Math.round(progress), 100)}%
+                  {Math.round(progress)}%
                 </span>
               </div>
               <div
@@ -323,7 +428,11 @@ export default function MergePDFUploader() {
               >
                 <div
                   className="progress-bar h-full"
-                  style={{ width: `${Math.min(progress, 100)}%` }}
+                  style={{
+                    width: `${progress}%`,
+                    background: '#E8445A',
+                    transition: 'width 0.2s ease-out',
+                  }}
                 />
               </div>
             </div>
@@ -333,7 +442,7 @@ export default function MergePDFUploader() {
           {!isMerging && (
             <button
               onClick={handleMerge}
-              disabled={files.length < 2}
+              disabled={files.length < 2 || isMerging}
               className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: files.length >= 2 ? '#E8445A' : '#ccc',
@@ -350,10 +459,15 @@ export default function MergePDFUploader() {
               </span>
             </button>
           )}
+
           {files.length < 2 && !isMerging && (
             <p
               className="text-center mt-2"
-              style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#8888A8' }}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '12px',
+                color: '#8888A8',
+              }}
             >
               Add at least 2 PDF files to merge
             </p>
@@ -375,12 +489,14 @@ export default function MergePDFUploader() {
               style={{ color: '#16A34A' } as React.CSSProperties}
             />
           </div>
+
           <h3
             className="font-heading font-bold mb-2"
             style={{ fontSize: '20px', color: '#1A1A2E' }}
           >
             Merge Complete!
           </h3>
+
           <p
             style={{
               color: '#4A4A6A',
@@ -391,6 +507,7 @@ export default function MergePDFUploader() {
           >
             Your {files.length} PDFs have been merged into one file.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
@@ -404,10 +521,12 @@ export default function MergePDFUploader() {
                 cursor: 'pointer',
                 boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
               }}
+              onClick={handleDownload}
             >
               <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
               Download Merged PDF
             </button>
+
             <button
               onClick={handleReset}
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
