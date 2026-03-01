@@ -39,7 +39,7 @@ async function mergePDF(
   return new Blob([mergedBytes], { type: 'application/pdf' });
 }
 
-export default function RemovePagesPDFUploader() {
+export default function OrganizePDFUploader() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
@@ -213,17 +213,17 @@ export default function RemovePagesPDFUploader() {
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
             style={{
-              background: isDragging ? '#E8445A' : '#FFF0F2',
+              background: isDragging ? '#8B5CF6' : '#FFF0F2',
               transform: isDragging ? 'scale(1.1)' : 'scale(1)',
             }}
           >
             <Icon
-              name="TrashIcon"
+              name="Squares2X2Icon"
               size={28}
               variant="solid"
               style={
                 {
-                  color: isDragging ? 'white' : '#E8445A',
+                  color: isDragging ? 'white' : '#8B5CF6',
                 } as React.CSSProperties
               }
             />
@@ -250,7 +250,7 @@ export default function RemovePagesPDFUploader() {
           <div
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
             style={{
-              background: '#EF4444',
+              background: '#8B5CF6',
               color: 'white',
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
@@ -287,7 +287,7 @@ export default function RemovePagesPDFUploader() {
               disabled={isMerging}
               className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                color: '#EF4444',
+                color: '#8B5CF6',
                 background: '#FFF0F2',
                 border: '1px solid #FFD6DB',
                 fontFamily: 'var(--font-heading)',
@@ -319,7 +319,7 @@ export default function RemovePagesPDFUploader() {
                     name="DocumentIcon"
                     size={18}
                     variant="solid"
-                    style={{ color: '#EF4444' } as React.CSSProperties}
+                    style={{ color: '#8B5CF6' } as React.CSSProperties}
                   />
                 </div>
 
@@ -385,7 +385,7 @@ export default function RemovePagesPDFUploader() {
                     className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
                     style={{
                       background: '#FFF0F2',
-                      color: '#EF4444',
+                      color: '#8B5CF6',
                       border: '1px solid #FFD6DB',
                       cursor: 'pointer',
                     }}
@@ -416,7 +416,7 @@ export default function RemovePagesPDFUploader() {
                     fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
                     fontSize: '13px',
-                    color: '#EF4444',
+                    color: '#8B5CF6',
                   }}
                 >
                   {Math.round(progress)}%
@@ -430,7 +430,7 @@ export default function RemovePagesPDFUploader() {
                   className="progress-bar h-full"
                   style={{
                     width: `${progress}%`,
-                    background: '#EF4444',
+                    background: '#8B5CF6',
                     transition: 'width 0.2s ease-out',
                   }}
                 />
@@ -445,7 +445,7 @@ export default function RemovePagesPDFUploader() {
               disabled={files.length < 2 || isMerging}
               className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                background: files.length >= 2 ? '#EF4444' : '#ccc',
+                background: files.length >= 2 ? '#8B5CF6' : '#ccc',
                 color: 'white',
                 fontSize: '16px',
                 border: 'none',
@@ -512,7 +512,7 @@ export default function RemovePagesPDFUploader() {
             <button
               className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
               style={{
-                background: '#EF4444',
+                background: '#8B5CF6',
                 color: 'white',
                 border: 'none',
                 fontFamily: 'var(--font-heading)',
