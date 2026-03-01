@@ -1,32 +1,26 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SplitPDFUploader from './components/SplitPDFUploader';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { splitPDFData } from './components/splitPDFData';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
-import RotatePDFUploader from './components/RotatePDFUploader';
-import PDFToolContent from '@/components/common/PDFToolContent';
-import { rotatePDFData } from './components/rotatePDFData';
 
 export const metadata: Metadata = {
-  title: 'Rotate PDF Pages Online Free — Fix Sideways PDFs | LuvUPDF',
+  title: 'Split PDF Online Free — Extract Pages Instantly | LuvUPDF',
   description:
-    'Rotate PDF pages online for free. Fix sideways or upside-down pages in seconds without installing software. Clean, fast, and secure PDF rotation in your browser.',
+    'Split PDF files online for free. Extract specific pages or separate PDFs into multiple files instantly. Fast, secure, no registration required.',
+  keywords:
+    'split PDF, extract PDF pages, separate PDF pages, divide PDF online, PDF splitter free',
   openGraph: {
-    title: 'Rotate PDF Pages Online Free | LuvUPDF',
+    title: 'Split PDF Online Free | LuvUPDF',
     description:
-      'Correct the orientation of scanned or sideways PDF pages instantly. Free, browser-based Rotate PDF tool from LuvUPDF.',
+      'Extract pages from PDF files or split into multiple documents instantly. Free and secure.',
     type: 'website',
-    url: 'https://luvupdf.com/rotate-pdf',
+    url: 'https://luvupdf.com/split-pdf',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Rotate PDF Pages Online Free | LuvUPDF',
-    description:
-      'Rotate individual PDF pages or whole documents to the perfect orientation with a simple, free web tool.',
-  },
-  alternates: {
-    canonical: 'https://luvupdf.com/rotate-pdf',
-  },
+  alternates: { canonical: 'https://luvupdf.com/split-pdf' },
 };
 
 const faqJsonLd = {
@@ -35,58 +29,26 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is it free to rotate PDF pages with LuvUPDF?',
+      name: 'How do I split a PDF online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Rotate PDF tool is planned to be completely free to use, with no watermarks and no registration required.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Will rotating pages reduce the quality of my PDF?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. Rotating pages simply updates their orientation. The text, images, and layout of your PDF remain exactly the same.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can I rotate only specific pages instead of the whole document?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes. The Rotate PDF experience is being designed so you can select individual pages or ranges of pages to rotate without affecting the rest of the file.',
+        text: 'Upload your PDF, select specific pages or page ranges, click "Split PDF", and download your new files instantly.',
       },
     },
   ],
 };
 
-const softwareAppJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Rotate PDF',
-  applicationCategory: 'UtilitiesApplication',
-  operatingSystem: 'Any',
-  url: 'https://luvupdf.com/rotate-pdf',
-  description:
-    'Free online Rotate PDF tool. Fix sideways or upside-down pages without installing any software.',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
-};
-
-export default function RotatePDFPage() {
+export default function SplitPDFPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
-      />
+      {/*<script*/}
+      {/*  type="application/ld+json"*/}
+      {/*  dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}*/}
+      {/*/>*/}
       <Header />
       <main>
         {/* Page Hero */}
@@ -94,7 +56,7 @@ export default function RotatePDFPage() {
           className="pt-24 pb-10 px-4 sm:px-6"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(245,158,11,0.08) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.07) 0%, transparent 65%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -118,38 +80,37 @@ export default function RotatePDFPage() {
               />
               <span
                 style={{
-                  color: '#F59E0B',
+                  color: '#3B82F6',
                   fontSize: '13px',
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
                 }}
               >
-                Rotate PDF
+                Split PDF
               </span>
             </nav>
 
             {/* Badge */}
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#FFFBEB', border: '1.5px solid #FDE68A' }}
+              style={{ background: '#EFF6FF', border: '1.5px solid #BFDBFE' }}
             >
               <Icon
-                name="ArrowPathIcon"
+                name="ScissorsIcon"
                 size={13}
                 variant="solid"
-                style={{ color: '#F59E0B' } as React.CSSProperties}
+                style={{ color: '#3B82F6' } as React.CSSProperties}
               />
               <span
                 style={{
-                  color: '#F59E0B',
+                  color: '#3B82F6',
                   fontSize: '11px',
-                  fontFamily: 'var(--font-heading)',
                   fontWeight: 700,
-                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
                 }}
               >
-                Rotate PDF · Coming Soon
+                Free PDF Splitter Tool
               </span>
             </div>
 
@@ -163,10 +124,10 @@ export default function RotatePDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Rotate PDF Pages{' '}
+              Split PDF Pages{' '}
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #F59E0B 0%, #F97316 100%)',
+                  background: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -186,10 +147,41 @@ export default function RotatePDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Fix sideways or upside-down PDF pages without installing heavy software. This Rotate
-              PDF page delivers a modern, SEO-optimized experience while the underlying rotation
-              engine is finalized.
+              Extract specific pages or split your PDF into multiple files in seconds.
             </p>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+              {[
+                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
+                { icon: 'TrashIcon', text: 'Auto-Deleted' },
+                { icon: 'CurrencyDollarIcon', text: '100% Free' },
+                { icon: 'BoltIcon', text: 'Instant Results' },
+              ].map((badge) => (
+                <div
+                  key={badge.text}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                  style={{ background: '#F8F8FC', border: '1px solid #EEEEF5' }}
+                >
+                  <Icon
+                    name={badge.icon as any}
+                    size={12}
+                    variant="solid"
+                    style={{ color: '#3B82F6' } as React.CSSProperties}
+                  />
+                  <span
+                    style={{
+                      color: '#4A4A6A',
+                      fontSize: '12px',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {badge.text}
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/* Upload Tool */}
             <div
@@ -200,13 +192,13 @@ export default function RotatePDFPage() {
                 border: '1.5px solid #EEEEF5',
               }}
             >
-              <RotatePDFUploader />
+              <SplitPDFUploader />
             </div>
           </div>
         </section>
 
         {/* SEO Content + FAQ */}
-        <PDFToolContent {...rotatePDFData} />
+        <PDFToolContent {...splitPDFData} />
       </main>
       <Footer />
     </>

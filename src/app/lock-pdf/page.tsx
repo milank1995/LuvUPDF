@@ -180,7 +180,7 @@ export default function LockPDFPage() {
                   backgroundClip: 'text',
                 }}
               >
-                Online Free
+                For Free
               </span>
             </h1>
 
