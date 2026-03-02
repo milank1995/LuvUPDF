@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import RotatePDFUploader from './components/RotatePDFUploader';
-import RotatePDFContent from './components/RotatePDFContent';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { rotatePDFData } from './components/rotatePDFData';
 
 export const metadata: Metadata = {
   title: 'Rotate PDF Pages Online Free — Fix Sideways PDFs | LuvUPDF',
@@ -162,7 +163,7 @@ export default function RotatePDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Rotate PDF Pages Online{' '}
+              Rotate PDF Pages{' '}
               <span
                 style={{
                   background: 'linear-gradient(135deg, #F59E0B 0%, #F97316 100%)',
@@ -205,7 +206,7 @@ export default function RotatePDFPage() {
         </section>
 
         {/* SEO Content + FAQ */}
-        <RotatePDFContent />
+        <PDFToolContent {...rotatePDFData} />
       </main>
       <Footer />
     </>

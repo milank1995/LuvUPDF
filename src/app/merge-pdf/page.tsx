@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MergePDFUploader from './components/MergePDFUploader';
-import MergePDFContent from './components/MergePDFContent';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { mergePDFData } from './components/mergePDFData';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 
@@ -237,7 +238,7 @@ export default function MergePDFPage() {
         </section>
 
         {/* SEO Content + FAQ */}
-        <MergePDFContent />
+        <PDFToolContent {...mergePDFData} />
       </main>
       <Footer />
     </>

@@ -1,32 +1,26 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import RemovePagesPDFUploader from './components/RemovePagesPDFUploader';
+import PDFToolContent from '@/components/common/PDFToolContent';
+import { removePagesPDFData } from './components/removePagesPDFData';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
-import UnlockPDFUploader from './components/UnlockPDFUploader';
-import PDFToolContent from '@/components/common/PDFToolContent';
-import { unlockPDFData } from './components/unlockPDFData';
 
 export const metadata: Metadata = {
-  title: 'Unlock PDF Online Free — Remove PDF Passwords Safely | LuvUPDF',
+  title: 'Remove Pages from PDF Online Free — Delete PDF Pages Instantly | LuvUPDF',
   description:
-    'Unlock password-protected PDF files online for free. Regain access to your own documents while keeping quality intact. No installation, no sign-up, works in your browser.',
+    'Remove unwanted pages from a PDF online for free. Delete specific pages instantly while preserving quality. Secure, fast, and no registration required.',
+  keywords:
+    'remove pages from PDF, delete PDF pages, remove PDF page online, delete pages from PDF free, PDF page remover',
   openGraph: {
-    title: 'Unlock PDF Online Free — Remove PDF Passwords | LuvUPDF',
+    title: 'Remove Pages from PDF Online Free | LuvUPDF',
     description:
-      'Remove passwords from your own PDF files in a few simple steps. Free, secure, and browser-based.',
+      'Delete unwanted pages from your PDF instantly. Free, secure, and easy to use online PDF page remover.',
     type: 'website',
-    url: 'https://luvupdf.com/unlock-pdf',
+    url: 'https://luvupdf.com/remove-pages',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Unlock PDF Online Free | LuvUPDF',
-    description:
-      'Unlock password-protected PDFs you own without installing heavy desktop software. 100% free.',
-  },
-  alternates: {
-    canonical: 'https://luvupdf.com/unlock-pdf',
-  },
+  alternates: { canonical: 'https://luvupdf.com/remove-pages' },
 };
 
 const faqJsonLd = {
@@ -35,57 +29,29 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Can I unlock any PDF file with this tool?',
+      name: 'How do I remove pages from a PDF online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LuvUPDF Unlock PDF is designed for documents that you already own or are authorized to access. You will need to know the correct password or have legitimate permission to remove it. The tool is not intended for bypassing security on unauthorized files.',
+        text: 'Upload your PDF, select the pages you want to delete, click "Remove Pages", and download your updated PDF instantly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is the Unlock PDF tool free?',
+      name: 'Will removing pages affect PDF quality?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Unlock PDF tool, like other core utilities in LuvUPDF, is planned to be completely free to use with no watermarks and no registration required.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Will unlocking a PDF change its content or quality?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. Unlocking a PDF simply removes the password requirement. The text, images, layout, fonts, and internal structure of the document remain the same.',
+        text: 'No. Removing pages does not affect the quality, formatting, or content of the remaining pages in your PDF.',
       },
     },
   ],
 };
 
-const softwareAppJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Unlock PDF',
-  applicationCategory: 'UtilitiesApplication',
-  operatingSystem: 'Any',
-  url: 'https://luvupdf.com/unlock-pdf',
-  description:
-    'Free online Unlock PDF tool. Remove passwords from your own PDF files quickly and safely in the browser.',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
-};
-
-export default function UnlockPDFPage() {
+export default function RemovePagesPDFPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
       <Header />
       <main>
@@ -94,7 +60,7 @@ export default function UnlockPDFPage() {
           className="pt-24 pb-10 px-4 sm:px-6"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(14,165,176,0.06) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.07) 0%, transparent 65%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -118,38 +84,37 @@ export default function UnlockPDFPage() {
               />
               <span
                 style={{
-                  color: '#0EA5B0',
+                  color: '#EF4444',
                   fontSize: '13px',
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
                 }}
               >
-                Unlock PDF
+                Remove Pages
               </span>
             </nav>
 
             {/* Badge */}
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#ECFEFF', border: '1.5px solid #A5F3FC' }}
+              style={{ background: '#FEF2F2', border: '1.5px solid #FECACA' }}
             >
               <Icon
-                name="LockOpenIcon"
+                name="TrashIcon"
                 size={13}
                 variant="solid"
-                style={{ color: '#0EA5B0' } as React.CSSProperties}
+                style={{ color: '#EF4444' } as React.CSSProperties}
               />
               <span
                 style={{
-                  color: '#0EA5B0',
+                  color: '#EF4444',
                   fontSize: '11px',
-                  fontFamily: 'var(--font-heading)',
                   fontWeight: 700,
-                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
                 }}
               >
-                Unlock PDF · Coming Soon
+                Free PDF Page Remover
               </span>
             </div>
 
@@ -163,10 +128,10 @@ export default function UnlockPDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Unlock PDF Files Online{' '}
+              Remove Pages from PDF{' '}
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #0EA5B0 0%, #14B8A6 100%)',
+                  background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -186,10 +151,45 @@ export default function UnlockPDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Safely remove passwords from your own PDF files in a few clicks. This dedicated Unlock
-              PDF page is fully optimized for SEO and user experience while the processing engine is
-              being finalized.
+              Delete unwanted or blank pages from your PDF in seconds while preserving formatting
+              and quality.
             </p>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+              {[
+                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
+                { icon: 'TrashIcon', text: 'Selective Removal' },
+                { icon: 'CurrencyDollarIcon', text: '100% Free' },
+                { icon: 'BoltIcon', text: 'Instant Results' },
+              ].map((badge) => (
+                <div
+                  key={badge.text}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                  style={{
+                    background: '#F8F8FC',
+                    border: '1px solid #EEEEF5',
+                  }}
+                >
+                  <Icon
+                    name={badge.icon as any}
+                    size={12}
+                    variant="solid"
+                    style={{ color: '#EF4444' } as React.CSSProperties}
+                  />
+                  <span
+                    style={{
+                      color: '#4A4A6A',
+                      fontSize: '12px',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {badge.text}
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/* Upload Tool */}
             <div
@@ -200,13 +200,13 @@ export default function UnlockPDFPage() {
                 border: '1.5px solid #EEEEF5',
               }}
             >
-              <UnlockPDFUploader />
+              <RemovePagesPDFUploader />
             </div>
           </div>
         </section>
 
         {/* SEO Content + FAQ */}
-        <PDFToolContent {...unlockPDFData} />
+        <PDFToolContent {...removePagesPDFData} />
       </main>
       <Footer />
     </>
