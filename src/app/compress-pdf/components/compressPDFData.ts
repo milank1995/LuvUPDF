@@ -58,8 +58,24 @@ export const compressPDFData = {
   faqSectionTitle: 'Frequently Asked Questions — Compress PDF',
   faqs: [
     {
-      q: 'Will compression reduce quality?',
-      a: 'Slight reduction may occur at maximum compression, but readability is maintained.',
+      q: 'How much can a PDF file be reduced in size?',
+      a: 'The final size depends on the content of your PDF. Files with large images usually shrink more, while text-only documents may see a smaller reduction.',
+    },
+    {
+      q: 'What is the difference between recommended and maximum compression?',
+      a: 'Recommended compression balances file size and quality. Maximum compression reduces the file size further but may slightly lower image quality.',
+    },
+    {
+      q: 'Can I compress a PDF for email attachments?',
+      a: 'Yes. Compression helps reduce file size so your PDF meets common email attachment limits.',
+    },
+    {
+      q: 'Does compression remove pages or content?',
+      a: 'No. Compression reduces file size without deleting pages or removing visible content from your document.',
+    },
+    {
+      q: 'Is my original PDF replaced after compression?',
+      a: 'No. A new compressed file is created for download, and your original document remains unchanged.',
     },
   ],
 

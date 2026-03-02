@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Icon from '@/components/ui/AppIcon';
+import FAQAccordion from '../common/FAQAccordion';
 
 const faqs = [
   {
@@ -71,59 +72,7 @@ export default function FAQSection() {
         </div>
 
         {/* FAQ List */}
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <div key={`faq-${i}`} className={`faq-item ${openIndex === i ? 'open' : ''}`}>
-              <button
-                className="w-full flex items-center justify-between gap-4 p-5 text-left"
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                aria-expanded={openIndex === i}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 600,
-                    fontSize: '15px',
-                    color: openIndex === i ? '#E8445A' : '#1A1A2E',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {faq.question}
-                </span>
-                <div
-                  className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300"
-                  style={{
-                    background: openIndex === i ? '#FFF0F2' : '#F8F8FC',
-                    transform: openIndex === i ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
-                >
-                  <Icon
-                    name="ChevronDownIcon"
-                    size={16}
-                    style={
-                      { color: openIndex === i ? '#E8445A' : '#8888A8' } as React.CSSProperties
-                    }
-                  />
-                </div>
-              </button>
-
-              <div className={`faq-answer ${openIndex === i ? 'open' : ''}`}>
-                <div className="px-5 pb-5">
-                  <p
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '14.5px',
-                      lineHeight: 1.7,
-                      fontFamily: 'var(--font-body)',
-                    }}
-                  >
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <FAQAccordion faqs={faqs} />
 
         {/* CTA */}
         <div

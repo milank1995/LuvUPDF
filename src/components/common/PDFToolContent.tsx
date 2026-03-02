@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import FAQAccordion from '@/components/common/FAQAccordion';
 
 interface Step {
   step: number;
@@ -225,20 +226,10 @@ export default function PDFToolContent({
       <section className="pb-16">
         <h2 className="font-heading font-extrabold mb-8 text-2xl">{faqSectionTitle}</h2>
 
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <details key={i} className="faq-item group" open={i === 0}>
-              <summary className="flex justify-between items-center p-5 cursor-pointer font-semibold text-[#1A1A2E]">
-                {faq.q}
-                <Icon name="ChevronDownIcon" size={16} style={{ color: '#8888A8' }} />
-              </summary>
-
-              <div className="px-5 pb-5">
-                <p className="text-sm text-[#4A4A6A] leading-relaxed">{faq.a}</p>
-              </div>
-            </details>
-          ))}
-        </div>
+        <FAQAccordion
+          faqs={faqs.map((faq) => ({ question: faq.q, answer: faq.a }))}
+          color={stepCircleColor}
+        />
       </section>
 
       {/* ================= RELATED ================= */}

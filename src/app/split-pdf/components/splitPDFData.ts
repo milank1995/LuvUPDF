@@ -88,12 +88,24 @@ export const splitPDFData = {
 
   faqs: [
     {
-      q: 'Can I split a PDF into multiple files?',
-      a: 'Yes. You can extract specific pages or split every page into separate PDF files.',
+      q: 'How do I split a PDF into separate pages?',
+      a: 'Upload your PDF, choose the option to split every page, then click "Split PDF". Each page will be saved as an individual PDF file.',
     },
     {
-      q: 'Does splitting affect quality?',
-      a: 'No. The extracted pages retain their original quality and formatting.',
+      q: 'Can I extract only certain pages from a PDF?',
+      a: 'Yes. You can select specific pages or enter page ranges like 2-6 to extract only the sections you need.',
+    },
+    {
+      q: 'Will the formatting change after splitting?',
+      a: 'No. The extracted pages keep their original layout, fonts, images, and quality.',
+    },
+    {
+      q: 'Is it safe to split PDFs online?',
+      a: 'Yes. Files are encrypted during upload and automatically deleted within 1 hour to protect your privacy.',
+    },
+    {
+      q: 'Do I need to create an account to split a PDF?',
+      a: 'No. You can split your PDF instantly without signing up or installing any software.',
     },
   ],
 

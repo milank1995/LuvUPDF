@@ -218,7 +218,7 @@ export default function MergePDFUploader() {
             }}
           >
             <Icon
-              name="ArrowUpTrayIcon"
+              name="DocumentPlusIcon"
               size={28}
               variant="solid"
               style={

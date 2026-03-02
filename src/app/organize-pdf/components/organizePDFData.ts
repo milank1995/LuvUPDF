@@ -51,8 +51,24 @@ export const organizePDFData = {
   faqSectionTitle: 'Frequently Asked Questions — Organize PDF',
   faqs: [
     {
-      q: 'Can I delete pages while organizing?',
-      a: 'Yes, you can reorder and remove pages easily.',
+      q: 'Can I change the order of pages in my PDF?',
+      a: 'Yes. Simply drag and drop pages into the order you want before saving the updated file.',
+    },
+    {
+      q: 'Can I delete pages while organizing my PDF?',
+      a: 'Yes. You can remove unwanted pages during the organizing process before downloading the final document.',
+    },
+    {
+      q: 'Will organizing pages change the content or formatting?',
+      a: 'No. Reordering pages does not affect text, images, or layout. It only changes the page sequence.',
+    },
+    {
+      q: 'Is my original PDF file modified?',
+      a: 'No. A new organized PDF is created after you apply changes. Your original file remains untouched.',
+    },
+    {
+      q: 'Do I need to install software to organize a PDF?',
+      a: 'No installation is required. You can reorder pages directly in your browser on desktop or mobile.',
     },
   ],
 

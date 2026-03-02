@@ -62,8 +62,24 @@ export const removePagesPDFData = {
   faqSectionTitle: 'Frequently Asked Questions — Remove Pages',
   faqs: [
     {
-      q: 'Can I remove multiple pages?',
-      a: 'Yes, you can select and remove multiple pages at once.',
+      q: 'Will removing pages affect the rest of my document?',
+      a: 'No. Only the pages you select are removed. The remaining pages stay exactly the same in layout and quality.',
+    },
+    {
+      q: 'Can I delete pages from a scanned PDF?',
+      a: 'Yes. Scanned PDFs can be edited the same way. You can remove any unwanted pages from the document.',
+    },
+    {
+      q: 'Is my original file changed after removing pages?',
+      a: 'No. A new updated PDF is created after page removal. Your original file remains untouched.',
+    },
+    {
+      q: 'Can I remove pages from my PDF on mobile?',
+      a: 'Yes. The tool works in your mobile browser, so you can delete pages from your phone or tablet without installing an app.',
+    },
+    {
+      q: 'Is it free to remove pages from a PDF?',
+      a: 'Yes. You can remove unwanted pages online for free without creating an account.',
     },
   ],
 
