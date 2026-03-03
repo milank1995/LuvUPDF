@@ -8,22 +8,22 @@ import BenefitsSection from '../components/landing/BenefitsSection';
 import FAQSection from '../components/landing/FAQSection';
 
 export const metadata: Metadata = {
-  title: 'LuvUPDF — Free Online PDF Tools',
+  title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
   description:
-    'LuvUPDF offers free, fast, and secure online PDF tools. Merge PDF files, lock PDFs with passwords, unlock PDFs, and rotate pages — no sign-up required, works on any device.',
+    'Combine PDF files or remove pages from PDF online for free. 100% secure, no login required, and files are automatically deleted after processing. Privacy-first PDF tools.',
   keywords:
-    'free PDF tools, merge PDF, lock PDF, unlock PDF, rotate PDF, online PDF editor, PDF converter, free PDF merger',
+    'Merge PDF online free, Combine PDF files, Remove pages from PDF online, Delete PDF pages free, Secure PDF tools, free PDF merger, PDF privacy',
   openGraph: {
-    title: 'LuvUPDF — Free Online PDF Tools',
+    title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
     description:
-      'Merge, lock, unlock, and rotate PDF files for free. No registration, no software — just fast, secure PDF tools in your browser.',
+      'Combine PDF files or remove pages from PDF online. 100% Secure, No Login, Files Auto-Deleted. The privacy-first way to manage your PDFs.',
     type: 'website',
     url: 'https://luvupdf.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LuvUPDF — Free Online PDF Tools',
-    description: 'Free PDF tools online. Merge, lock, unlock, rotate — no sign-up required.',
+    title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
+    description: 'Free, secure PDF tools. Merge and remove pages online with zero data storage.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/',
@@ -35,7 +35,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'LuvUPDF',
   url: 'https://luvupdf.com',
-  description: 'Free online PDF tools including merge, lock, unlock, and rotate PDF files.',
+  description: 'Secure and free online PDF tools. Merge PDF files and remove pages without any data storage or account required.',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
   offers: {
@@ -44,10 +44,11 @@ const jsonLd = {
     priceCurrency: 'USD',
   },
   featureList: [
-    'Merge PDF files',
-    'Lock PDF with password',
-    'Unlock PDF files',
-    'Rotate PDF pages',
+    'Merge PDF online free',
+    'Remove pages from PDF online',
+    'Combine PDF files',
+    'Delete PDF pages free',
+    'Secure PDF tools',
   ],
 };
 
@@ -68,7 +69,7 @@ const faqJsonLd = {
       name: 'Are my PDF files safe and secure?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'All file uploads and downloads are protected using 256-bit SSL encryption. Files are automatically deleted within 1 hour of processing.',
+        text: 'LuvUPDF is a privacy-first platform. All file transfers are encrypted with 256-bit SSL. Crucially, we do not store any files or document data; all files are automatically deleted immediately after processing.',
       },
     },
     {

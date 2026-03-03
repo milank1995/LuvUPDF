@@ -42,7 +42,7 @@ export default function HowItWorksSection() {
               letterSpacing: '-0.02em',
             }}
           >
-            Process Any PDF in 3 Simple Steps
+            Secure PDF Processing in 3 Simple Steps
           </h2>
           <p
             style={{
@@ -124,8 +124,8 @@ export default function HowItWorksSection() {
         >
           {[
             { icon: 'ShieldCheckIcon', text: 'Files encrypted with SSL' },
-            { icon: 'ClockIcon', text: 'Auto-deleted after 1 hour' },
-            { icon: 'EyeSlashIcon', text: 'We never read your files' },
+            { icon: 'EyeSlashIcon', text: 'Privacy-first: No data storage' },
+            { icon: 'TrashIcon', text: 'Auto-deleted after processing' },
           ].map((item) => (
             <div key={item.text} className="flex items-center gap-2">
               <Icon

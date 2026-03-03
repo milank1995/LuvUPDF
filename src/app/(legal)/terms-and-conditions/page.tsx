@@ -3,9 +3,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions | LuvUPDF',
+  title: 'Terms & Conditions | LuvUPDF — Free PDF Tool Usage',
   description:
-    'Read the terms and conditions that apply when you access and use the LuvUPDF website and free PDF tools.',
+    'Read the terms of use for LuvUPDF. Learn about our services, your responsibilities, and our 100% secure PDF processing policy.',
+  keywords: [
+    'Terms of Service',
+    'PDF tool conditions',
+    'LuvUPDF usage',
+    'Legal terms',
+    'PDF ownership',
+  ],
   alternates: {
     canonical: 'https://luvupdf.com/terms-and-conditions',
   },
@@ -37,16 +44,17 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              These Terms &amp; Conditions (&quot;Terms&quot;) govern your access to and use of the
-              LuvUPDF website, products, and services. By using our site or tools, you agree to be
-              bound by these Terms. If you do not agree, please do not use LuvUPDF.
+              These Terms &amp; Conditions govern your use of the LuvUPDF website and our free online
+              PDF tools. By using our services, you agree to these terms, which are designed to
+              protect both you and our platform while ensuring a <strong>secure and private
+                experience.</strong>
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              1. Use of Our Services
+              1. 100% Free & Secure Usage
             </h2>
             <p
               className="mb-4"
@@ -57,17 +65,16 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              You may use LuvUPDF only in compliance with applicable laws and these Terms. You are
-              responsible for ensuring you have the right to upload and process any PDF files you
-              submit. Do not use our services to upload content that is illegal, harmful,
-              infringing, or violates the rights of others.
+              LuvUPDF provides free access to PDF management tools. You may use these tools for
+              personal or professional purposes. We do not charge fees, require accounts, or
+              place hidden limits on our standard free services.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              2. Intellectual Property
+              2. Document Ownership & Privacy
             </h2>
             <p
               className="mb-4"
@@ -78,17 +85,17 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              All content and branding on the LuvUPDF website, including logos, text, and interface
-              design, are owned by or licensed to us and are protected by applicable intellectual
-              property laws. You retain all rights to your own documents and files; we do not claim
-              ownership over your content.
+              <strong>You retain 100% ownership of any file you upload.</strong> LuvUPDF does not claim
+              any rights to your content. Furthermore, because we do not store files after processing,
+              we do not maintain any copies of your documents. You are solely responsible for the
+              content and legality of the files you process.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              3. Disclaimer of Warranties
+              3. Service &quot;As Is&quot;
             </h2>
             <p
               className="mb-4"
@@ -99,18 +106,17 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              LuvUPDF is provided on an &quot;as is&quot; and &quot;as available&quot; basis. We do
-              not guarantee that the services will be uninterrupted, error-free, or suitable for
-              every purpose. To the fullest extent permitted by law, we disclaim all warranties,
-              whether express or implied, including implied warranties of merchantability, fitness
-              for a particular purpose, and non-infringement.
+              While we strive for 100% uptime and perfectly processed documents, LuvUPDF is provided
+              on an &quot;as is&quot; basis. We are not liable for any issues arising from the use of our
+              free tools, including but not limited to file compatibility or temporary service
+              interruptions.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              4. Limitation of Liability
+              4. Prohibited Activities
             </h2>
             <p
               className="mb-4"
@@ -121,18 +127,19 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              To the maximum extent permitted by law, LuvUPDF and its operators will not be liable
-              for any indirect, incidental, consequential, or punitive damages, or any loss of data,
-              revenue, or profits arising out of your use of or inability to use our services.
+              You agree not to use LuvUPDF for any illegal activities, including the processing
+              of unauthorized or infringing content. Any attempt to disrupt the service, bypass
+              security measures, or scrape data is strictly prohibited.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              5. Changes to the Terms
+              5. Updates to Terms
             </h2>
             <p
+              className="mb-4"
               style={{
                 color: '#4A4A6A',
                 fontSize: '15px',
@@ -140,8 +147,9 @@ export default function TermsPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              We may update these Terms from time to time. Continued use of LuvUPDF after changes
-              become effective constitutes your acceptance of the updated Terms.
+              We may update these terms occasionally to reflect changes in our tools or legal
+              requirements. Your continued use of the site constitutes acceptance of any updated
+              terms.
             </p>
           </div>
         </section>

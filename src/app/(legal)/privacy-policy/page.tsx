@@ -3,9 +3,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | LuvUPDF',
+  title: 'Privacy Policy | LuvUPDF — 100% Secure & Private PDF Tools',
   description:
-    'Learn how LuvUPDF collects, uses, and protects your data when you use our free online PDF tools.',
+    'LuvUPDF is a privacy-first platform. We do not store your files, use encrypted connections, and delete data immediately after processing.',
+  keywords: [
+    'Privacy Policy',
+    'Secure PDF processing',
+    'No storage PDF',
+    'Private PDF tools',
+    'Data protection',
+  ],
   alternates: {
     canonical: 'https://luvupdf.com/privacy-policy',
   },
@@ -26,7 +33,7 @@ export default function PrivacyPolicyPage() {
                 letterSpacing: '-0.03em',
               }}
             >
-              Privacy Policy
+              Privacy & Security Policy
             </h1>
             <p
               className="mb-6"
@@ -37,17 +44,16 @@ export default function PrivacyPolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              This Privacy Policy explains how LuvUPDF (&quot;we&quot;, &quot;us&quot;, or
-              &quot;our&quot;) collects, uses, and protects information when you use our website and
-              free online PDF tools. By accessing or using LuvUPDF, you agree to the terms of this
-              policy.
+              At LuvUPDF, your privacy is our top priority. This policy explains our <strong>commitment
+                to zero file retention</strong> and how we ensure your documents remain 100% secure
+              throughout the processing cycle.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              1. Information We Collect
+              1. Our &quot;Privacy-First&quot; Philosophy
             </h2>
             <p
               className="mb-4"
@@ -58,34 +64,16 @@ export default function PrivacyPolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              We design LuvUPDF so you can use core tools without creating an account. We may
-              collect limited technical information such as IP address, browser type, device
-              information, and anonymized usage analytics to help us improve performance and detect
-              abuse. Uploaded PDF files are processed only for the duration required to provide the
-              requested service and are automatically removed after a short retention period.
+              We believe you shouldn&apos;t have to sacrifice your personal or professional data to use
+              quality tools. LuvUPDF is designed to function with minimal data collection. We do
+              not require accounts, logins, or any personal information to use our core PDF tools.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              2. How We Use Your Information
-            </h2>
-            <ul
-              className="mb-4 list-disc pl-5"
-              style={{ color: '#4A4A6A', fontSize: '15px', fontFamily: 'var(--font-body)' }}
-            >
-              <li>To operate and maintain our PDF tools and website.</li>
-              <li>To monitor performance, reliability, and security.</li>
-              <li>To analyze aggregated, anonymized usage patterns and improve the product.</li>
-              <li>To comply with legal obligations and respond to lawful requests.</li>
-            </ul>
-
-            <h2
-              className="font-heading font-bold mb-3"
-              style={{ fontSize: '20px', color: '#1A1A2E' }}
-            >
-              3. File Handling and Retention
+              2. 100% Secure File Handling
             </h2>
             <p
               className="mb-4"
@@ -96,18 +84,16 @@ export default function PrivacyPolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              PDF files you upload are transmitted over encrypted connections and are used only to
-              perform the selected action (such as merge or lock). We do not use your content for
-              training models or building profiles. Processed files are removed automatically within
-              a short period after completion of the task, except where longer retention is required
-              by law.
+              All files uploaded to LuvUPDF are transmitted via <strong>256-bit SSL encryption</strong>.
+              This ensures that your data is protected from the moment it leaves your device until
+              processing is complete.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              4. Cookies and Analytics
+              3. Automatic File Deletion (No Storage)
             </h2>
             <p
               className="mb-4"
@@ -118,16 +104,17 @@ export default function PrivacyPolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              We may use cookies and similar technologies to remember your preferences, keep basic
-              session information, and measure aggregated traffic. For more details, please see our
-              Cookie Policy.
+              <strong>We do not store your files.</strong> Unlike other services that may keep your
+              documents for hours or days, LuvUPDF automatically and permanently deletes your
+              files immediately after the processing task is finished. Your content is never used
+              for training AI, building databases, or any other purpose.
             </p>
 
             <h2
               className="font-heading font-bold mb-3"
               style={{ fontSize: '20px', color: '#1A1A2E' }}
             >
-              5. Your Rights
+              4. Technical Information & Cookies
             </h2>
             <p
               className="mb-4"
@@ -138,10 +125,30 @@ export default function PrivacyPolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              Depending on your location, you may have rights to access, correct, or delete certain
-              personal data we hold about you, or to object to specific processing activities. You
-              can contact us using the details on the Contact page if you have any privacy-related
-              questions or requests.
+              We collect limited, non-identifying technical information (such as browser type and
+              anonymized usage stats) to maintain site performance and security. We use minimal
+              cookies only to enhance your experience and remember basic preferences.
+            </p>
+
+            <h2
+              className="font-heading font-bold mb-3"
+              style={{ fontSize: '20px', color: '#1A1A2E' }}
+            >
+              5. Your Rights & Control
+            </h2>
+            <p
+              className="mb-4"
+              style={{
+                color: '#4A4A6A',
+                fontSize: '15px',
+                lineHeight: 1.7,
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              Since we do not store your documents or personal profiles, there is no data for us
+              to &quot;hand over&quot; or &quot;sell.&quot; You maintain full control over your documents at all times.
+              For any questions regarding our security protocols, please contact us via the
+              details on the Contact page.
             </p>
 
             <h2

@@ -8,11 +8,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Next.js with Tailwind CSS',
-  description: 'A boilerplate project with Next.js and Tailwind CSS',
-  icons: {
-    icon: '/assets/images/app_logo.png',
-  },
+  title: 'LuvUPDF — Free & Secure Online PDF Tools',
+  description:
+    'Merge, edit, and manage your PDF files online with 100% privacy and security. No login required.',
 };
 
 export default function RootLayout({

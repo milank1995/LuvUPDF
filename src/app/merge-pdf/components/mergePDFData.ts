@@ -1,39 +1,39 @@
 export const mergePDFData = {
-  title: 'How to Merge PDF Files Online — Complete Guide',
+  title: 'How to Merge PDF Files Online Free — The Complete Guide',
   intro: [
-    "Merging PDF files is one of the most common document tasks for students, professionals, and businesses. Whether you need to combine a cover letter with your resume, merge multiple invoices into one file, or consolidate research papers, LuvUPDF's free online PDF merger makes it effortless.",
-    'Unlike desktop software that requires installation and often costs money, LuvUPDF lets you merge PDF files directly in your browser — on any device, at any time, completely free.',
+    "Merging PDF files is one of the most common document tasks for students, freelancers, and businesses. Whether you need to combine a cover letter with your resume, merge multiple invoices into one file, or consolidate research papers, LuvUPDF's free online PDF merger makes it effortless and secure.",
+    'Unlike traditional desktop software that requires expensive installations, LuvUPDF provides a powerful PDF joiner that works directly in your web browser. You can merge PDF files on any device — Windows, Mac, Linux, or mobile — without spending a dime. Our tool is designed to be the fastest way to combine PDF files online while maintaining 100% of your document’s original quality.',
   ],
 
-  stepSectionTitle: 'Step-by-Step: Merging PDFs with LuvUPDF',
+  stepSectionTitle: 'Quick Steps: How to Merge PDF Online Free',
   stepCircleColor: '#E8445A',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your PDF Files',
-      desc: 'Click the upload area or drag and drop your PDF files directly onto the page. You can select multiple files at once from your computer, phone, or tablet. LuvUPDF supports all PDF versions and accepts files up to 100MB each.',
+      title: 'Upload Your PDF Documents',
+      desc: 'Start by clicking the upload area or dragging and drop your PDF files directly into the PDF combiner. You can select multiple files at once. LuvUPDF supports all PDF versions and large files up to 100MB each, making it easy to merge even the most complex documents.',
     },
     {
       step: 2,
-      title: 'Arrange the Files in Order',
-      desc: 'Once uploaded, your files appear in a list. Use the up and down arrow buttons to reorder them. The final merged PDF will follow this sequence exactly — first file becomes the first pages, and so on.',
+      title: 'Arrange and Reorder',
+      desc: 'Once your files are uploaded, you can see a clear list of all documents. Use the simple up and down arrows to arrange them in the perfect order. The final merged PDF will follow this sequence exactly, ensuring your pages are perfectly organized.',
     },
     {
       step: 3,
-      title: 'Click Merge PDF',
-      desc: 'Hit the "Merge PDF" button and our servers will combine your files instantly. You\'ll see a progress indicator as the merge happens — typically completing in just a few seconds.',
+      title: 'Merge PDF Instantly',
+      desc: 'Click the "Merge PDF" button to start the process. Our high-speed cloud servers will combine your PDF files in seconds. You will see a real-time progress indicator, and the merge is usually finished before you know it!',
     },
     {
       step: 4,
-      title: 'Download Your Merged File',
-      desc: 'When the merge is complete, a download button appears. Click it to save your newly merged PDF to your device. The file is automatically deleted from our servers within 1 hour.',
+      title: 'Download the Combined PDF',
+      desc: 'As soon as the merge is complete, your download link will be ready. Click to save your newly combined PDF file to your computer or mobile device. For your privacy, all files are automatically and permanently deleted from our servers within 60 minutes.',
     },
   ],
 
-  featureSectionTitle: 'Why Use LuvUPDF to Merge PDFs?',
+  featureSectionTitle: 'The Best Free PDF Merger for Professionals',
   featureIntro:
-    'There are dozens of PDF merger tools available, but LuvUPDF stands out for several important reasons:',
+    'LuvUPDF is built with a focus on speed, simplicity, and security. Here is why users choose us as their go-to PDF joiner:',
 
   featureIconColor: '#E8445A',
   featureIconBg: '#FFF0F2',
@@ -41,82 +41,78 @@ export const mergePDFData = {
   features: [
     {
       icon: 'CurrencyDollarIcon',
-      title: 'Truly Free',
-      desc: 'No hidden costs, no premium plan required. Every merge is free, every time.',
+      title: '100% Free Forever',
+      desc: 'No subscriptions, no hidden fees, and no "pro" versions. Every PDF merge task is free, every single time.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'ShieldCheckIcon',
-      title: 'Privacy First',
-      desc: 'Your PDFs are never stored permanently. All files are auto-deleted within 1 hour.',
+      title: 'Military-Grade Privacy',
+      desc: 'We use 256-bit SSL encryption to protect your data. Your PDFs are never read or stored permanently by anyone.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'BoltIcon',
-      title: 'No Software Install',
-      desc: 'Works in any browser on any device. No downloads, no updates needed.',
+      title: 'Blazing Fast Processing',
+      desc: 'Our optimized cloud infrastructure ensures that even large PDF merges are handled in just a few seconds.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'DocumentCheckIcon',
-      title: 'Quality Preserved',
-      desc: 'Fonts, images, hyperlinks, and formatting are all maintained perfectly.',
+      title: 'Perfect Quality Render',
+      desc: 'Maintain original fonts, images, and layout perfectly. Our tool combines files without lossy compression.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
   ],
 
-  useCaseSectionTitle: 'Common Use Cases for Merging PDFs',
-  useCaseIntro: 'PDF merging is useful across many different scenarios:',
+  useCaseSectionTitle: 'When Should You Combine PDF Files?',
+  useCaseIntro: 'Merging PDFs is a versatile solution for many professional and personal needs:',
   useCaseCheckColor: '#E8445A',
 
   useCases: [
-    'Combining a resume with a cover letter and portfolio into one application file',
-    'Merging multiple bank statements or invoices for accounting and tax purposes',
-    'Consolidating research articles or chapters into a single reference document',
-    'Combining scanned documents into one complete file for archiving',
-    'Merging a presentation with supporting materials for a client proposal',
-    'Creating a complete contract by merging the main document with appendices',
-    'Combining multiple chapters of an ebook or report',
-    'Merging certificates, licenses, and credentials for a job application',
+    'Job Applications: Combine your resume, cover letter, and portfolio into one professional file',
+    'Financial Records: Merge multiple bank statements, invoices, or receipts for easier tax filing',
+    'Academic Research: Consolidate multiple research papers or journal articles into a single reference',
+    'Legal & Real Estate: Join scanned contracts, deeds, and appendices into one complete document',
+    'Business Proposals: Merge your main pitch deck with supporting data sheets and client testimonials',
+    'Ebooks & Reports: Combine individual chapters into a final, polished ebook or annual report',
+    'Scanned Documents: Turn multiple image-based PDF scans into one organized multi-page file',
+    'Certifications: Group all your diplomas and certificates for simplified credential sharing',
   ],
 
-  securitySectionTitle: 'Is It Safe to Merge PDFs Online?',
+  securitySectionTitle: 'Is LuvUPDF safe for my private documents?',
   security: [
-    'Security is a top concern when uploading sensitive documents online. LuvUPDF takes your privacy seriously with multiple layers of protection:',
-    'All file transfers use 256-bit SSL/TLS encryption — the same standard used by banks and healthcare providers. Files are processed on isolated servers and never shared with third parties. Processed files are automatically and permanently deleted within 1 hour of processing, and our team never reads or accesses your document contents.',
-    'For highly sensitive documents, we recommend processing them on a secure network and downloading the result promptly. If you have compliance requirements (HIPAA, GDPR, etc.), consider our enterprise options or offline processing.',
+    'Security is our top priority. We understand that your documents often contain sensitive personal or business information. LuvUPDF is built with a "Privacy-First" architecture to ensure your data stays yours.',
+    'All file transfers are protected by 256-bit SSL/TLS encryption, ensuring that your data cannot be intercepted during upload or download. Once processing is complete, your files are stored in a secured, isolated environment. Most importantly, we have an automated deletion policy: all uploaded and merged files are permanently wiped from our systems within 1 hour. We never sell, share, or even look at your content.',
+    'Whether you are merging medical records or confidential legal contracts, you can trust LuvUPDF to handle your files with the highest level of security standard on the web.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Merge PDF',
+  faqSectionTitle: 'Frequently Asked Questions: PDF Merger',
 
   faqs: [
     {
-      q: 'How do I merge PDF files online for free?',
-      a: 'To merge PDF files online for free using LuvUPDF: 1) Visit our Merge PDF page, 2) Upload two or more PDF files by dragging them into the upload area or clicking "Select PDF Files", 3) Reorder files if needed using the up/down arrows, 4) Click "Merge PDF" button, 5) Download your merged PDF file. The entire process takes under 30 seconds and is completely free.',
+      q: 'How can I merge PDF files online for free without watermarks?',
+      a: 'LuvUPDF is a completely free tool that combines your PDF files without adding any watermarks or branding. Simply upload your files, merge them, and download the clean, original-quality result.',
     },
     {
-      q: 'How many PDF files can I merge at once?',
-      a: 'LuvUPDF allows you to merge up to 20 PDF files at once. Each individual file can be up to 100MB, and the total combined size should not exceed 200MB. For larger projects, you can merge in batches.',
+      q: 'Will combining PDFs reduce the quality of my images?',
+      a: 'No. Our PDF merger is designed to preserve the original quality of every element within your documents, including high-resolution images, complex vectors, and embedded fonts.',
     },
     {
-      q: 'Can I change the order of pages when merging PDFs?',
-      a: 'Yes! After uploading your files, you can reorder them using the up and down arrow buttons next to each file. The PDFs will be merged in the order they appear in the list, from top to bottom.',
+      q: 'How do I change the file order after I upload them?',
+      a: 'After you upload your documents, you will see a list of files. Use the up and down arrow buttons next to each filename to reorder them. The PDF joiner will merge them exactly in the order you set.',
     },
     {
-      q: 'Is the merged PDF quality affected?',
-      a: 'No. LuvUPDF preserves the original quality of all your PDF files during the merge process. Text, images, fonts, hyperlinks, and formatting are all maintained exactly as they were in the original documents.',
+      q: 'Is there a limit to the number of PDFs I can join?',
+      a: 'You can merge up to 20 PDF files at once for free. If you have more than 20 files, you can merge them in batches — combine the first 20, then merge that result with your remaining files.',
     },
     {
-      q: 'Do merged PDFs retain bookmarks and hyperlinks?',
-      a: 'Yes, our merge tool preserves internal hyperlinks within each document. However, cross-document bookmarks may need to be updated manually after merging, as they reference page numbers that may have shifted.',
-    },
-    {
-      q: 'How long does it take to merge PDF files?',
-      a: 'Most merges complete in under 5 seconds, depending on the number of files and their sizes. Very large or complex PDFs (with many images or embedded fonts) may take up to 30 seconds.',
+      q: 'Does this tool work on Mac and mobile devices?',
+      a: 'Yes! Since LuvUPDF is a browser-based application, it works perfectly on Mac, Windows, iOS, and Android. No software installation is ever required.',
     },
   ],
 

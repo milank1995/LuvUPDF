@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import RemovePagesPDFUploader from './components/RemovePagesPDFUploader';
@@ -12,15 +13,54 @@ export const metadata: Metadata = {
   description:
     'Remove unwanted pages from a PDF online for free. Delete specific pages instantly while preserving quality. Secure, fast, and no registration required.',
   keywords:
-    'remove pages from PDF, delete PDF pages, remove PDF page online, delete pages from PDF free, PDF page remover',
+    'remove pages from PDF, delete PDF pages, remove PDF page online, delete pages from PDF free, PDF page remover, how to delete pages from PDF, online PDF editor, free PDF tools',
   openGraph: {
     title: 'Remove Pages from PDF Online Free | LuvUPDF',
     description:
       'Delete unwanted pages from your PDF instantly. Free, secure, and easy to use online PDF page remover.',
     type: 'website',
     url: 'https://luvupdf.com/remove-pages',
+    siteName: 'LuvUPDF',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Remove Pages from PDF Online Free | LuvUPDF',
+    description: 'Delete unwanted pages from your PDF instantly. Free, secure, and no registration required.',
   },
   alternates: { canonical: 'https://luvupdf.com/remove-pages' },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Remove Pages from a PDF Online Free',
+  description: 'Learn how to delete unwanted pages from your PDF document using LuvUPDF.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Click the upload area or drag and drop your PDF file into the page remover tool.',
+      url: 'https://luvupdf.com/remove-pages',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Select Pages',
+      text: 'Click on the thumbnails of the pages you want to delete from your PDF.',
+      url: 'https://luvupdf.com/remove-pages',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Process Deletion',
+      text: 'Click the "Remove Pages" button to process your document instantly.',
+      url: 'https://luvupdf.com/remove-pages',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download File',
+      text: 'Download your updated PDF to your device.',
+      url: 'https://luvupdf.com/remove-pages',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -43,7 +83,38 @@ const faqJsonLd = {
         text: 'No. Removing pages does not affect the quality, formatting, or content of the remaining pages in your PDF.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I remove PDF pages for free?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, LuvUPDF is a 100% free tool that allows you to delete PDF pages online without registration or watermarks.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is it safe to remove pages from my PDF online?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. All file transfers are encrypted via SSL, and files are automatically deleted from our servers within 1 hour.',
+      },
+    },
   ],
+};
+
+const softwareAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LuvUPDF Remove Pages',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Any',
+  url: 'https://luvupdf.com/remove-pages',
+  description: 'Free online PDF tool to remove unwanted pages from PDF documents instantly.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
 };
 
 export default function RemovePagesPDFPage() {
@@ -51,8 +122,22 @@ export default function RemovePagesPDFPage() {
     <>
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
+
       <Header />
       <main>
         {/* Page Hero */}

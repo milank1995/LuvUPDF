@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
 
@@ -10,79 +10,68 @@ interface UploadedFile {
   size: number;
   type: string;
   file: File;
+  pageCount: number;
+}
+
+interface PageThumbnail {
+  id: string;
+  pageIndex: number;
+  url: string;
+  deleted?: boolean;
 }
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
-async function mergePDF(
-  files: UploadedFile[],
-  setProgress: (value: number) => void
-): Promise<Blob> {
-  const mergedPdf = await PDFDocument.create();
-
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    try {
-      const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
-    }
-  }
-
-  const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
-}
-
 export default function RemovePagesPDFUploader() {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [isMerging, setIsMerging] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
-  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
+  /** Handle File Upload (Single File Only) */
+  const handleFiles = useCallback(
+    async (newFiles: FileList | null) => {
+      if (!newFiles || newFiles.length === 0) return;
 
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
-    );
+      const f = newFiles[0];
 
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
+      if (
+        !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
+        f.size > MAX_SIZE
+      ) {
+        alert('Invalid file type or file too large (max 100MB).');
+        return;
+      }
 
-    if (validFiles.length === 0) return;
+      try {
+        // Cleanup old thumbnails
+        thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
+        setThumbnails([]);
 
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
+        const arrayBuffer = await f.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-    if (uniqueFiles.length === 0) return;
+        setFile({
+          id: crypto.randomUUID(),
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          file: f,
+          pageCount: pdfDoc.getPageCount(),
+        });
 
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
+        setIsDone(false);
+      } catch (err) {
+        console.error('Error reading PDF:', err);
+        alert('Failed to read PDF file.');
+      }
+    },
+    [thumbnails]
+  );
 
-    setFiles((prev) => [...prev, ...mapped]);
-    setIsDone(false);
-  }, []);
-
+  /** Drag & Drop */
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     dragCounter.current++;
@@ -109,85 +98,133 @@ export default function RemovePagesPDFUploader() {
     [handleFiles]
   );
 
-  const removeFile = useCallback(
-    (id: string) => {
-      if (isMerging) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
-      setIsDone(false);
-    },
-    [isMerging]
-  );
+  /** Generate Thumbnails */
 
-  const moveFile = useCallback(
-    (index: number, direction: 'up' | 'down') => {
-      if (isMerging) return;
-      setFiles((prev) => {
-        const arr = [...prev];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-        return arr;
-      });
-    },
-    [isMerging]
-  );
+  /** Lazy thumbnail generator effect */
+  useEffect(() => {
+    if (!file) return;
 
-  const formatSize = useCallback((bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    let cancelled = false;
+    const loadedThumbs: PageThumbnail[] = [];
+
+    const generateThumbnailsLazy = async () => {
+      try {
+        const bytes = await file.file.arrayBuffer();
+        const pdfjsLib = (window as any).pdfjsLib;
+        if (!pdfjsLib) return;
+
+        if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+        }
+
+        const loadingTask = pdfjsLib.getDocument({ data: bytes });
+        const pdf = await loadingTask.promise;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) break;
+
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.5 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/jpeg', 0.8)
+          );
+          if (!blob) continue;
+
+          const url = URL.createObjectURL(blob);
+          const thumb: PageThumbnail = { id: crypto.randomUUID(), pageIndex: i - 1, url };
+          loadedThumbs.push(thumb);
+
+          // update thumbnails progressively
+          setThumbnails([...loadedThumbs]);
+
+          // optional small delay to prevent UI freeze
+          await new Promise((r) => setTimeout(r, 10));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    generateThumbnailsLazy();
+
+    return () => {
+      cancelled = true;
+      loadedThumbs.forEach((t) => URL.revokeObjectURL(t.url));
+    };
+  }, [file]);
+
+  /** Remove Single Page */
+  const removePage = useCallback((pageIndex: number) => {
+    setThumbnails((prev) =>
+      prev.map((t) => (t.pageIndex === pageIndex ? { ...t, deleted: true } : t))
+    );
   }, []);
 
-  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+  const restorePage = useCallback((pageIndex: number) => {
+    setThumbnails((prev) =>
+      prev.map((t) => (t.pageIndex === pageIndex ? { ...t, deleted: false } : t))
+    );
+  }, []);
 
-  const handleMerge = useCallback(async () => {
-    if (files.length < 2) return;
-
-    try {
-      setIsMerging(true);
-      setProgress(0);
-
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
-      setIsDone(true);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    } finally {
-      setIsMerging(false);
-    }
-  }, [files]);
-
-  const handleReset = useCallback(() => {
-    setFiles([]);
+  /** Remove Entire File */
+  const removeFile = useCallback(() => {
+    thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
+    setThumbnails([]);
+    setFile(null);
     setIsDone(false);
-    setProgress(0);
-    setIsMerging(false);
-    setMergedBlob(null);
-  }, []);
+  }, [thumbnails]);
 
-  const handleDownload = useCallback(() => {
-    try {
-      if (!mergedBlob) return;
-      const url = URL.createObjectURL(mergedBlob);
+  /** Generate Final PDF */
+  const handleRemovePages = useCallback(async () => {
+    if (!file) return;
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'merged.pdf';
+    const mergedPdf = await PDFDocument.create();
+    const bytes = await file.file.arrayBuffer();
+    const pdf = await PDFDocument.load(bytes);
 
-      document.body.appendChild(a);
-      a.click();
+    const pagesToKeep = thumbnails
+      .filter((t) => !t.deleted)
+      .map((t) => t.pageIndex)
+      .sort((a, b) => a - b);
 
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+    if (pagesToKeep.length === 0) {
+      alert('No pages selected.');
+      return;
     }
-  }, [mergedBlob]);
+
+    const copiedPages = await mergedPdf.copyPages(pdf, pagesToKeep);
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
+
+    const finalBytes: any = await mergedPdf.save();
+    const blob = new Blob([finalBytes], { type: 'application/pdf' });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'modified.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+    setIsDone(true);
+  }, [file, thumbnails]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Upload Zone */}
-      {files.length === 0 && (
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Upload Zone (Styled Like Merge) */}
+      {!file && (
         <div
           className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
           style={{ padding: '60px 24px', textAlign: 'center' }}
@@ -198,14 +235,17 @@ export default function RemovePagesPDFUploader() {
           onClick={() => fileInputRef.current?.click()}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF files to merge"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              fileInputRef.current?.click();
+            }
+          }}
+          aria-label="Upload PDF file to remove pages"
         >
           <input
             ref={fileInputRef}
             type="file"
             accept=".pdf,application/pdf"
-            multiple
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
@@ -218,7 +258,7 @@ export default function RemovePagesPDFUploader() {
             }}
           >
             <Icon
-              name="TrashIcon"
+              name="DocumentIcon"
               size={28}
               variant="solid"
               style={
@@ -233,7 +273,7 @@ export default function RemovePagesPDFUploader() {
             className="font-heading font-bold mb-2"
             style={{ fontSize: '18px', color: '#1A1A2E' }}
           >
-            {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
+            {isDragging ? 'Drop your PDF here!' : 'Drop PDF file here'}
           </h3>
 
           <p
@@ -244,13 +284,13 @@ export default function RemovePagesPDFUploader() {
               marginBottom: '20px',
             }}
           >
-            or click to browse — supports multiple files
+            or click to browse — single file only
           </p>
 
           <div
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
             style={{
-              background: '#EF4444',
+              background: '#E8445A',
               color: 'white',
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
@@ -258,7 +298,7 @@ export default function RemovePagesPDFUploader() {
             }}
           >
             <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF Files
+            Select PDF File
           </div>
 
           <p
@@ -269,217 +309,141 @@ export default function RemovePagesPDFUploader() {
               marginTop: '16px',
             }}
           >
-            PDF files only · Max 100MB per file
+            PDF only · Max 100MB
           </p>
         </div>
       )}
 
-      {/* File List */}
-      {files.length > 0 && !isDone && (
+      {/* File Loaded */}
+      {file && !isDone && (
         <div>
+          {/* File Header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
+              {file.name} ({file.pageCount} pages)
             </h3>
 
             <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isMerging}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={removeFile}
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{
-                color: '#EF4444',
                 background: '#FFF0F2',
+                color: '#E8445A',
                 border: '1px solid #FFD6DB',
-                fontFamily: 'var(--font-heading)',
               }}
             >
-              <Icon name="PlusIcon" size={14} />
-              Add More
+              <Icon name="XMarkIcon" size={16} />
             </button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              className="hidden"
-              onChange={(e) => handleFiles(e.target.files)}
-            />
           </div>
 
-          <div className="space-y-2 mb-5">
-            {files.map((file, i) => (
-              <div key={file.id} className="file-item flex items-center gap-3 p-3">
-                {/* PDF Icon */}
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFF0F2' }}
-                >
-                  <Icon
-                    name="DocumentIcon"
-                    size={18}
-                    variant="solid"
-                    style={{ color: '#EF4444' } as React.CSSProperties}
+          {/* Thumbnails */}
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6">
+            {Array.from({ length: file.pageCount }).map((_, i) => {
+              const thumb = thumbnails.find((t) => t.pageIndex === i);
+              if (!thumb) {
+                return (
+                  <div
+                    key={i}
+                    className="rounded-xl animate-pulse aspect-[100/140]"
+                    style={{
+                      background: '#F8F8FC',
+                    }}
                   />
-                </div>
+                );
+              }
 
-                {/* Name + Size */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="truncate"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      color: '#1A1A2E',
-                    }}
-                  >
-                    {file.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '11px',
-                      color: '#8888A8',
-                    }}
-                  >
-                    {formatSize(file.size)}
-                  </p>
-                </div>
+              return (
+                <div
+                  key={thumb.id}
+                  className="relative border rounded-xl overflow-hidden transition-all aspect-[100/140]"
+                  style={{
+                    opacity: thumb.deleted ? 0.4 : 1,
+                  }}
+                >
+                  <img
+                    src={thumb.url}
+                    alt={`Page ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
 
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
+                  {/* Overlay when deleted */}
+                  {thumb.deleted && (
+                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: '#E8445A',
+                          background: 'white',
+                          padding: '2px 6px',
+                          borderRadius: 6,
+                        }}
+                      >
+                        Deleted
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Action Button */}
                   <button
-                    onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
+                    onClick={() => (thumb.deleted ? restorePage(i) : removePage(i))}
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center"
                     style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === 0 ? 'not-allowed' : 'pointer',
+                      background: thumb.deleted ? '#16A34A' : '#E8445A',
+                      color: 'white',
+                      fontSize: '12px',
                     }}
-                    aria-label="Move up"
                   >
-                    <Icon name="ChevronUpIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === files.length - 1 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move down"
-                  >
-                    <Icon name="ChevronDownIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    disabled={isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
-                    style={{
-                      background: '#FFF0F2',
-                      color: '#EF4444',
-                      border: '1px solid #FFD6DB',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Remove file"
-                  >
-                    <Icon name="XMarkIcon" size={13} />
+                    {thumb.deleted ? '↺' : '×'}
                   </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Progress */}
-          {isMerging && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '13px',
-                    color: '#4A4A6A',
-                  }}
-                >
-                  Merging files...
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#EF4444',
-                  }}
-                >
-                  {Math.round(progress)}%
-                </span>
-              </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#FFD6DB' }}
-              >
-                <div
-                  className="progress-bar h-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: '#EF4444',
-                    transition: 'width 0.2s ease-out',
-                  }}
-                />
-              </div>
+          {/* Statistics Summary */}
+          <div className="grid grid-cols-3 gap-4 mb-6 p-4 rounded-2xl bg-brand-surface border border-brand-border">
+            <div className="text-center">
+              <p className="text-xs text-brand-muted mb-1 font-body">Total Pages</p>
+              <p className="text-lg font-bold text-brand-dark font-heading">{file.pageCount}</p>
             </div>
-          )}
+            <div className="text-center border-x border-brand-border">
+              <p className="text-xs text-brand-muted mb-1 font-body">To Remove</p>
+              <p className="text-lg font-bold text-primary font-heading">
+                {thumbnails.filter((t) => t.deleted).length}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-brand-muted mb-1 font-body">Final PDF</p>
+              <p className="text-lg font-bold text-green-600 font-heading">
+                {thumbnails.filter((t) => !t.deleted).length}
+              </p>
+            </div>
+          </div>
 
-          {/* Merge Button */}
-          {!isMerging && (
-            <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || isMerging}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: files.length >= 2 ? '#EF4444' : '#ccc',
-                color: 'white',
-                fontSize: '16px',
-                border: 'none',
-                cursor: files.length >= 2 ? 'pointer' : 'not-allowed',
-                boxShadow: files.length >= 2 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
-              }}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-                Merge {files.length} PDF{files.length !== 1 ? 's' : ''}
-              </span>
-            </button>
-          )}
-
-          {files.length < 2 && !isMerging && (
-            <p
-              className="text-center mt-2"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: '#8888A8',
-              }}
-            >
-              Add at least 2 PDF files to merge
-            </p>
-          )}
+          {/* Action Button */}
+          <button
+            onClick={handleRemovePages}
+            disabled={thumbnails.length === 0}
+            className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50"
+            style={{
+              background: thumbnails.length > 0 ? '#E8445A' : '#ccc',
+              color: 'white',
+              fontSize: '16px',
+              border: 'none',
+              boxShadow: thumbnails.length > 0 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
+            }}
+          >
+            Remove Selected Pages & Download
+          </button>
         </div>
       )}
 
       {/* Done State */}
       {isDone && (
-        <div className="text-center py-8">
+        <div className="text-center py-10">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 pulse-anim"
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
             style={{ background: '#F0FDF4' }}
           >
             <Icon
@@ -494,56 +458,22 @@ export default function RemovePagesPDFUploader() {
             className="font-heading font-bold mb-2"
             style={{ fontSize: '20px', color: '#1A1A2E' }}
           >
-            Merge Complete!
+            PDF Updated Successfully!
           </h3>
 
-          <p
+          <button
+            onClick={removeFile}
+            className="mt-4 px-6 py-3 rounded-full"
             style={{
+              background: '#F8F8FC',
               color: '#4A4A6A',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
+              border: '1.5px solid #EEEEF5',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 600,
             }}
           >
-            Your {files.length} PDFs have been merged into one file.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#EF4444',
-                color: 'white',
-                border: 'none',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
-              }}
-              onClick={handleDownload}
-            >
-              <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
-              Download Merged PDF
-            </button>
-
-            <button
-              onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              <Icon name="ArrowPathIcon" size={16} />
-              Merge More Files
-            </button>
-          </div>
+            Modify Another File
+          </button>
         </div>
       )}
     </div>

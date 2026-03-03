@@ -3,8 +3,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | LuvUPDF',
-  description: 'Get in touch with the LuvUPDF team for questions, feedback, or support.',
+  title: 'Contact Us | LuvUPDF — Support & Feedback',
+  description:
+    'Have questions or feedback? Contact the LuvUPDF team. We are here to help you with your free and secure PDF tool needs.',
+  keywords: ['Contact LuvUPDF', 'PDF tool support', 'Feedback', 'LuvUPDF help'],
   alternates: {
     canonical: 'https://luvupdf.com/contact',
   },
@@ -25,7 +27,7 @@ export default function ContactPage() {
                 letterSpacing: '-0.03em',
               }}
             >
-              Contact Us
+              Get in Touch
             </h1>
             <p
               className="mb-6"
@@ -36,8 +38,9 @@ export default function ContactPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              Have a question about LuvUPDF or a suggestion for a new feature? Use the form below to
-              reach out. We read every message and do our best to respond where appropriate.
+              Have a question about LuvUPDF, a suggestion for a new feature, or need help with a
+              tool? Use the form below to reach out. We value your privacy and only use your
+              information to respond to your inquiry.
             </p>
 
             <form className="space-y-4">
