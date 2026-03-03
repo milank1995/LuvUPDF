@@ -8,23 +8,23 @@ import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 
 export const metadata: Metadata = {
-  title: 'Merge PDF Online Free — Join PDF Files Instantly | LuvUPDF',
+  title: 'Merge PDF Online Free — Join & Combine PDF Files | LuvUPDF',
   description:
-    'Combine multiple PDF files into one document online for free with LuvUPDF. Secure, fast, and no sign-up required. The best PDF merger for your documents.',
+    'The best free online PDF merger. Combine multiple PDF files into one document instantly. Secure, fast, and no registration or watermark required. Works on all devices.',
   keywords:
-    'merge PDF, combine PDF files, PDF merger online, join PDF files, PDF joiner, merge multiple PDFs, how to merge PDF',
+    'merge PDF online, combine PDF files, PDF merger free, join PDF files, PDF joiner, merge multiple PDFs, how to merge PDF, free PDF combiner, LuvUPDF',
   openGraph: {
-    title: 'Merge PDF Online Free — Join PDF Files | LuvUPDF',
+    title: 'Merge PDF Online Free — Join & Combine PDF Files | LuvUPDF',
     description:
-      'Combine multiple PDF documents into a single file in seconds. Secure, no account needed, and 100% free.',
+      'Combine multiple PDF documents into a single high-quality file in seconds. Secure, 100% free, and no account needed.',
     type: 'website',
     url: 'https://luvupdf.com/merge-pdf',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Merge PDF Online Free — Join PDF Files | LuvUPDF',
+    title: 'Merge PDF Online Free — Combine PDF Files Instantly | LuvUPDF',
     description:
-      'The easiest way to combine multiple PDFs into one file for free. No registration required.',
+      'The easiest way to combine multiple PDFs into one file for free. Secure processing and no registration required.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/merge-pdf',
@@ -35,30 +35,37 @@ const howToJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
   name: 'How to Merge PDF Files Online Free',
-  description: 'Learn how to combine multiple PDF files into one document using LuvUPDF.',
+  description:
+    'Learn how to combine multiple PDF files into one high-quality document using LuvUPDF in 4 simple steps.',
   step: [
     {
       '@type': 'HowToStep',
       name: 'Upload PDFs',
-      text: 'Click the upload area or drag and drop your PDF files into the merger tool.',
+      text: 'Select or drag-and-drop your PDF files into the LuvUPDF merger tool. Supports files up to 100MB.',
       url: 'https://luvupdf.com/merge-pdf',
     },
     {
       '@type': 'HowToStep',
       name: 'Reorder Files',
-      text: 'Arrange your uploaded PDFs in the desired order using the up and down arrows.',
+      text: 'Arrange your uploaded PDFs in the perfect order using the simple up/down arrows or drag-and-drop.',
       url: 'https://luvupdf.com/merge-pdf',
     },
     {
       '@type': 'HowToStep',
-      name: 'Merge Files',
-      text: 'Click the "Merge PDF" button to combine your documents instantly.',
+      name: 'File Adjustment',
+      text: 'Finalize your selection by adding more documents or removing files as needed before merging.',
       url: 'https://luvupdf.com/merge-pdf',
     },
     {
       '@type': 'HowToStep',
-      name: 'Download Result',
-      text: 'Download your newly merged PDF file to your device.',
+      name: 'Combine Files',
+      text: 'Click the "Merge PDF" button to process and join your documents instantly on our secure servers.',
+      url: 'https://luvupdf.com/merge-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Direct Download',
+      text: 'Download your newly combined PDF file instantly. All files are automatically deleted after 1 hour for your privacy.',
       url: 'https://luvupdf.com/merge-pdf',
     },
   ],
@@ -73,15 +80,7 @@ const faqJsonLd = {
       name: 'How do I merge PDF files online for free without watermarks?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Upload your PDF files to LuvUPDF's Merge PDF tool, arrange them in the desired order, and click 'Merge PDF'. Download your clean, combined file instantly. No registration or watermarks.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How many PDF files can I merge at once for free?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'LuvUPDF allows you to merge up to 20 PDF files at once, with each file up to 100MB in size, completely free.',
+        text: "Simply upload your PDF files to LuvUPDF, arrange them in your preferred order, and click 'Merge PDF'. You can download the result instantly with no registrations, fees, or watermarks.",
       },
     },
     {
@@ -89,7 +88,15 @@ const faqJsonLd = {
       name: 'Is merging PDFs safe on LuvUPDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. All file transfers are encrypted with 256-bit SSL, and files are automatically deleted from our servers within 1 hour of processing.',
+        text: 'Yes. We use 256-bit SSL encryption for all transfers, and our systems automatically purge all files within 60 minutes of processing to ensure your total privacy.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I reorder PDF pages before merging?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, after uploading your files, you can use the intuitive arrow controls to reorder them exactly how you want them to appear in the final merged document.',
       },
     },
   ],
@@ -98,11 +105,12 @@ const faqJsonLd = {
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Merge PDF',
+  name: 'LuvUPDF PDF Merger',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Any',
   url: 'https://luvupdf.com/merge-pdf',
-  description: 'Free online PDF merger tool to combine multiple PDF files into one document.',
+  description:
+    'A powerful, free online PDF merger tool to combine multiple PDF files into one document with zero quality loss.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -201,7 +209,7 @@ export default function MergePDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Merge PDF Files Online —{' '}
+              Merge PDF Files —{' '}
               <span
                 style={{
                   background: 'linear-gradient(135deg, #E8445A 0%, #FF7A8A 100%)',
@@ -210,7 +218,7 @@ export default function MergePDFPage() {
                   backgroundClip: 'text',
                 }}
               >
-                Combine & Join PDF Free
+                Fast, Secure & 100% Free
               </span>
             </h1>
 
@@ -224,8 +232,9 @@ export default function MergePDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              The fastest way to combine PDF files online. Reorder and join multiple documents into
-              one high-quality PDF in seconds — No account or software needed.
+              The ultimate tool to combine multiple PDF files into one document. Join and merge your
+              PDFs with high-quality results in seconds. No installation, no registration, and 100%
+              secure.
             </p>
 
             {/* Trust Badges */}
