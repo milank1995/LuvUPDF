@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Merge PDF Online Free — Join PDF Files | LuvUPDF',
-    description: 'The easiest way to combine multiple PDFs into one file for free. No registration required.',
+    description:
+      'The easiest way to combine multiple PDFs into one file for free. No registration required.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/merge-pdf',
@@ -186,7 +187,7 @@ export default function MergePDFPage() {
                   textTransform: 'uppercase',
                 }}
               >
-                Free PDF Merger Tool
+                100% Free PDF Combiner
               </span>
             </div>
 
@@ -200,7 +201,7 @@ export default function MergePDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Merge PDF Files Online{' '}
+              Merge PDF Files Online —{' '}
               <span
                 style={{
                   background: 'linear-gradient(135deg, #E8445A 0%, #FF7A8A 100%)',
@@ -209,7 +210,7 @@ export default function MergePDFPage() {
                   backgroundClip: 'text',
                 }}
               >
-                For Free
+                Combine & Join PDF Free
               </span>
             </h1>
 
@@ -223,17 +224,17 @@ export default function MergePDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Combine multiple PDF documents into a single file in seconds. Drag, drop, reorder, and
-              merge — no account required.
+              The fastest way to combine PDF files online. Reorder and join multiple documents into
+              one high-quality PDF in seconds — No account or software needed.
             </p>
 
             {/* Trust Badges */}
             <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
               {[
-                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
-                { icon: 'TrashIcon', text: 'Auto-Deleted' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Results' },
+                { icon: 'ShieldCheckIcon', text: '256-bit SSL Secure' },
+                { icon: 'TrashIcon', text: 'Privacy Guard: Auto-Delete' },
+                { icon: 'CurrencyDollarIcon', text: 'Always Free (No Watermark)' },
+                { icon: 'BoltIcon', text: 'Ultra-Fast Processing' },
               ].map((badge) => (
                 <div
                   key={badge.text}
