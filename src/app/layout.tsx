@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     'Merge, edit, and manage your PDF files online with 100% privacy and security. No login required.',
 };
 
+import { ToastProvider } from '@/components/ui/Toast';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

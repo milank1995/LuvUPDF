@@ -3,6 +3,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
+import { useToast } from '@/components/ui/Toast';
 
 interface UploadedFile {
   id: string;
@@ -14,29 +15,60 @@ interface UploadedFile {
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
+interface MergeResult {
+  blob: Blob | null;
+  errors: { fileName: string; message: string; link?: { text: string; href: string } }[];
+}
+
 async function mergePDF(
   files: UploadedFile[],
   setProgress: (value: number) => void
-): Promise<Blob> {
+): Promise<MergeResult> {
   const mergedPdf = await PDFDocument.create();
+  const errors: { fileName: string; message: string; link?: { text: string; href: string } }[] = [];
+  let mergedPageCount = 0;
 
   for (let i = 0; i < files.length; i++) {
     const item = files[i];
     try {
       const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      // Don't use ignoreEncryption: true, so it throws on encrypted files
+      const pdf = await PDFDocument.load(bytes);
       const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
       copiedPages.forEach((page) => mergedPdf.addPage(page));
+      mergedPageCount += copiedPages.length;
+    } catch (error: any) {
+      const errorMessage = error?.message || String(error) || '';
+      const isEncrypted = /encrypted|password|security|locked/i.test(errorMessage);
+      let message = '';
+      let link: { text: string; href: string } | undefined;
 
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
+      if (isEncrypted) {
+        message = `"${item.name}" is password protected and was skipped.`;
+        link = { text: 'Unlock this PDF', href: '/unlock-pdf' };
+      } else {
+        console.error(`Failed to load ${item.name}`, error);
+        message = `"${item.name}" is corrupted or invalid and was skipped.`;
+      }
+
+      errors.push({
+        fileName: item.name,
+        message: message,
+        link,
+      });
     }
+    setProgress(Math.round(((i + 1) / files.length) * 100));
+  }
+
+  if (mergedPageCount === 0) {
+    return { blob: null, errors };
   }
 
   const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
+  return {
+    blob: new Blob([mergedBytes], { type: 'application/pdf' }),
+    errors,
+  };
 }
 
 export default function MergePDFUploader() {
@@ -47,41 +79,56 @@ export default function MergePDFUploader() {
   const [isDone, setIsDone] = useState(false);
   const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
 
+  const { showToast } = useToast();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
+  const handleFiles = useCallback(
+    (newFiles: FileList | null) => {
+      if (!newFiles) return;
 
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
-    );
+      const validFiles = Array.from(newFiles).filter(
+        (f) =>
+          (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
+          f.size <= MAX_SIZE
+      );
 
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
+      if (validFiles.length < newFiles.length) {
+        showToast(
+          `${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`,
+          'error'
+        );
+      }
 
-    if (validFiles.length === 0) return;
+      if (validFiles.length === 0) return;
 
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
+      const duplicates = validFiles.filter((f) =>
+        files.some((existing) => existing.name === f.name)
+      );
+      if (duplicates.length > 0) {
+        showToast(`${duplicates.length} file(s) already added and were skipped.`, 'info');
+      }
 
-    if (uniqueFiles.length === 0) return;
+      const uniqueFiles = validFiles.filter(
+        (f) => !files.some((existing) => existing.name === f.name)
+      );
 
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
+      if (uniqueFiles.length === 0) return;
 
-    setFiles((prev) => [...prev, ...mapped]);
-    setIsDone(false);
-  }, []);
+      const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
+        id: crypto.randomUUID(),
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        file: f,
+      }));
+
+      setFiles((prev) => [...prev, ...mapped]);
+      setIsDone(false);
+    },
+    [files, showToast]
+  );
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -147,15 +194,45 @@ export default function MergePDFUploader() {
       setIsMerging(true);
       setProgress(0);
 
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
-      setIsDone(true);
+      const { blob, errors } = await mergePDF(files, setProgress);
+
+      if (errors.length > 0) {
+        errors.forEach((err) => {
+          showToast(err.message, 'error', err.link);
+        });
+
+        // Automatically remove invalid/protected files from the list
+        const errorFileNames = new Set(errors.map((e) => e.fileName));
+        setFiles((prev) => prev.filter((f) => !errorFileNames.has(f.name)));
+      }
+
+      const successfulFilesCount = files.length - errors.length;
+
+      if (blob && successfulFilesCount >= 2) {
+        setMergedBlob(blob);
+        setIsDone(true);
+        if (errors.length === 0) {
+          showToast('All PDFs merged successfully!', 'success');
+        } else {
+          showToast(`Merged ${successfulFilesCount} file(s). Some files were skipped.`, 'info');
+        }
+      } else {
+        if (successfulFilesCount === 1) {
+          showToast('At least 2 valid PDF files are required for merging.', 'error');
+        } else {
+          showToast(
+            'None of the files could be merged. Please check if they are password protected.',
+            'error'
+          );
+        }
+        setProgress(0);
+      }
     } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+      showToast(err.message || 'Failed to merge PDFs', 'error');
     } finally {
       setIsMerging(false);
     }
-  }, [files]);
+  }, [files, showToast]);
 
   const handleReset = useCallback(() => {
     setFiles([]);
@@ -180,7 +257,7 @@ export default function MergePDFUploader() {
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+      showToast(err.message || 'Failed to download PDF', 'error');
     }
   }, [mergedBlob]);
 
