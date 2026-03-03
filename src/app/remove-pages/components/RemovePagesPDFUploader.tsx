@@ -10,13 +10,14 @@ interface UploadedFile {
   size: number;
   type: string;
   file: File;
-  pageCount: number; // new
+  pageCount: number;
 }
 
 interface PageThumbnail {
   id: string;
   pageIndex: number;
   url: string;
+  deleted?: boolean;
 }
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
@@ -165,12 +166,15 @@ export default function RemovePagesPDFUploader() {
 
   /** Remove Single Page */
   const removePage = useCallback((pageIndex: number) => {
-    setThumbnails((prev) => {
-      const toRemove = prev.find((t) => t.pageIndex === pageIndex);
-      if (toRemove) URL.revokeObjectURL(toRemove.url);
+    setThumbnails((prev) =>
+      prev.map((t) => (t.pageIndex === pageIndex ? { ...t, deleted: true } : t))
+    );
+  }, []);
 
-      return prev.filter((t) => t.pageIndex !== pageIndex);
-    });
+  const restorePage = useCallback((pageIndex: number) => {
+    setThumbnails((prev) =>
+      prev.map((t) => (t.pageIndex === pageIndex ? { ...t, deleted: false } : t))
+    );
   }, []);
 
   /** Remove Entire File */
@@ -189,7 +193,10 @@ export default function RemovePagesPDFUploader() {
     const bytes = await file.file.arrayBuffer();
     const pdf = await PDFDocument.load(bytes);
 
-    const pagesToKeep = thumbnails.map((t) => t.pageIndex).sort((a, b) => a - b);
+    const pagesToKeep = thumbnails
+      .filter((t) => !t.deleted)
+      .map((t) => t.pageIndex)
+      .sort((a, b) => a - b);
 
     if (pagesToKeep.length === 0) {
       alert('No pages selected.');
@@ -333,11 +340,29 @@ export default function RemovePagesPDFUploader() {
           <div className="grid grid-cols-6 gap-3 mb-6">
             {Array.from({ length: file.pageCount }).map((_, i) => {
               const thumb = thumbnails.find((t) => t.pageIndex === i);
-              return thumb ? (
+              if (!thumb) {
+                return (
+                  <div
+                    key={i}
+                    className="rounded-xl animate-pulse"
+                    style={{
+                      width: 100,
+                      height: 140,
+                      background: '#F8F8FC',
+                    }}
+                  />
+                );
+              }
+
+              return (
                 <div
                   key={thumb.id}
-                  className="relative border rounded-xl overflow-hidden"
-                  style={{ width: 100, height: 140 }}
+                  className="relative border rounded-xl overflow-hidden transition-all"
+                  style={{
+                    width: 100,
+                    height: 140,
+                    opacity: thumb.deleted ? 0.4 : 1,
+                  }}
                 >
                   <img
                     src={thumb.url}
@@ -345,28 +370,37 @@ export default function RemovePagesPDFUploader() {
                     className="w-full h-full object-cover"
                   />
 
+                  {/* Overlay when deleted */}
+                  {thumb.deleted && (
+                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: '#E8445A',
+                          background: 'white',
+                          padding: '2px 6px',
+                          borderRadius: 6,
+                        }}
+                      >
+                        Deleted
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Action Button */}
                   <button
-                    onClick={() => removePage(i)}
+                    onClick={() => (thumb.deleted ? restorePage(i) : removePage(i))}
                     className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center"
                     style={{
-                      background: '#E8445A',
+                      background: thumb.deleted ? '#16A34A' : '#E8445A',
                       color: 'white',
                       fontSize: '12px',
                     }}
                   >
-                    ×
+                    {thumb.deleted ? '↺' : '×'}
                   </button>
                 </div>
-              ) : (
-                <div
-                  key={i}
-                  className="rounded-xl animate-pulse"
-                  style={{
-                    width: 100,
-                    height: 140,
-                    background: '#F8F8FC',
-                  }}
-                />
               );
             })}
           </div>
