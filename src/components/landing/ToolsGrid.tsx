@@ -8,11 +8,24 @@ const tools = [
     icon: 'DocumentPlusIcon',
     color: '#E8445A',
     bg: '#FFF0F2',
-    title: 'Merge PDF',
-    description: 'Combine multiple PDF files into one seamless document in seconds.',
+    title: 'Merge PDF Online',
+    description: 'Merge PDF online free by combining multiple files into one secure document.',
     badge: 'Popular',
     badgeBg: '#FFF0F2',
     badgeColor: '#E8445A',
+  },
+  {
+    id: 'remove-pages',
+    href: '/remove-pages',
+    icon: 'TrashIcon',
+    color: '#EF4444',
+    bg: '#FEF2F2',
+    title: 'Remove PDF Pages',
+    description: 'Remove pages from PDF online and delete unwanted pages for free.',
+    badge: null,
+    badgeBg: '',
+    badgeColor: '',
+    isComingSoon: false,
   },
   {
     id: 'split-pdf',
@@ -21,22 +34,11 @@ const tools = [
     color: '#3B82F6',
     bg: '#EFF6FF',
     title: 'Split PDF',
-    description: 'Extract pages or split one PDF into multiple files instantly.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
-  },
-  {
-    id: 'remove-pages',
-    href: '/remove-pages',
-    icon: 'TrashIcon',
-    color: '#EF4444',
-    bg: '#FEF2F2',
-    title: 'Remove Pages',
-    description: 'Delete unwanted or blank pages from your PDF quickly.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Extract pages or split one PDF into multiple files instantly.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
   {
     id: 'organize-pdf',
@@ -45,10 +47,11 @@ const tools = [
     color: '#8B5CF6',
     bg: '#F5F3FF',
     title: 'Organize PDF',
-    description: 'Reorder, rotate, and manage PDF pages with drag and drop.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Reorder, rotate, and manage PDF pages with drag and drop.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
   {
     id: 'compress-pdf',
@@ -57,10 +60,11 @@ const tools = [
     color: '#10B981',
     bg: '#ECFDF5',
     title: 'Compress PDF',
-    description: 'Reduce PDF file size without losing quality.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Reduce PDF file size without losing quality.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
   {
     id: 'rotate-pdf',
@@ -69,10 +73,11 @@ const tools = [
     color: '#F59E0B',
     bg: '#FFFBEB',
     title: 'Rotate PDF',
-    description: 'Rotate PDF pages to the correct orientation easily.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Rotate PDF pages to the correct orientation easily.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
   {
     id: 'lock-pdf',
@@ -81,10 +86,11 @@ const tools = [
     color: '#7C5CBF',
     bg: '#F3EEFF',
     title: 'Lock PDF',
-    description: 'Protect your PDF with a secure password.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Protect your PDF with a secure password.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
   {
     id: 'unlock-pdf',
@@ -93,10 +99,11 @@ const tools = [
     color: '#0EA5B0',
     bg: '#EDFCFD',
     title: 'Unlock PDF',
-    description: 'Remove password protection from PDF files instantly.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
+    description: 'Coming Soon: Remove password protection from PDF files instantly.',
+    badge: 'Coming Soon',
+    badgeBg: '#F1F5F9',
+    badgeColor: '#64748B',
+    isComingSoon: true,
   },
 ];
 
@@ -115,7 +122,7 @@ export default function ToolsGrid() {
               letterSpacing: '-0.02em',
             }}
           >
-            Everything You Need for PDFs
+            Secure PDF Tools for Everyone
           </h2>
           <p
             style={{
@@ -126,7 +133,7 @@ export default function ToolsGrid() {
               fontFamily: 'var(--font-body)',
             }}
           >
-            Professional-grade PDF tools, completely free. No watermarks, no account, no limits.
+            The world's most secure PDF tools. No storage, no login, and 100% free forever.
           </p>
         </div>
 

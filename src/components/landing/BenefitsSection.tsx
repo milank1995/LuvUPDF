@@ -13,9 +13,9 @@ const benefits = [
     icon: 'ShieldCheckIcon',
     color: '#E8445A',
     bg: '#FFF0F2',
-    title: 'Bank-Grade Security',
+    title: 'Privacy-First Security',
     description:
-      'All file transfers are protected with 256-bit SSL encryption. Your files are auto-deleted after processing.',
+      'All transfers use 256-bit SSL encryption. We do not store any document data; files are deleted immediately after processing.',
   },
   {
     icon: 'BoltIcon',
@@ -29,9 +29,9 @@ const benefits = [
     icon: 'UserIcon',
     color: '#7C5CBF',
     bg: '#F3EEFF',
-    title: 'No Account Needed',
+    title: '100% Secure & Private',
     description:
-      'Jump straight to your task. No registration, no email verification, no profile setup — just upload and go.',
+      'Merge PDF online free without an account. No registration, no email, and zero tracking — your privacy is our priority.',
   },
   {
     icon: 'DevicePhoneMobileIcon',
@@ -66,7 +66,7 @@ export default function BenefitsSection() {
               letterSpacing: '-0.02em',
             }}
           >
-            Built for People Who Love PDFs
+            Privacy-First PDF Tools
           </h2>
           <p
             style={{
@@ -77,7 +77,7 @@ export default function BenefitsSection() {
               fontFamily: 'var(--font-body)',
             }}
           >
-            We built LuvUPDF because free should mean actually free — no tricks, no upsells.
+            We built LuvUPDF to provide the world's most secure PDF tools. 100% free, 100% private.
           </p>
         </div>
 

@@ -3,9 +3,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy | LuvUPDF',
+  title: 'Cookie Policy | LuvUPDF — Secure & Minimal Tracking',
   description:
-    'Find out how LuvUPDF uses cookies and similar technologies to improve performance and user experience.',
+    'LuvUPDF uses minimal cookies to ensure site functionality and security. We do not track personal behavior or sell your data.',
+  keywords: ['Cookie Policy', 'PDF tool privacy', 'Tracking policy', 'LuvUPDF cookies'],
   alternates: {
     canonical: 'https://luvupdf.com/cookie-policy',
   },
@@ -37,9 +38,10 @@ export default function CookiePolicyPage() {
                 fontFamily: 'var(--font-body)',
               }}
             >
-              This Cookie Policy explains how LuvUPDF uses cookies and similar technologies to
-              recognize you when you visit our website. It explains what these technologies are and
-              why we use them, as well as your rights to control their use.
+              We use &quot;necessary&quot; cookies and similar technologies to ensure LuvUPDF
+              remains
+              <strong> secure, fast, and functional</strong>. We do not use cookies for invasive
+              tracking or profile building.
             </p>
 
             <h2

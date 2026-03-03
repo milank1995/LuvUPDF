@@ -6,44 +6,29 @@ import FAQAccordion from '../common/FAQAccordion';
 
 const faqs = [
   {
-    question: 'Is LuvUPDF really free to use?',
+    question: 'Why is LuvUPDF completely free to use?',
     answer:
-      "Yes, LuvUPDF is completely free to use. All PDF tools — including merge, lock, unlock, and rotate — are available at no cost. We don't require any account creation, credit card, or subscription. Our platform is supported by non-intrusive advertising.",
+      "We believe that basic document tools should be accessible to everyone. LuvUPDF is 100% free — no hidden fees, no subscriptions, and no credit cards. Our platform 'Merge PDF online free' and 'Remove PDF pages' tools are supported by high-quality, non-intrusive advertising so we can keep our servers running for you.",
   },
   {
-    question: 'Are my PDF files safe and secure?',
+    question: 'How secure are my files on LuvUPDF?',
     answer:
-      'Absolutely. All file uploads and downloads are protected using 256-bit SSL encryption, the same standard used by banks. Your files are processed on secure servers and automatically deleted within 1 hour of processing. We never read, analyze, or store your documents.',
+      'Your privacy is our highest priority. All file transfers are encrypted with bank-grade 256-bit SSL. Crucially, we do not store any document data; files are processed on secure servers and automatically deleted immediately after you download them, or after 1 hour of inactivity.',
   },
   {
-    question: 'How do I merge multiple PDF files into one?',
+    question: 'Do I need to create an account or install software?',
     answer:
-      'Navigate to our Merge PDF tool, upload two or more PDF files by dragging and dropping them into the upload area or clicking to browse. You can reorder the files as needed, then click "Merge PDF" to combine them. Your merged file will be ready to download in seconds.',
+      'Not at all. LuvUPDF is an entirely browser-based platform. You can merge, edit, and manage your PDFs without ever creating an account, sharing your email, or downloading any software to your device.',
   },
   {
-    question: 'What is the maximum file size I can upload?',
+    question: 'Can I use these PDF tools on my phone or tablet?',
     answer:
-      "LuvUPDF supports PDF files up to 100MB per upload. For the Merge PDF tool, you can combine up to 20 files at once, as long as the combined total doesn't exceed 200MB. For larger files, we recommend compressing them first.",
+      'Yes! Our platform is fully responsive and works perfectly on iPhones, Android devices, iPads, and all desktop computers. As long as you have a web browser and an internet connection, you can use LuvUPDF anywhere.',
   },
   {
-    question: 'Do I need to create an account to use LuvUPDF?',
+    question: 'Will more tools like Compress and Split be added soon?',
     answer:
-      'No account is required. You can use all PDF tools immediately without registering, providing an email address, or signing in. Simply visit the tool page, upload your file, and start working.',
-  },
-  {
-    question: 'Can I use LuvUPDF on my phone or tablet?',
-    answer:
-      'Yes! LuvUPDF is fully responsive and optimized for all devices including smartphones, tablets, and desktop computers. It works on all modern browsers including Chrome, Firefox, Safari, and Edge on both iOS and Android.',
-  },
-  {
-    question: 'How do I password protect a PDF file?',
-    answer:
-      'Use our Lock PDF tool. Upload your PDF, enter your desired password (we recommend at least 8 characters with a mix of letters, numbers, and symbols), confirm the password, and click "Lock PDF". The protected file will be ready to download immediately.',
-  },
-  {
-    question: 'Will more PDF tools be added to LuvUPDF?',
-    answer:
-      "Yes! We're actively developing more tools. Coming soon: Compress PDF, PDF to Word, Word to PDF, OCR (text recognition), Split PDF, and AI-powered PDF tools. All new tools will be free to use.",
+      "Absolutely. We are actively working on expanding our suite. 'Split PDF', 'Compress PDF', and 'PDF to Word' are in development and will be released shortly. Like all our existing tools, these new features will be 100% free and secure.",
   },
 ];
 

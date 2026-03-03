@@ -46,7 +46,7 @@ export default function HeroSection() {
               textTransform: 'uppercase',
             }}
           >
-            100% Free · No Sign-up Required
+            100% Free · 100% Secure · No Login
           </span>
         </div>
 
@@ -55,7 +55,7 @@ export default function HeroSection() {
           className="font-heading font-extrabold leading-tight tracking-tight mb-5"
           style={{ fontSize: 'clamp(40px, 7vw, 80px)', color: '#1A1A2E', lineHeight: 1.05 }}
         >
-          Free Online PDF Tools{' '}
+          Edit PDF Online —{' '}
           <span
             style={{
               background: 'linear-gradient(135deg, #E8445A 0%, #FF7A8A 60%, #E8445A 100%)',
@@ -64,7 +64,7 @@ export default function HeroSection() {
               backgroundClip: 'text',
             }}
           >
-            You'll Love
+            100% Free & Secure
           </span>
         </h1>
 
@@ -79,8 +79,7 @@ export default function HeroSection() {
             fontWeight: 400,
           }}
         >
-          Merge, lock, unlock, and rotate PDF files instantly. Simple, secure, and completely free —
-          right in your browser.
+          The easiest way to merge PDF online free and combine PDF files. No storage, no login, and total privacy. Your files are automatically deleted after processing.
         </p>
 
         {/* CTAs */}
@@ -105,7 +104,7 @@ export default function HeroSection() {
             }}
           >
             <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-            Start Merging PDF
+            Merge PDF Online Free
           </Link>
           <Link
             href="#tools"
@@ -134,9 +133,9 @@ export default function HeroSection() {
         {/* Floating Stats Cards */}
         <div className="flex flex-wrap items-center justify-center gap-3">
           {[
-            { icon: 'UserGroupIcon', value: '2M+', label: 'Files Processed' },
-            { icon: 'ShieldCheckIcon', value: '256-bit', label: 'SSL Encryption' },
-            { icon: 'BoltIcon', value: '<5s', label: 'Average Process Time' },
+            { icon: 'ShieldCheckIcon', value: '100%', label: 'Privacy-First' },
+            { icon: 'LockClosedIcon', value: '256-bit', label: 'Secure Encryption' },
+            { icon: 'TrashIcon', value: 'Auto', label: 'Files Deleted' },
             { icon: 'HeartIcon', value: 'Always', label: 'Free to Use' },
           ].map((stat, i) => (
             <div

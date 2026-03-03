@@ -3,9 +3,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Disclaimer | LuvUPDF',
+  title: 'Disclaimer | LuvUPDF — Terms of Responsibility',
   description:
-    'Read the legal disclaimer for using LuvUPDF and its free online PDF tools, including limitations of responsibility.',
+    'Legal disclaimer for LuvUPDF free online PDF tools. Understand the limitations of liability and service expectations.',
+  keywords: ['PDF disclaimer', 'LuvUPDF legal', 'Liability limitation', 'Free tool disclaimer'],
   alternates: {
     canonical: 'https://luvupdf.com/disclaimer',
   },

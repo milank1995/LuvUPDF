@@ -3,9 +3,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'DMCA Policy | LuvUPDF',
+  title: 'DMCA Policy | LuvUPDF — Copyright Notices',
   description:
-    'Learn how to submit a DMCA copyright infringement notice or counter-notice for content related to LuvUPDF.',
+    'Learn how to file a DMCA notice or counter-notice. LuvUPDF respects intellectual property rights and handles copyright claims seriously.',
+  keywords: ['DMCA policy', 'Copyright notice', 'PDF tool DMCA', 'Intellectual property'],
   alternates: {
     canonical: 'https://luvupdf.com/dmca-policy',
   },
