@@ -7,9 +7,16 @@ import { BRAND_COLORS, PDF_CONFIG } from '@/constants/pdfConfig';
 interface UploadZoneProps {
   onFilesSelected: (files: FileList | null) => void;
   multiple?: boolean;
+  accentColor?: string;
+  iconName?: string;
 }
 
-export default function UploadZone({ onFilesSelected, multiple = true }: UploadZoneProps) {
+export default function UploadZone({
+  onFilesSelected,
+  multiple = true,
+  accentColor = BRAND_COLORS.primary,
+  iconName = 'DocumentPlusIcon',
+}: UploadZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dragCounter = useRef(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,17 +71,21 @@ export default function UploadZone({ onFilesSelected, multiple = true }: UploadZ
       <div
         className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
         style={{
-          background: isDragging ? '#E8445A' : '#FFF0F2',
+          background: isDragging
+            ? accentColor
+            : accentColor === BRAND_COLORS.primary
+              ? BRAND_COLORS.primarySurface
+              : '#EFF6FF',
           transform: isDragging ? 'scale(1.1)' : 'scale(1)',
         }}
       >
         <Icon
-          name="DocumentPlusIcon"
+          name={iconName}
           size={28}
           variant="solid"
           style={
             {
-              color: isDragging ? 'white' : '#E8445A',
+              color: isDragging ? 'white' : accentColor,
             } as React.CSSProperties
           }
         />
@@ -98,7 +109,7 @@ export default function UploadZone({ onFilesSelected, multiple = true }: UploadZ
       <div
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
         style={{
-          background: '#E8445A',
+          background: accentColor,
           color: 'white',
           fontFamily: 'var(--font-heading)',
           fontWeight: 700,

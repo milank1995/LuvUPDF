@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
+import JSZip from 'jszip';
 import Icon from '@/components/ui/AppIcon';
+import { useToast } from '@/components/ui/Toast';
+import { BRAND_COLORS, PDF_CONFIG } from '@/constants/pdfConfig';
+import UploadZone from '@/components/pdf/UploadZone';
 
 interface UploadedFile {
   id: string;
@@ -10,127 +14,272 @@ interface UploadedFile {
   size: number;
   type: string;
   file: File;
+  pageCount: number;
 }
 
-const MAX_SIZE = 100 * 1024 * 1024; // 100MB
-
-async function mergePDF(
-  files: UploadedFile[],
-  setProgress: (value: number) => void
-): Promise<Blob> {
-  const mergedPdf = await PDFDocument.create();
-
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    try {
-      const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
-    }
-  }
-
-  const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
+interface PageThumbnail {
+  id: string;
+  pageIndex: number;
+  url: string;
 }
+
+type SplitMode = 'ranges' | 'fixed' | 'every';
+
+// Blue Theme Constants
+const SPLIT_THEME = {
+  primary: '#3B82F6',
+  primaryLight: '#EFF6FF',
+  primaryBorder: '#BFDBFE',
+  primaryShadow: 'rgba(59, 130, 246, 0.3)',
+};
 
 export default function SplitPDFUploader() {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isMerging, setIsMerging] = useState(false);
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
-  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
+  const [splitMode, setSplitMode] = useState<SplitMode>('ranges');
+  const [rangeInput, setRangeInput] = useState('1');
+  const [fixedInterval, setFixedInterval] = useState(1);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounter = useRef(0);
+  const { showToast } = useToast();
 
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
+  /** Handle File Upload (Single File Only) */
+  const handleFiles = useCallback(
+    async (newFiles: FileList | null) => {
+      if (!newFiles || newFiles.length === 0) return;
 
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
-    );
+      const f = newFiles[0];
 
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
+      if (
+        !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
+        f.size > PDF_CONFIG.MAX_FILE_SIZE
+      ) {
+        showToast('Invalid file type or file too large (max 100MB).', 'error');
+        return;
+      }
 
-    if (validFiles.length === 0) return;
+      try {
+        // Cleanup old thumbnails
+        thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
+        setThumbnails([]);
 
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
+        const arrayBuffer = await f.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-    if (uniqueFiles.length === 0) return;
+        setFile({
+          id: crypto.randomUUID(),
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          file: f,
+          pageCount: pdfDoc.getPageCount(),
+        });
 
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
+        setIsDone(false);
+        setProgress(0);
+      } catch (err) {
+        console.error('Error reading PDF:', err);
+        showToast('Failed to read PDF file.', 'error');
+      }
+    },
+    [thumbnails, showToast]
+  );
 
-    setFiles((prev) => [...prev, ...mapped]);
+  /** Generate Thumbnails (Lazy) */
+  useEffect(() => {
+    if (!file) return;
+
+    let cancelled = false;
+    const loadedThumbs: PageThumbnail[] = [];
+
+    const generateThumbnailsLazy = async () => {
+      try {
+        const bytes = await file.file.arrayBuffer();
+        const pdfjsLib = (window as any).pdfjsLib;
+        if (!pdfjsLib) return;
+
+        if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+        }
+
+        const loadingTask = pdfjsLib.getDocument({ data: bytes });
+        const pdf = await loadingTask.promise;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) break;
+
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.4 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/jpeg', 0.8)
+          );
+          if (!blob) continue;
+
+          const url = URL.createObjectURL(blob);
+          const thumb: PageThumbnail = { id: crypto.randomUUID(), pageIndex: i - 1, url };
+          loadedThumbs.push(thumb);
+
+          setThumbnails([...loadedThumbs]);
+
+          // Small delay for main thread responsiveness
+          await new Promise((r) => setTimeout(r, 10));
+        }
+      } catch (err) {
+        console.error('Thumbnail generation error:', err);
+      }
+    };
+
+    generateThumbnailsLazy();
+
+    return () => {
+      cancelled = true;
+      loadedThumbs.forEach((t) => URL.revokeObjectURL(t.url));
+    };
+  }, [file]);
+
+  const removeFile = useCallback(() => {
+    thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
+    setThumbnails([]);
+    setFile(null);
     setIsDone(false);
+    setProgress(0);
+  }, [thumbnails]);
+
+  /** Parsing Logic */
+  const parseRanges = useCallback((input: string, totalPages: number): number[][] => {
+    const segments = input.split(',').map((s) => s.trim());
+    const ranges: number[][] = [];
+
+    for (const segment of segments) {
+      if (segment.includes('-')) {
+        const [startStr, endStr] = segment.split('-');
+        let start = parseInt(startStr);
+        let end = parseInt(endStr);
+
+        if (isNaN(start) || isNaN(end)) continue;
+
+        // Convert to 0-indexed
+        start = Math.max(1, start) - 1;
+        end = Math.min(totalPages, end) - 1;
+
+        if (start <= end) {
+          const range = [];
+          for (let i = start; i <= end; i++) range.push(i);
+          ranges.push(range);
+        }
+      } else {
+        const page = parseInt(segment);
+        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+          ranges.push([page - 1]);
+        }
+      }
+    }
+    return ranges;
   }, []);
 
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current++;
-    setIsDragging(true);
-  }, []);
+  /** Split Functions */
+  const handleSplit = async () => {
+    if (!file) return;
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current--;
-    if (dragCounter.current === 0) setIsDragging(false);
-  }, []);
+    try {
+      setIsProcessing(true);
+      setProgress(0);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-  }, []);
+      const arrayBuffer = await file.file.arrayBuffer();
+      const mainPdfDoc = await PDFDocument.load(arrayBuffer);
+      const totalPagesScope = file.pageCount;
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      dragCounter.current = 0;
-      setIsDragging(false);
-      handleFiles(e.dataTransfer.files);
-    },
-    [handleFiles]
-  );
+      let rangesToExtract: number[][] = [];
 
-  const removeFile = useCallback(
-    (id: string) => {
-      if (isMerging) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
-      setIsDone(false);
-    },
-    [isMerging]
-  );
+      if (splitMode === 'every') {
+        for (let i = 0; i < totalPagesScope; i++) {
+          rangesToExtract.push([i]);
+        }
+      } else if (splitMode === 'fixed') {
+        const interval = Math.max(1, fixedInterval);
+        for (let i = 0; i < totalPagesScope; i += interval) {
+          const range = [];
+          for (let j = i; j < i + interval && j < totalPagesScope; j++) {
+            range.push(j);
+          }
+          rangesToExtract.push(range);
+        }
+      } else {
+        rangesToExtract = parseRanges(rangeInput, totalPagesScope);
+      }
 
-  const moveFile = useCallback(
-    (index: number, direction: 'up' | 'down') => {
-      if (isMerging) return;
-      setFiles((prev) => {
-        const arr = [...prev];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-        return arr;
-      });
-    },
-    [isMerging]
-  );
+      if (rangesToExtract.length === 0) {
+        showToast('Please provide valid page ranges.', 'error');
+        setIsProcessing(false);
+        return;
+      }
+
+      const zip = new JSZip();
+      const baseName = file.name.replace(/\.[^/.]+$/, '');
+
+      for (let i = 0; i < rangesToExtract.length; i++) {
+        const pages = rangesToExtract[i];
+        const newPdf = await PDFDocument.create();
+        const copiedPages = await newPdf.copyPages(mainPdfDoc, pages);
+        copiedPages.forEach((p) => newPdf.addPage(p));
+
+        const pdfBytes = await newPdf.save();
+
+        if (rangesToExtract.length === 1) {
+          // Single file extraction - Direct Download
+          const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${baseName}_split.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+        } else {
+          // Multiple files - Add to ZIP
+          zip.file(`${baseName}_part_${i + 1}.pdf`, pdfBytes);
+        }
+
+        setProgress(Math.round(((i + 1) / rangesToExtract.length) * 100));
+        // Small delay to allow UI updates
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+
+      if (rangesToExtract.length > 1) {
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${baseName}_split.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }
+
+      setIsDone(true);
+      showToast('PDF split successfully!', 'success');
+    } catch (err) {
+      console.error('Split error:', err);
+      showToast('An error occurred during splitting.', 'error');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const formatSize = useCallback((bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -138,410 +287,326 @@ export default function SplitPDFUploader() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }, []);
 
-  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
-
-  const handleMerge = useCallback(async () => {
-    if (files.length < 2) return;
-
-    try {
-      setIsMerging(true);
-      setProgress(0);
-
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
-      setIsDone(true);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    } finally {
-      setIsMerging(false);
-    }
-  }, [files]);
-
-  const handleReset = useCallback(() => {
-    setFiles([]);
-    setIsDone(false);
-    setProgress(0);
-    setIsMerging(false);
-    setMergedBlob(null);
-  }, []);
-
-  const handleDownload = useCallback(() => {
-    try {
-      if (!mergedBlob) return;
-      const url = URL.createObjectURL(mergedBlob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'merged.pdf';
-
-      document.body.appendChild(a);
-      a.click();
-
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    }
-  }, [mergedBlob]);
-
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       {/* Upload Zone */}
-      {files.length === 0 && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF files to merge"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            multiple
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? '#3B82F6' : '#FFF0F2',
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="ScissorsIcon"
-              size={28}
-              variant="solid"
-              style={
-                {
-                  color: isDragging ? 'white' : '#3B82F6',
-                } as React.CSSProperties
-              }
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — supports multiple files
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: '#3B82F6',
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF Files
-          </div>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF files only · Max 100MB per file
-          </p>
-        </div>
+      {!file && (
+        <UploadZone
+          onFilesSelected={handleFiles}
+          multiple={false}
+          accentColor={SPLIT_THEME.primary}
+          iconName="ScissorsIcon"
+        />
       )}
 
-      {/* File List */}
-      {files.length > 0 && !isDone && (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
+      {/* Workspace */}
+      {file && !isDone && (
+        <div className="flex flex-col lg:flex-row gap-8 items-start animate-fade-in">
+          {/* Main Preview Area */}
+          <div className="flex-1 w-full lg:w-3/4">
+            <div className="flex items-center justify-between mb-6 bg-brand-surface p-4 rounded-3xl border border-brand-border">
+              <div className="min-w-0">
+                <h2 className="text-lg font-bold text-brand-dark font-heading mb-0.5 truncate">
+                  {file.name}
+                </h2>
+                <div className="flex items-center gap-3 text-xs text-brand-muted font-body">
+                  <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white border border-brand-border">
+                    <Icon name="DocumentIcon" size={12} />
+                    {file.pageCount} pages
+                  </span>
+                  <span>{formatSize(file.size)}</span>
+                </div>
+              </div>
+              <button
+                onClick={removeFile}
+                className="w-10 h-10 flex items-center justify-center rounded-xl transition-all border group"
+                style={{
+                  background: SPLIT_THEME.primaryLight,
+                  borderColor: SPLIT_THEME.primaryBorder,
+                  color: SPLIT_THEME.primary,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = SPLIT_THEME.primary;
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = SPLIT_THEME.primaryLight;
+                  e.currentTarget.style.color = SPLIT_THEME.primary;
+                }}
+                title="Remove file"
+              >
+                <Icon name="XMarkIcon" size={20} />
+              </button>
+            </div>
+
+            {/* Thumbnails Grid */}
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 bg-brand-surface/30 p-4 rounded-3xl border border-brand-border border-dashed">
+              {Array.from({ length: file.pageCount }).map((_, i) => {
+                const thumb = thumbnails.find((t) => t.pageIndex === i);
+                return (
+                  <div key={i} className="group relative">
+                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-brand-border bg-white shadow-sm transition-all group-hover:shadow-md">
+                      {thumb ? (
+                        <img
+                          src={thumb.url}
+                          alt={`Page ${i + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center animate-pulse bg-brand-surface">
+                          <Icon name="DocumentIcon" size={24} className="text-brand-border" />
+                        </div>
+                      )}
+
+                      {/* Page Label */}
+                      <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-brand-dark/60 backdrop-blur-md text-[10px] text-white font-bold min-w-[20px] text-center">
+                        {i + 1}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Settings Sidebar */}
+          <div className="w-full lg:w-80 flex-shrink-0 bg-white border border-brand-border rounded-3xl p-6 shadow-card sticky top-6">
+            <h3 className="font-heading font-bold text-lg text-brand-dark mb-5 flex items-center gap-2">
+              <Icon name="ScissorsIcon" size={20} style={{ color: SPLIT_THEME.primary }} />
+              Split Settings
             </h3>
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isMerging}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                color: '#3B82F6',
-                background: '#FFF0F2',
-                border: '1px solid #FFD6DB',
-                fontFamily: 'var(--font-heading)',
-              }}
-            >
-              <Icon name="PlusIcon" size={14} />
-              Add More
-            </button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              className="hidden"
-              onChange={(e) => handleFiles(e.target.files)}
-            />
-          </div>
-
-          <div className="space-y-2 mb-5">
-            {files.map((file, i) => (
-              <div key={file.id} className="file-item flex items-center gap-3 p-3">
-                {/* PDF Icon */}
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFF0F2' }}
+            {/* Mode Selectors */}
+            <div className="space-y-2.5 mb-6">
+              {[
+                {
+                  id: 'ranges',
+                  label: 'Custom Ranges',
+                  icon: 'AdjustmentsHorizontalIcon',
+                  desc: 'Select specific page groups',
+                },
+                {
+                  id: 'fixed',
+                  label: 'Fixed Intervals',
+                  icon: 'Square2StackIcon',
+                  desc: 'Split every X pages',
+                },
+                {
+                  id: 'every',
+                  label: 'Extract All',
+                  icon: 'DocumentDuplicateIcon',
+                  desc: 'Every page as a new PDF',
+                },
+              ].map((mode) => (
+                <button
+                  key={mode.id}
+                  onClick={() => setSplitMode(mode.id as SplitMode)}
+                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${
+                    splitMode === mode.id
+                      ? 'shadow-sm'
+                      : 'bg-transparent border-transparent hover:bg-brand-surface'
+                  }`}
+                  style={{
+                    backgroundColor: splitMode === mode.id ? SPLIT_THEME.primaryLight : undefined,
+                    borderColor: splitMode === mode.id ? SPLIT_THEME.primaryBorder : undefined,
+                  }}
                 >
-                  <Icon
-                    name="DocumentIcon"
-                    size={18}
-                    variant="solid"
-                    style={{ color: '#3B82F6' } as React.CSSProperties}
+                  <div
+                    className={`p-2 rounded-xl mt-0.5 transition-all ${splitMode === mode.id ? 'text-white' : 'bg-brand-surface text-brand-muted group-hover:bg-white'}`}
+                    style={{
+                      backgroundColor: splitMode === mode.id ? SPLIT_THEME.primary : undefined,
+                      boxShadow:
+                        splitMode === mode.id
+                          ? '0 2px 8px ' + SPLIT_THEME.primaryShadow
+                          : undefined,
+                    }}
+                  >
+                    <Icon name={mode.icon as any} size={18} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span
+                      className={`font-heading font-bold text-sm ${splitMode === mode.id ? 'text-brand-dark' : 'text-brand-mid'}`}
+                    >
+                      {mode.label}
+                    </span>
+                    <span className="text-[10.5px] text-brand-muted font-body leading-tight">
+                      {mode.desc}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Mode Content */}
+            <div className="mb-8 p-4 rounded-2xl bg-brand-surface border border-brand-border">
+              {splitMode === 'ranges' && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-brand-dark uppercase tracking-wider px-1">
+                      Define Ranges
+                    </label>
+                    <input
+                      type="text"
+                      value={rangeInput}
+                      onChange={(e) => setRangeInput(e.target.value)}
+                      placeholder="e.g. 1-3, 5, 8-10"
+                      className="w-full px-4 py-3 rounded-xl border border-brand-border focus:ring-2 outline-none transition-all font-body text-sm bg-white"
+                      style={{ '--tw-ring-color': SPLIT_THEME.primary } as React.CSSProperties}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[11px] font-bold text-brand-muted uppercase tracking-tight px-1 flex items-center gap-1.5">
+                      <Icon name="InformationCircleIcon" size={12} />
+                      How to use:
+                    </p>
+                    <ul className="text-[11px] text-brand-mid space-y-1.5 px-1 leading-relaxed list-disc list-inside">
+                      <li>
+                        Commas for separate files:{' '}
+                        <code className="bg-brand-border/50 px-1 rounded text-brand-dark">
+                          1-3, 5-7
+                        </code>
+                      </li>
+                      <li>
+                        Hyphens for ranges:{' '}
+                        <code className="bg-brand-border/50 px-1 rounded text-brand-dark">
+                          1-10
+                        </code>
+                      </li>
+                      <li>
+                        Single pages:{' '}
+                        <code className="bg-brand-border/50 px-1 rounded text-brand-dark">
+                          1, 3, 5
+                        </code>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {splitMode === 'fixed' && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-brand-dark uppercase tracking-wider px-1">
+                      Split every
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="number"
+                        min="1"
+                        max={file.pageCount}
+                        value={fixedInterval}
+                        onChange={(e) => setFixedInterval(parseInt(e.target.value) || 1)}
+                        className="flex-1 px-4 py-3 rounded-xl border border-brand-border focus:ring-2 outline-none transition-all font-heading font-bold text-center bg-white"
+                        style={{ '--tw-ring-color': SPLIT_THEME.primary } as React.CSSProperties}
+                      />
+                      <span className="text-brand-dark font-semibold text-sm">pages</span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-brand-muted leading-relaxed px-1 text-center italic">
+                    Example: Splitting a 10-page Doc by 2 will create 5 separate files.
+                  </p>
+                </div>
+              )}
+
+              {splitMode === 'every' && (
+                <div className="space-y-3 text-center">
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mx-auto"
+                    style={{
+                      backgroundColor: SPLIT_THEME.primaryLight,
+                      color: SPLIT_THEME.primary,
+                    }}
+                  >
+                    <Icon name="DocumentDuplicateIcon" size={24} />
+                  </div>
+                  <p className="text-xs text-brand-mid leading-relaxed font-body">
+                    Every page will be extracted into its own separate PDF file.
+                  </p>
+                  <p className="text-[10px] text-brand-muted bg-white border border-brand-border px-2 py-1.5 rounded-lg inline-block">
+                    Results delivered in a{' '}
+                    <span className="font-bold text-brand-dark">ZIP archive</span>.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Action Area */}
+            {isProcessing ? (
+              <div className="space-y-3">
+                <div className="flex justify-between text-xs font-bold text-brand-dark px-1">
+                  <span className="flex items-center gap-2">
+                    <div
+                      className="w-1.5 h-1.5 rounded-full animate-pulse"
+                      style={{ backgroundColor: SPLIT_THEME.primary }}
+                    />
+                    Splitting...
+                  </span>
+                  <span>{progress}%</span>
+                </div>
+                <div className="h-2 w-full bg-brand-surface border border-brand-border rounded-full overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ width: `${progress}%`, backgroundColor: SPLIT_THEME.primary }}
                   />
                 </div>
-
-                {/* Name + Size */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="truncate"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      color: '#1A1A2E',
-                    }}
-                  >
-                    {file.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '11px',
-                      color: '#8888A8',
-                    }}
-                  >
-                    {formatSize(file.size)}
-                  </p>
-                </div>
-
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === 0 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move up"
-                  >
-                    <Icon name="ChevronUpIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === files.length - 1 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move down"
-                  >
-                    <Icon name="ChevronDownIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    disabled={isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
-                    style={{
-                      background: '#FFF0F2',
-                      color: '#3B82F6',
-                      border: '1px solid #FFD6DB',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Remove file"
-                  >
-                    <Icon name="XMarkIcon" size={13} />
-                  </button>
-                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Progress */}
-          {isMerging && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '13px',
-                    color: '#4A4A6A',
-                  }}
-                >
-                  Merging files...
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#3B82F6',
-                  }}
-                >
-                  {Math.round(progress)}%
-                </span>
-              </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#FFD6DB' }}
+            ) : (
+              <button
+                onClick={handleSplit}
+                className="w-full py-4 rounded-2xl text-white font-heading font-bold shadow-button hover:translate-y-[-2px] active:translate-y-0 transition-all flex items-center justify-center gap-2 group"
+                style={{
+                  backgroundColor: SPLIT_THEME.primary,
+                  boxShadow: '0 6px 20px ' + SPLIT_THEME.primaryShadow,
+                }}
               >
-                <div
-                  className="progress-bar h-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: '#3B82F6',
-                    transition: 'width 0.2s ease-out',
-                  }}
+                <span>Split PDF Now</span>
+                <Icon
+                  name="ArrowRightIcon"
+                  size={16}
+                  className="group-hover:translate-x-1 transition-transform"
                 />
-              </div>
-            </div>
-          )}
+              </button>
+            )}
 
-          {/* Merge Button */}
-          {!isMerging && (
-            <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || isMerging}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: files.length >= 2 ? '#3B82F6' : '#ccc',
-                color: 'white',
-                fontSize: '16px',
-                border: 'none',
-                cursor: files.length >= 2 ? 'pointer' : 'not-allowed',
-                boxShadow: files.length >= 2 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
-              }}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-                Merge {files.length} PDF{files.length !== 1 ? 's' : ''}
-              </span>
-            </button>
-          )}
-
-          {files.length < 2 && !isMerging && (
-            <p
-              className="text-center mt-2"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: '#8888A8',
-              }}
-            >
-              Add at least 2 PDF files to merge
+            <p className="text-[10px] text-brand-muted text-center mt-4">
+              Secure client-side processing
             </p>
-          )}
+          </div>
         </div>
       )}
 
       {/* Done State */}
-      {isDone && (
-        <div className="text-center py-8">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 pulse-anim"
-            style={{ background: '#F0FDF4' }}
-          >
-            <Icon
-              name="CheckIcon"
-              size={28}
-              variant="solid"
-              style={{ color: '#16A34A' } as React.CSSProperties}
-            />
+      {isDone && file && (
+        <div className="max-w-xl mx-auto text-center py-12 animate-fade-in bg-white border border-brand-border rounded-xl4 shadow-card p-10 mt-10">
+          <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-100">
+            <Icon name="CheckIcon" size={32} className="text-green-500" variant="solid" />
           </div>
 
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '20px', color: '#1A1A2E' }}
-          >
-            Merge Complete!
-          </h3>
-
-          <p
-            style={{
-              color: '#4A4A6A',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
-            }}
-          >
-            Your {files.length} PDFs have been merged into one file.
+          <h2 className="text-3xl font-extrabold text-brand-dark font-heading mb-3 tracking-tight">
+            SPLIT COMPLETE!
+          </h2>
+          <p className="text-brand-mid font-body mb-10 text-lg leading-relaxed">
+            Your document has been successfully split. Your download should start automatically.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
+              onClick={removeFile}
+              className="flex-1 px-8 py-4 rounded-2xl border-2 border-brand-border font-heading font-bold text-brand-mid hover:bg-brand-surface transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
+              <Icon name="ArrowPathIcon" size={18} />
+              Start New Task
+            </button>
+            <button
+              onClick={handleSplit}
+              className="flex-1 px-8 py-4 rounded-2xl text-white font-heading font-bold shadow-button flex items-center justify-center gap-2 active:scale-95 transition-all"
               style={{
-                background: '#3B82F6',
-                color: 'white',
-                border: 'none',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
+                backgroundColor: SPLIT_THEME.primary,
+                boxShadow: '0 6px 20px ' + SPLIT_THEME.primaryShadow,
               }}
-              onClick={handleDownload}
             >
               <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
-              Download Merged PDF
-            </button>
-
-            <button
-              onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              <Icon name="ArrowPathIcon" size={16} />
-              Merge More Files
+              Download Again
             </button>
           </div>
         </div>

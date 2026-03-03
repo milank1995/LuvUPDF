@@ -35,7 +35,7 @@ const tools = [
     bg: '#EFF6FF',
     title: 'Split PDF',
     description: 'Coming Soon: Extract pages or split one PDF into multiple files instantly.',
-    badge: 'Coming Soon',
+    badge: null,
     badgeBg: '#F1F5F9',
     badgeColor: '#64748B',
     isComingSoon: true,

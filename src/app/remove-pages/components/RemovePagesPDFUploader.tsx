@@ -258,7 +258,7 @@ export default function RemovePagesPDFUploader() {
             }}
           >
             <Icon
-              name="DocumentIcon"
+              name="TrashIcon"
               size={28}
               variant="solid"
               style={

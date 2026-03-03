@@ -6,29 +6,29 @@ export const splitPDFData = {
     'LuvUPDF’s free online PDF splitter lets you separate pages instantly in your browser — no installation or account required.',
   ],
 
-  stepSectionTitle: 'Step-by-Step: Splitting PDFs with LuvUPDF',
+  stepSectionTitle: 'How to Split PDF Files Online',
   stepCircleColor: '#3B82F6',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your PDF File',
-      desc: 'Click the upload area or drag and drop your PDF. Files up to 100MB are supported.',
+      title: 'Upload PDF Document',
+      desc: 'Select or drag and drop the PDF file you wish to split. LuvUPDF supports files up to 100MB for free.',
     },
     {
       step: 2,
-      title: 'Select Pages to Split',
-      desc: 'Choose specific pages, page ranges (e.g., 1-5), or split every page into separate files.',
+      title: 'Choose Splitting Mode',
+      desc: 'Select "Custom Ranges" to extract specific pages, "Fixed Intervals" to split every X pages, or "Extract All" to save every page as a separate PDF.',
     },
     {
       step: 3,
-      title: 'Click Split PDF',
-      desc: 'Press the "Split PDF" button and your selected pages will be extracted instantly.',
+      title: 'Configure & Process',
+      desc: 'Enter your desired page ranges (e.g., 1-5, 8, 10-12) and click the "Split PDF Now" button to start processing instantly.',
     },
     {
       step: 4,
-      title: 'Download Your New Files',
-      desc: 'Download the separated PDF files. All files are automatically deleted within 1 hour.',
+      title: 'Download Result',
+      desc: 'Once process is complete, download your extracted PDF pages directly or as a ZIP archive for multiple files.',
     },
   ],
 
