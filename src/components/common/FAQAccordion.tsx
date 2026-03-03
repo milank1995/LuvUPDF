@@ -5,7 +5,7 @@ import Icon from '@/components/ui/AppIcon';
 
 export default function FAQAccordion({
   faqs,
-  color = '#6C5CE7',
+  color = '#E8445A',
 }: {
   faqs: { question: string; answer: string }[];
   color?: string;

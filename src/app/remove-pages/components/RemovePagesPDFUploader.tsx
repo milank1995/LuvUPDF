@@ -337,17 +337,15 @@ export default function RemovePagesPDFUploader() {
           </div>
 
           {/* Thumbnails */}
-          <div className="grid grid-cols-6 gap-3 mb-6">
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6">
             {Array.from({ length: file.pageCount }).map((_, i) => {
               const thumb = thumbnails.find((t) => t.pageIndex === i);
               if (!thumb) {
                 return (
                   <div
                     key={i}
-                    className="rounded-xl animate-pulse"
+                    className="rounded-xl animate-pulse aspect-[100/140]"
                     style={{
-                      width: 100,
-                      height: 140,
                       background: '#F8F8FC',
                     }}
                   />
@@ -357,10 +355,8 @@ export default function RemovePagesPDFUploader() {
               return (
                 <div
                   key={thumb.id}
-                  className="relative border rounded-xl overflow-hidden transition-all"
+                  className="relative border rounded-xl overflow-hidden transition-all aspect-[100/140]"
                   style={{
-                    width: 100,
-                    height: 140,
                     opacity: thumb.deleted ? 0.4 : 1,
                   }}
                 >
@@ -405,6 +401,26 @@ export default function RemovePagesPDFUploader() {
             })}
           </div>
 
+          {/* Statistics Summary */}
+          <div className="grid grid-cols-3 gap-4 mb-6 p-4 rounded-2xl bg-brand-surface border border-brand-border">
+            <div className="text-center">
+              <p className="text-xs text-brand-muted mb-1 font-body">Total Pages</p>
+              <p className="text-lg font-bold text-brand-dark font-heading">{file.pageCount}</p>
+            </div>
+            <div className="text-center border-x border-brand-border">
+              <p className="text-xs text-brand-muted mb-1 font-body">To Remove</p>
+              <p className="text-lg font-bold text-primary font-heading">
+                {thumbnails.filter((t) => t.deleted).length}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-brand-muted mb-1 font-body">Final PDF</p>
+              <p className="text-lg font-bold text-green-600 font-heading">
+                {thumbnails.filter((t) => !t.deleted).length}
+              </p>
+            </div>
+          </div>
+
           {/* Action Button */}
           <button
             onClick={handleRemovePages}
@@ -420,17 +436,6 @@ export default function RemovePagesPDFUploader() {
           >
             Remove Selected Pages & Download
           </button>
-
-          <p
-            className="text-center mt-3"
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '12px',
-              color: '#8888A8',
-            }}
-          >
-            {thumbnails.length} / {file.pageCount} pages remaining
-          </p>
         </div>
       )}
 

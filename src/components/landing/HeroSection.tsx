@@ -55,7 +55,7 @@ export default function HeroSection() {
           className="font-heading font-extrabold leading-tight tracking-tight mb-5"
           style={{ fontSize: 'clamp(40px, 7vw, 80px)', color: '#1A1A2E', lineHeight: 1.05 }}
         >
-          Edit PDF Online —{' '}
+          Free & Secure PDF Tools —{' '}
           <span
             style={{
               background: 'linear-gradient(135deg, #E8445A 0%, #FF7A8A 60%, #E8445A 100%)',
@@ -64,7 +64,7 @@ export default function HeroSection() {
               backgroundClip: 'text',
             }}
           >
-            100% Free & Secure
+            Merge or Edit
           </span>
         </h1>
 
@@ -79,7 +79,7 @@ export default function HeroSection() {
             fontWeight: 400,
           }}
         >
-          The easiest way to merge PDF online free and combine PDF files. No storage, no login, and total privacy. Your files are automatically deleted after processing.
+          The easiest way to merge PDF online and remove pages for free. 100% private, no login, and files are automatically deleted.
         </p>
 
         {/* CTAs */}
