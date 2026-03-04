@@ -8,19 +8,19 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { rotatePDFData } from './components/rotatePDFData';
 
 export const metadata: Metadata = {
-  title: 'Rotate PDF Pages Online Free — Fix Sideways PDFs | LuvUPDF',
+  title: 'Rotate PDF Online Free — Permanently Rotate PDF Pages | LuvUPDF',
   description:
-    'Rotate PDF pages online for free. Fix sideways or upside-down pages in seconds without installing software. Clean, fast, and secure PDF rotation in your browser.',
+    'Rotate PDF pages online for free. Permanently rotate individual pages or entire documents with 1-click. Fast, secure, and preserves original file quality.',
   openGraph: {
-    title: 'Rotate PDF Pages Online Free | LuvUPDF',
+    title: 'Rotate PDF Online Free — Fix Sideways PDFs | LuvUPDF',
     description:
-      'Correct the orientation of scanned or sideways PDF pages instantly. Free, browser-based Rotate PDF tool from LuvUPDF.',
+      'Permanently rotate PDF pages clockwise or counter-clockwise. A free, browser-based tool from LuvUPDF to fix your scanned documents.',
     type: 'website',
     url: 'https://luvupdf.com/rotate-pdf',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rotate PDF Pages Online Free | LuvUPDF',
+    title: 'Rotate PDF Online Free | LuvUPDF',
     description:
       'Rotate individual PDF pages or whole documents to the perfect orientation with a simple, free web tool.',
   },
@@ -149,7 +149,7 @@ export default function RotatePDFPage() {
                   textTransform: 'uppercase',
                 }}
               >
-                Rotate PDF · Coming Soon
+                Permanently Rotate PDF
               </span>
             </div>
 
@@ -172,7 +172,7 @@ export default function RotatePDFPage() {
                   backgroundClip: 'text',
                 }}
               >
-                For Free
+                Instantly
               </span>
             </h1>
 
@@ -186,9 +186,8 @@ export default function RotatePDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Fix sideways or upside-down PDF pages without installing heavy software. This Rotate
-              PDF page delivers a modern, SEO-optimized experience while the underlying rotation
-              engine is finalized.
+              Rotate individual PDF pages or entire documents to the perfect orientation. Fix sideways
+              scans and upside-down pages for free, right in your browser.
             </p>
 
             {/* Upload Tool */}

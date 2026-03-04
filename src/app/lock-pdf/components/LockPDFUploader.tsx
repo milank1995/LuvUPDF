@@ -1,59 +1,48 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Icon from '@/components/ui/AppIcon';
+import UploadZone from '@/components/pdf/UploadZone';
+import { usePDFWorker } from '@/hooks/usePDFWorker';
+import { TOOL_COLORS } from '@/constants/toolColors';
+import { useToast } from '@/components/ui/Toast';
+
+const colors = TOOL_COLORS.lock;
 
 interface UploadedFile {
   id: string;
   name: string;
   size: number;
+  file: File;
 }
 
 export default function LockPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [errors, setErrors] = useState<{ password?: string; confirm?: string }>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounter = useRef(0);
+  const [lockedBlob, setLockedBlob] = useState<Blob | null>(null);
 
-  const handleFile = useCallback((f: File | null) => {
-    if (!f) return;
-    if (!f.name.endsWith('.pdf') && f.type !== 'application/pdf') return;
-    setFile({ id: `${f.name}-${Date.now()}`, name: f.name, size: f.size });
-    setIsDone(false);
-    setErrors({});
-  }, []);
+  const { showToast } = useToast();
+  const { processPDFs, isProcessing, progress } = usePDFWorker();
 
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current++;
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current--;
-    if (dragCounter.current === 0) setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current = 0;
-    setIsDragging(false);
-    const f = e.dataTransfer.files[0];
-    handleFile(f);
-  };
+  const handleFilesSelected = useCallback(
+    (files: FileList | null) => {
+      if (!files || files.length === 0) return;
+      const f = files[0];
+      if (!f.name.endsWith('.pdf') && f.type !== 'application/pdf') {
+        showToast('Invalid file type. Please upload a PDF.', 'error');
+        return;
+      }
+      setFile({ id: crypto.randomUUID(), name: f.name, size: f.size, file: f });
+      setIsDone(false);
+      setErrors({});
+    },
+    [showToast]
+  );
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -84,21 +73,26 @@ export default function LockPDFUploader() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLock = () => {
+  const handleLock = async () => {
     if (!file || !validate()) return;
-    setIsProcessing(true);
-    setProgress(0);
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsProcessing(false);
-          setIsDone(true);
-          return 100;
-        }
-        return prev + Math.random() * 18 + 6;
-      });
-    }, 180);
+
+    try {
+      console.log('UI: Locking PDF with password...');
+      const result = await processPDFs('LOCK_PDF', [{ blob: file.file, name: file.name }]);
+
+      if (result && result.blob) {
+        console.log('UI: PDF locked successfully, blob received');
+        setLockedBlob(result.blob);
+        setIsDone(true);
+        showToast('PDF locked successfully!', 'success');
+      } else {
+        console.error('UI: Process returned successfully but blob is missing', result);
+        showToast('Processing failed: Output file missing.', 'error');
+      }
+    } catch (err: any) {
+      console.error('UI: Error in handleLock:', err);
+      showToast(err.message || 'Failed to lock PDF', 'error');
+    }
   };
 
   const handleReset = () => {
@@ -106,8 +100,20 @@ export default function LockPDFUploader() {
     setPassword('');
     setConfirmPassword('');
     setIsDone(false);
-    setProgress(0);
     setErrors({});
+    setLockedBlob(null);
+  };
+
+  const handleDownload = () => {
+    if (!lockedBlob) return;
+    const url = URL.createObjectURL(lockedBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `locked_${file?.name || 'document.pdf'}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   };
 
   const strength = getPasswordStrength(password);
@@ -116,96 +122,35 @@ export default function LockPDFUploader() {
     <div className="w-full max-w-2xl mx-auto">
       {/* Upload Zone */}
       {!file && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF file to lock"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            className="hidden"
-            onChange={(e) => handleFile(e.target.files?.[0] || null)}
-          />
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? '#7C5CBF' : '#F3EEFF',
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="LockClosedIcon"
-              size={28}
-              variant="solid"
-              style={{ color: isDragging ? 'white' : '#7C5CBF' } as React.CSSProperties}
-            />
-          </div>
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDF here!' : 'Drop a PDF file here'}
-          </h3>
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — one file at a time
-          </p>
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: '#7C5CBF',
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentIcon" size={16} variant="solid" />
-            Select PDF File
-          </div>
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF files only · Max 100MB
-          </p>
-        </div>
+        <UploadZone
+          onFilesSelected={handleFilesSelected}
+          multiple={false}
+          accentColor={colors.primary}
+          iconName="LockClosedIcon"
+        />
       )}
 
       {/* File + Password Form */}
       {file && !isDone && (
-        <div>
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* File Info */}
-          <div className="file-item flex items-center gap-3 p-3 mb-5">
+          <div
+            className="file-item flex items-center gap-3 p-4 mb-6"
+            style={{
+              background: colors.surface,
+              border: `1.5px solid ${colors.border}`,
+              borderRadius: '16px',
+            }}
+          >
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: '#F3EEFF' }}
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'white' }}
             >
               <Icon
                 name="DocumentIcon"
-                size={18}
+                size={20}
                 variant="solid"
-                style={{ color: '#7C5CBF' } as React.CSSProperties}
+                style={{ color: colors.primary } as React.CSSProperties}
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -213,14 +158,14 @@ export default function LockPDFUploader() {
                 className="truncate"
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontWeight: 600,
-                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  fontSize: '15px',
                   color: '#1A1A2E',
                 }}
               >
                 {file.name}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: '#8888A8' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#8888A8' }}>
                 {formatSize(file.size)}
               </p>
             </div>
@@ -229,21 +174,15 @@ export default function LockPDFUploader() {
                 setFile(null);
                 setErrors({});
               }}
-              className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
-              style={{
-                background: '#FFF0F2',
-                color: '#E8445A',
-                border: '1px solid #FFD6DB',
-                cursor: 'pointer',
-              }}
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-red-50 text-red-400"
               aria-label="Remove file"
             >
-              <Icon name="XMarkIcon" size={13} />
+              <Icon name="XMarkIcon" size={16} />
             </button>
           </div>
 
           {/* Password Fields */}
-          <div className="space-y-4 mb-5">
+          <div className="space-y-5 mb-6">
             <div>
               <label
                 htmlFor="pdf-password"
@@ -267,13 +206,13 @@ export default function LockPDFUploader() {
                     setErrors((prev) => ({ ...prev, password: undefined }));
                   }}
                   placeholder="Enter a strong password"
-                  className="password-input w-full px-4 py-3 pr-11 text-sm"
+                  className="password-input w-full px-4 py-3.5 pr-11 text-sm rounded-xl border border-slate-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-50 transition-all"
                   style={{ fontSize: '14px', fontFamily: 'var(--font-body)', color: '#1A1A2E' }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-50 rounded-lg transition-colors"
                   style={{
                     color: '#8888A8',
                     cursor: 'pointer',
@@ -282,12 +221,12 @@ export default function LockPDFUploader() {
                   }}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  <Icon name={showPassword ? 'EyeSlashIcon' : 'EyeIcon'} size={16} />
+                  <Icon name={showPassword ? 'EyeSlashIcon' : 'EyeIcon'} size={18} />
                 </button>
               </div>
               {errors.password && (
                 <p
-                  className="mt-1.5 text-xs"
+                  className="mt-1.5 text-xs font-medium"
                   style={{ color: '#EF4444', fontFamily: 'var(--font-body)' }}
                 >
                   {errors.password}
@@ -295,26 +234,36 @@ export default function LockPDFUploader() {
               )}
               {/* Strength bar */}
               {password && (
-                <div className="mt-2">
-                  <div
-                    className="w-full h-1.5 rounded-full overflow-hidden"
-                    style={{ background: '#EEEEF5' }}
-                  >
+                <div className="mt-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: '#8888A8',
+                      }}
+                    >
+                      Password Strength
+                    </span>
+                    <span
+                      style={{
+                        color: strength.color,
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {strength.label}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full overflow-hidden bg-slate-100">
                     <div
-                      className="h-full rounded-full transition-all duration-300"
+                      className="h-full rounded-full transition-all duration-500 ease-out"
                       style={{ width: strength.width, background: strength.color }}
                     />
                   </div>
-                  <p
-                    className="mt-1 text-xs"
-                    style={{
-                      color: strength.color,
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {strength.label}
-                  </p>
                 </div>
               )}
             </div>
@@ -342,13 +291,13 @@ export default function LockPDFUploader() {
                     setErrors((prev) => ({ ...prev, confirm: undefined }));
                   }}
                   placeholder="Re-enter your password"
-                  className="password-input w-full px-4 py-3 pr-11 text-sm"
+                  className="password-input w-full px-4 py-3.5 pr-11 text-sm rounded-xl border border-slate-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-50 transition-all"
                   style={{ fontSize: '14px', fontFamily: 'var(--font-body)', color: '#1A1A2E' }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-50 rounded-lg transition-colors"
                   style={{
                     color: '#8888A8',
                     cursor: 'pointer',
@@ -357,12 +306,12 @@ export default function LockPDFUploader() {
                   }}
                   aria-label={showConfirm ? 'Hide password' : 'Show password'}
                 >
-                  <Icon name={showConfirm ? 'EyeSlashIcon' : 'EyeIcon'} size={16} />
+                  <Icon name={showConfirm ? 'EyeSlashIcon' : 'EyeIcon'} size={18} />
                 </button>
               </div>
               {errors.confirm && (
                 <p
-                  className="mt-1.5 text-xs"
+                  className="mt-1.5 text-xs font-medium"
                   style={{ color: '#EF4444', fontFamily: 'var(--font-body)' }}
                 >
                   {errors.confirm}
@@ -370,10 +319,10 @@ export default function LockPDFUploader() {
               )}
               {confirmPassword && password === confirmPassword && !errors.confirm && (
                 <p
-                  className="mt-1.5 text-xs flex items-center gap-1"
+                  className="mt-2 text-[11px] font-bold flex items-center gap-1.5"
                   style={{ color: '#16A34A', fontFamily: 'var(--font-body)' }}
                 >
-                  <Icon name="CheckCircleIcon" size={12} variant="solid" /> Passwords match
+                  <Icon name="CheckCircleIcon" size={14} variant="solid" /> PASSWORDS MATCH
                 </p>
               )}
             </div>
@@ -381,58 +330,62 @@ export default function LockPDFUploader() {
 
           {/* Security Note */}
           <div
-            className="flex items-start gap-2.5 p-3 rounded-xl mb-5"
-            style={{ background: '#F3EEFF', border: '1px solid #E0D4FF' }}
+            className="flex items-start gap-3 p-4 rounded-xl mb-6"
+            style={{ background: colors.surface, border: `1px solid ${colors.border}` }}
           >
-            <Icon
-              name="InformationCircleIcon"
-              size={15}
-              variant="solid"
-              style={{ color: '#7C5CBF', marginTop: '1px', flexShrink: 0 } as React.CSSProperties}
-            />
+            <div className="p-1 rounded-lg bg-white shadow-sm mt-0.5">
+              <Icon
+                name="InformationCircleIcon"
+                size={16}
+                variant="solid"
+                style={{ color: colors.primary, display: 'block' } as React.CSSProperties}
+              />
+            </div>
             <p
               style={{
                 color: '#4A4A6A',
-                fontSize: '12.5px',
+                fontSize: '13px',
                 fontFamily: 'var(--font-body)',
-                lineHeight: 1.55,
+                lineHeight: 1.6,
               }}
             >
-              <strong style={{ color: '#1A1A2E' }}>Remember your password.</strong> LuvUPDF does not
-              store your password — if you forget it, the PDF cannot be unlocked without a recovery
-              tool.
+              <strong style={{ color: '#1A1A2E' }}>Security Note:</strong> LuvUPDF uses
+              industry-standard encryption, but we never store your password. If lost, the file
+              cannot be recovered.
             </p>
           </div>
 
-          {/* Progress */}
+          {/* Progress Section */}
           {isProcessing && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
+            <div className="mb-6 animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-2">
                 <span
-                  style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#4A4A6A' }}
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    color: '#4A4A6A',
+                  }}
                 >
-                  Encrypting PDF...
+                  Locking your PDF...
                 </span>
                 <span
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
+                    fontWeight: 800,
                     fontSize: '13px',
-                    color: '#7C5CBF',
+                    color: colors.primary,
                   }}
                 >
-                  {Math.min(Math.round(progress), 100)}%
+                  {Math.round(progress)}%
                 </span>
               </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#E0D4FF' }}
-              >
+              <div className="w-full h-2.5 rounded-full overflow-hidden bg-slate-100">
                 <div
-                  className="h-full rounded-full transition-all duration-200"
+                  className="h-full rounded-full transition-all duration-300 shadow-sm"
                   style={{
-                    width: `${Math.min(progress, 100)}%`,
-                    background: 'linear-gradient(90deg, #7C5CBF 0%, #A07CE8 100%)',
+                    width: `${progress}%`,
+                    background: `linear-gradient(90deg, ${colors.primary} 0%, #A07CE8 100%)`,
                   }}
                 />
               </div>
@@ -443,18 +396,18 @@ export default function LockPDFUploader() {
           {!isProcessing && (
             <button
               onClick={handleLock}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all"
+              className="w-full py-4 rounded-2xl font-heading font-extrabold text-base transition-all hover:translate-y-[-2px] active:translate-y-0"
               style={{
-                background: '#7C5CBF',
+                background: colors.primary,
                 color: 'white',
                 fontSize: '16px',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(124,92,191,0.28)',
+                boxShadow: colors.shadow,
               }}
             >
               <span className="flex items-center justify-center gap-2">
-                <Icon name="LockClosedIcon" size={18} variant="solid" />
+                <Icon name="LockClosedIcon" size={20} variant="solid" />
                 Lock PDF with Password
               </span>
             </button>
@@ -464,81 +417,69 @@ export default function LockPDFUploader() {
 
       {/* Done State */}
       {isDone && (
-        <div className="text-center py-8">
+        <div className="text-center py-10 animate-in zoom-in-95 duration-500">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
             style={{
-              background: '#F3EEFF',
-              animation: 'pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              background: '#F0FDF4',
+              boxShadow: '0 0 0 10px #F0FDF444',
             }}
           >
             <Icon
-              name="LockClosedIcon"
-              size={26}
+              name="CheckBadgeIcon"
+              size={36}
               variant="solid"
-              style={{ color: '#7C5CBF' } as React.CSSProperties}
+              style={{ color: '#16A34A' } as React.CSSProperties}
             />
           </div>
           <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '20px', color: '#1A1A2E' }}
+            className="font-heading font-extrabold mb-3 text-slate-900"
+            style={{ fontSize: '24px' }}
           >
-            PDF Locked Successfully!
+            Encryption Complete!
           </h3>
           <p
+            className="max-w-xs mx-auto mb-8"
             style={{
               color: '#4A4A6A',
-              fontSize: '14px',
+              fontSize: '15px',
               fontFamily: 'var(--font-body)',
-              marginBottom: '6px',
+              lineHeight: 1.6,
             }}
           >
-            <strong style={{ color: '#1A1A2E' }}>{file?.name}</strong> is now password-protected.
+            Your PDF <strong>{file?.name}</strong> is now securely password-protected.
           </p>
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12.5px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
-            }}
-          >
-            Keep your password safe — it cannot be recovered if lost.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
+              onClick={handleDownload}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg"
               style={{
-                background: '#7C5CBF',
+                background: colors.primary,
                 color: 'white',
                 border: 'none',
                 fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
+                fontWeight: 800,
                 fontSize: '15px',
                 cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(124,92,191,0.28)',
+                boxShadow: colors.shadow,
               }}
             >
-              <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
+              <Icon name="ArrowDownTrayIcon" size={20} variant="solid" />
               Download Locked PDF
             </button>
             <button
               onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full border-[1.5px] border-slate-200 bg-white text-slate-600 font-heading font-bold text-[15px] transition-all hover:bg-slate-50"
             >
-              <Icon name="ArrowPathIcon" size={16} />
-              Lock Another PDF
+              <Icon name="ArrowPathIcon" size={18} />
+              Start Fresh
             </button>
           </div>
+
+          <p className="mt-8 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            Privacy First · 256-Bit Encryption · Small Footprint
+          </p>
         </div>
       )}
     </div>

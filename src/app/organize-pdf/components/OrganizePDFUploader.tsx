@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { PDFDocument, degrees } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
+import { TOOL_COLORS } from '@/constants/toolColors';
+import Script from 'next/script';
+
+const colors = TOOL_COLORS.organize;
 
 interface UploadedFile {
   id: string;
@@ -10,202 +14,306 @@ interface UploadedFile {
   size: number;
   type: string;
   file: File;
+  pageCount: number;
+}
+
+interface PageThumbnail {
+  id: string;
+  originalIndex: number; // Index in the original PDF
+  url: string;
+  rotation: number; // 0, 90, 180, 270
+  deleted: boolean;
+  width: number;
+  height: number;
 }
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
-async function mergePDF(
-  files: UploadedFile[],
-  setProgress: (value: number) => void
-): Promise<Blob> {
-  const mergedPdf = await PDFDocument.create();
-
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    try {
-      const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
-    }
-  }
-
-  const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
-}
-
 export default function OrganizePDFUploader() {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [pages, setPages] = useState<PageThumbnail[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [isMerging, setIsMerging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
-  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
+  /** Handle File Upload */
+  const handleFiles = useCallback(
+    async (newFiles: FileList | null) => {
+      if (!newFiles || newFiles.length === 0) return;
 
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
+      const f = newFiles[0]; // Single file for organization tool
+
+      if (
+        !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
+        f.size > MAX_SIZE
+      ) {
+        alert('Invalid file type or file too large (max 100MB).');
+        return;
+      }
+
+      try {
+        // Cleanup old thumbnails
+        pages.forEach((p) => URL.revokeObjectURL(p.url));
+        setPages([]);
+
+        const arrayBuffer = await f.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+        setFile({
+          id: crypto.randomUUID(),
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          file: f,
+          pageCount: pdfDoc.getPageCount(),
+        });
+
+        setIsDone(false);
+      } catch (err) {
+        console.error('Error reading PDF:', err);
+        alert('Failed to read PDF file. It might be password protected.');
+      }
+    },
+    [pages]
+  );
+
+  /** Lazy Thumbnail Generation */
+  useEffect(() => {
+    if (!file) return;
+
+    let cancelled = false;
+    const loadedPages: PageThumbnail[] = [];
+
+    const generateThumbnails = async () => {
+      try {
+        const bytes = await file.file.arrayBuffer();
+        const pdfjsLib = (window as any).pdfjsLib;
+        if (!pdfjsLib) {
+          console.error('pdfjsLib not found');
+          return;
+        }
+
+        if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+        }
+
+        const loadingTask = pdfjsLib.getDocument({ data: bytes });
+        const pdf = await loadingTask.promise;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) break;
+
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.4 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/jpeg', 0.8)
+          );
+          if (!blob) continue;
+
+          const url = URL.createObjectURL(blob);
+          const p: PageThumbnail = {
+            id: crypto.randomUUID(),
+            originalIndex: i - 1,
+            url,
+            rotation: 0,
+            deleted: false,
+            width: viewport.width,
+            height: viewport.height,
+          };
+          loadedPages.push(p);
+
+          setPages([...loadedPages]);
+          await new Promise((r) => setTimeout(r, 10));
+        }
+      } catch (err) {
+        console.error('Thumbnail generation error:', err);
+      }
+    };
+
+    generateThumbnails();
+
+    return () => {
+      cancelled = true;
+      loadedPages.forEach((p) => URL.revokeObjectURL(p.url));
+    };
+  }, [file]);
+
+  /** Page Actions */
+  const rotatePage = (index: number) => {
+    setPages((prev) =>
+      prev.map((p, i) => (i === index ? { ...p, rotation: (p.rotation + 90) % 360 } : p))
     );
+  };
 
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
+  const revertRotate = (index: number) => {
+    setPages((prev) => prev.map((p, i) => (i === index ? { ...p, rotation: 0 } : p)));
+  };
 
-    if (validFiles.length === 0) return;
+  const toggleDelete = (index: number) => {
+    setPages((prev) => prev.map((p, i) => (i === index ? { ...p, deleted: !p.deleted } : p)));
+  };
 
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
+  const movePage = (index: number, direction: 'up' | 'down') => {
+    setPages((prev) => {
+      const arr = [...prev];
+      const target = direction === 'up' ? index - 1 : index + 1;
+      if (target < 0 || target >= arr.length) return arr;
+      [arr[index], arr[target]] = [arr[target], arr[index]];
+      setDraggedIdx(null);
+      return arr;
+    });
+  };
 
-    if (uniqueFiles.length === 0) return;
+  /** Drag & Drop Reordering */
+  const onDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIdx(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
+  const onDragOver = (e: React.DragEvent, index: number) => {
+    if (draggedIdx === null || draggedIdx === index) return;
+    e.preventDefault();
+  };
 
-    setFiles((prev) => [...prev, ...mapped]);
-    setIsDone(false);
-  }, []);
+  const onDropPage = (e: React.DragEvent, index: number) => {
+    if (draggedIdx === null || draggedIdx === index) return;
+    e.preventDefault();
+    setPages((prev) => {
+      const arr = [...prev];
+      const item = arr.splice(draggedIdx, 1)[0];
+      arr.splice(index, 0, item);
+      return arr;
+    });
+    setDraggedIdx(null);
+  };
 
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
+  /** Main Drag & Drop Handlers */
+  const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     dragCounter.current++;
     setIsDragging(true);
-  }, []);
+  };
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     dragCounter.current--;
     if (dragCounter.current === 0) setIsDragging(false);
-  }, []);
+  };
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+  const handleDropRoot = (e: React.DragEvent) => {
     e.preventDefault();
-  }, []);
+    dragCounter.current = 0;
+    setIsDragging(false);
+    handleFiles(e.dataTransfer.files);
+  };
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      dragCounter.current = 0;
-      setIsDragging(false);
-      handleFiles(e.dataTransfer.files);
-    },
-    [handleFiles]
-  );
+  /** Final PDF Processing */
+  const handleOrganize = async () => {
+    if (!file || pages.length === 0) return;
 
-  const removeFile = useCallback(
-    (id: string) => {
-      if (isMerging) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
-      setIsDone(false);
-    },
-    [isMerging]
-  );
-
-  const moveFile = useCallback(
-    (index: number, direction: 'up' | 'down') => {
-      if (isMerging) return;
-      setFiles((prev) => {
-        const arr = [...prev];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-        return arr;
-      });
-    },
-    [isMerging]
-  );
-
-  const formatSize = useCallback((bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  }, []);
-
-  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
-
-  const handleMerge = useCallback(async () => {
-    if (files.length < 2) return;
+    const pagesToKeep = pages.filter((p) => !p.deleted);
+    if (pagesToKeep.length === 0) {
+      alert('You must keep at least one page.');
+      return;
+    }
 
     try {
-      setIsMerging(true);
+      setIsProcessing(true);
       setProgress(0);
 
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
-      setIsDone(true);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    } finally {
-      setIsMerging(false);
-    }
-  }, [files]);
+      const arrayBuffer = await file.file.arrayBuffer();
+      const sourcePdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const targetPdf = await PDFDocument.create();
 
-  const handleReset = useCallback(() => {
-    setFiles([]);
-    setIsDone(false);
-    setProgress(0);
-    setIsMerging(false);
-    setMergedBlob(null);
-  }, []);
+      for (let i = 0; i < pagesToKeep.length; i++) {
+        const p = pagesToKeep[i];
+        const [copiedPage] = await targetPdf.copyPages(sourcePdf, [p.originalIndex]);
 
-  const handleDownload = useCallback(() => {
-    try {
-      if (!mergedBlob) return;
-      const url = URL.createObjectURL(mergedBlob);
+        // Apply rotation
+        if (p.rotation !== 0) {
+          const currentRotation = copiedPage.getRotation().angle;
+          copiedPage.setRotation(degrees(currentRotation + p.rotation));
+        }
 
+        targetPdf.addPage(copiedPage);
+        setProgress(Math.round(((i + 1) / pagesToKeep.length) * 100));
+      }
+
+      const pdfBytes = await targetPdf.save();
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'merged.pdf';
-
+      a.download = `organized_${file.name}`;
       document.body.appendChild(a);
       a.click();
-
       document.body.removeChild(a);
+
       setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+      setIsDone(true);
+    } catch (err) {
+      console.error('PDF processing error:', err);
+      alert('Failed to process PDF.');
+    } finally {
+      setIsProcessing(false);
     }
-  }, [mergedBlob]);
+  };
+
+  const handleReset = () => {
+    setFile(null);
+    setPages([]);
+    setIsDone(false);
+    setProgress(0);
+  };
+
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto">
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
+
       {/* Upload Zone */}
-      {files.length === 0 && (
+      {!file && (
         <div
           className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
           style={{ padding: '60px 24px', textAlign: 'center' }}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDropRoot}
           onClick={() => fileInputRef.current?.click()}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF files to merge"
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
             accept=".pdf,application/pdf"
-            multiple
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
@@ -213,7 +321,7 @@ export default function OrganizePDFUploader() {
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
             style={{
-              background: isDragging ? '#8B5CF6' : '#FFF0F2',
+              background: isDragging ? colors.primary : colors.surface,
               transform: isDragging ? 'scale(1.1)' : 'scale(1)',
             }}
           >
@@ -221,11 +329,7 @@ export default function OrganizePDFUploader() {
               name="Squares2X2Icon"
               size={28}
               variant="solid"
-              style={
-                {
-                  color: isDragging ? 'white' : '#8B5CF6',
-                } as React.CSSProperties
-              }
+              style={{ color: isDragging ? 'white' : colors.primary } as React.CSSProperties}
             />
           </div>
 
@@ -233,7 +337,7 @@ export default function OrganizePDFUploader() {
             className="font-heading font-bold mb-2"
             style={{ fontSize: '18px', color: '#1A1A2E' }}
           >
-            {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
+            {isDragging ? 'Drop your PDF here!' : 'Drop PDF file here'}
           </h3>
 
           <p
@@ -244,13 +348,13 @@ export default function OrganizePDFUploader() {
               marginBottom: '20px',
             }}
           >
-            or click to browse — supports multiple files
+            or click to browse — single file for organization
           </p>
 
           <div
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
             style={{
-              background: '#8B5CF6',
+              background: colors.primary,
               color: 'white',
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
@@ -258,290 +362,241 @@ export default function OrganizePDFUploader() {
             }}
           >
             <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF Files
+            Select PDF File
           </div>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF files only · Max 100MB per file
-          </p>
         </div>
       )}
 
-      {/* File List */}
-      {files.length > 0 && !isDone && (
+      {/* Page List View */}
+      {file && !isDone && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
-            </h3>
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-left">
+              <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
+                {file.name}
+              </h3>
+              <p style={{ fontSize: '12px', color: '#8888A8' }}>
+                {file.pageCount} pages · {formatSize(file.size)}
+              </p>
+            </div>
 
             <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isMerging}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleReset}
+              className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full transition-all"
               style={{
-                color: '#8B5CF6',
-                background: '#FFF0F2',
-                border: '1px solid #FFD6DB',
-                fontFamily: 'var(--font-heading)',
+                color: colors.primary,
+                background: colors.surface,
+                border: `1px solid ${colors.border}`,
               }}
             >
-              <Icon name="PlusIcon" size={14} />
-              Add More
+              <Icon name="ArrowPathIcon" size={14} />
+              Reset
             </button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              className="hidden"
-              onChange={(e) => handleFiles(e.target.files)}
-            />
           </div>
 
-          <div className="space-y-2 mb-5">
-            {files.map((file, i) => (
-              <div key={file.id} className="file-item flex items-center gap-3 p-3">
-                {/* PDF Icon */}
+          {/* Thumbnails Grid */}
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mb-8">
+            {pages.length === 0
+              ? Array.from({ length: file.pageCount }).map((_, i) => (
                 <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFF0F2' }}
-                >
-                  <Icon
-                    name="DocumentIcon"
-                    size={18}
-                    variant="solid"
-                    style={{ color: '#8B5CF6' } as React.CSSProperties}
-                  />
-                </div>
+                  key={i}
+                  className="aspect-square rounded-xl bg-slate-50 animate-pulse border border-slate-100"
+                />
+              ))
+              : pages.map((page, i) => {
+                return (
+                  <div
+                    key={page.id}
+                    draggable
+                    onDragStart={(e) => onDragStart(e, i)}
+                    onDragOver={(e) => onDragOver(e, i)}
+                    onDrop={(e) => onDropPage(e, i)}
+                    className={`relative border rounded-xl overflow-hidden transition-all duration-200 cursor-move group ${draggedIdx === i ? 'opacity-30 scale-95' : 'opacity-100 scale-100'
+                      }`}
+                    style={{
+                      borderColor: page.deleted ? '#FECACA' : page.rotation !== 0 ? colors.primary : '#EEEEF5',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      borderWidth: page.rotation !== 0 ? '2px' : '1px',
+                    }}
+                  >
+                    {/* Thumbnail Image Container */}
+                    <div
+                      className={`aspect-square flex items-center justify-center bg-slate-50/50 transition-transform duration-300 ${page.deleted ? 'grayscale opacity-30' : ''
+                        }`}
+                    >
+                      <img
+                        src={page.url}
+                        alt={`Page ${i + 1}`}
+                        className="w-full h-full object-contain transition-transform duration-300"
+                        style={{
+                          transform: `rotate(${page.rotation}deg)`,
+                          // If rotated, we might need to adjust aspect to preserve visual scale
+                          // but object-contain usually handles the fit.
+                        }}
+                      />
+                    </div>
 
-                {/* Name + Size */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="truncate"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      color: '#1A1A2E',
-                    }}
-                  >
-                    {file.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '11px',
-                      color: '#8888A8',
-                    }}
-                  >
-                    {formatSize(file.size)}
-                  </p>
-                </div>
+                    {/* Page Number Badge */}
+                    <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-white/90 border border-slate-100 shadow-sm flex items-center gap-x-1.5">
+                      <span className="text-[10px] font-bold text-slate-600">Page {i + 1}</span>
+                      {file.pageCount > 1 && (
+                        <span className="text-[9px] text-slate-400 font-medium">
+                          (Orig. {page.originalIndex + 1})
+                        </span>
+                      )}
+                      {page.rotation !== 0 && (
+                        <span
+                          className="text-[10px] font-extrabold ml-0.5"
+                          style={{ color: colors.primary }}
+                        >
+                          {page.rotation}°
+                        </span>
+                      )}
+                    </div>
 
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === 0 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move up"
-                  >
-                    <Icon name="ChevronUpIcon" size={13} />
-                  </button>
+                    {/* Action Overlay */}
+                    <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          rotatePage(i);
+                        }}
+                        className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-amber-500 hover:scale-110 transition-transform"
+                        title="Rotate 90°"
+                      >
+                        <Icon name="ArrowPathIcon" size={14} />
+                      </button>
+                      {page.rotation !== 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            revertRotate(i);
+                          }}
+                          className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-slate-500 hover:scale-110 transition-transform border border-slate-100"
+                          title="Revert Rotate"
+                        >
+                          <Icon name="ArrowUturnLeftIcon" size={12} />
+                        </button>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDelete(i);
+                        }}
+                        className={`w-7 h-7 rounded-full shadow-md flex items-center justify-center transition-transform hover:scale-110 ${page.deleted ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                          }`}
+                        title={page.deleted ? 'Restore Page' : 'Remove Page'}
+                      >
+                        <Icon name={page.deleted ? 'PlusIcon' : 'XMarkIcon'} size={14} />
+                      </button>
+                    </div>
 
-                  <button
-                    onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === files.length - 1 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move down"
-                  >
-                    <Icon name="ChevronDownIcon" size={13} />
-                  </button>
+                    {/* Deleted Overlay */}
+                    {page.deleted && (
+                      <div className="absolute inset-0 bg-red-50/20 pointer-events-none flex items-center justify-center">
+                        <span className="text-[10px] font-extrabold text-red-500 uppercase tracking-wider bg-white px-2 py-1 rounded-md shadow-sm border border-red-100">
+                          Deleted
+                        </span>
+                      </div>
+                    )}
 
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    disabled={isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
-                    style={{
-                      background: '#FFF0F2',
-                      color: '#8B5CF6',
-                      border: '1px solid #FFD6DB',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Remove file"
-                  >
-                    <Icon name="XMarkIcon" size={13} />
-                  </button>
-                </div>
-              </div>
-            ))}
+                    {/* Rotated Badge */}
+                    {page.rotation !== 0 && !page.deleted && (
+                      <div className="absolute top-2 left-2 pointer-events-none">
+                        <div
+                          className="text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm"
+                          style={{ background: colors.primary }}
+                        >
+                          Rotated
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
           </div>
 
-          {/* Progress */}
-          {isMerging && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '13px',
-                    color: '#4A4A6A',
-                  }}
-                >
-                  Merging files...
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#8B5CF6',
-                  }}
-                >
-                  {Math.round(progress)}%
+          {/* Progress Bar */}
+          {isProcessing && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-slate-600">Processing PDF...</span>
+                <span className="text-sm font-bold" style={{ color: colors.primary }}>
+                  {progress}%
                 </span>
               </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#FFD6DB' }}
-              >
+              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div
-                  className="progress-bar h-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: '#8B5CF6',
-                    transition: 'width 0.2s ease-out',
-                  }}
+                  className="h-full transition-all duration-300"
+                  style={{ width: `${progress}%`, background: colors.primary }}
                 />
               </div>
             </div>
           )}
 
-          {/* Merge Button */}
-          {!isMerging && (
+          {/* Organize Button */}
+          {!isProcessing && (
             <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || isMerging}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleOrganize}
+              className="w-full py-4 rounded-2xl font-heading font-bold text-base shadow-lg transition-all hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0"
               style={{
-                background: files.length >= 2 ? '#8B5CF6' : '#ccc',
+                background: colors.primary,
                 color: 'white',
-                fontSize: '16px',
-                border: 'none',
-                cursor: files.length >= 2 ? 'pointer' : 'not-allowed',
-                boxShadow: files.length >= 2 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
+                boxShadow: colors.shadow,
               }}
             >
-              <span className="flex items-center justify-center gap-2">
-                <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-                Merge {files.length} PDF{files.length !== 1 ? 's' : ''}
-              </span>
+              <div className="flex items-center justify-center gap-2">
+                <Icon name="Squares2X2Icon" size={20} variant="solid" />
+                Organize PDF
+              </div>
             </button>
           )}
 
-          {files.length < 2 && !isMerging && (
-            <p
-              className="text-center mt-2"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: '#8888A8',
-              }}
-            >
-              Add at least 2 PDF files to merge
-            </p>
-          )}
+          <p className="mt-4 text-center text-xs text-slate-400 font-body">
+            You can reorder pages by dragging them. Click rotate to turn or x to remove.
+          </p>
         </div>
       )}
 
       {/* Done State */}
       {isDone && (
-        <div className="text-center py-8">
+        <div className="text-center py-12">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 pulse-anim"
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
             style={{ background: '#F0FDF4' }}
           >
             <Icon
               name="CheckIcon"
-              size={28}
+              size={32}
               variant="solid"
               style={{ color: '#16A34A' } as React.CSSProperties}
             />
           </div>
 
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '20px', color: '#1A1A2E' }}
-          >
-            Merge Complete!
+          <h3 className="font-heading font-extrabold text-2xl mb-3 text-slate-900">
+            Organization Complete!
           </h3>
-
-          <p
-            style={{
-              color: '#4A4A6A',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
-            }}
-          >
-            Your {files.length} PDFs have been merged into one file.
+          <p className="text-slate-500 mb-8 max-w-sm mx-auto">
+            Your PDF has been reordered, rotated, and cleaned up exactly as you requested.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#8B5CF6',
-                color: 'white',
-                border: 'none',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
-              }}
-              onClick={handleDownload}
-            >
-              <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
-              Download Merged PDF
-            </button>
-
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-sm transition-all"
               style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
+                background: colors.surface,
+                color: colors.primary,
+                border: `1.5px solid ${colors.border}`,
               }}
             >
-              <Icon name="ArrowPathIcon" size={16} />
-              Merge More Files
+              Organize Another
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition-all"
+            >
+              Back to Home
             </button>
           </div>
         </div>

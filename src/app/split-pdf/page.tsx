@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SplitPDFUploader from './components/SplitPDFUploader';
@@ -45,10 +46,11 @@ export default function SplitPDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      {/*<script*/}
-      {/*  type="application/ld+json"*/}
-      {/*  dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}*/}
-      {/*/>*/}
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
       <Header />
       <main>
         {/* Page Hero */}
@@ -147,7 +149,7 @@ export default function SplitPDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Extract specific pages or split your PDF into multiple files in seconds.
+              Extract specific pages or split your PDF into multiple files in seconds. Secure, fast, and no registration required.
             </p>
 
             {/* Trust Badges */}

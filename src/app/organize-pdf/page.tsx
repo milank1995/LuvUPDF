@@ -6,6 +6,9 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { organizePDFData } from './components/organizePDFData';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import { TOOL_COLORS } from '@/constants/toolColors';
+
+const colors = TOOL_COLORS.organize;
 
 export const metadata: Metadata = {
   title: 'Organize PDF Pages Online Free — Reorder & Arrange PDF Instantly | LuvUPDF',
@@ -19,6 +22,13 @@ export const metadata: Metadata = {
       'Rearrange and organize your PDF pages instantly. Free and secure PDF page organizer.',
     type: 'website',
     url: 'https://luvupdf.com/organize-pdf',
+    siteName: 'LuvUPDF',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Organize PDF Pages Online Free | LuvUPDF',
+    description:
+      'Rearrange and organize your PDF pages instantly. Free and secure PDF page organizer.',
   },
   alternates: { canonical: 'https://luvupdf.com/organize-pdf' },
 };
@@ -60,16 +70,12 @@ export default function OrganizePDFPage() {
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
           style={{
-            background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(139,92,246,0.07) 0%, transparent 65%), #FFFFFF',
+            background: `radial-gradient(ellipse 70% 50% at 50% -5%, ${colors.primary}12 0%, transparent 65%), #FFFFFF`,
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
             {/* Breadcrumb */}
-            <nav
-              className="flex items-center justify-center gap-2 mb-6"
-              aria-label="Breadcrumb"
-            >
+            <nav className="flex items-center justify-center gap-2 mb-6" aria-label="Breadcrumb">
               <Link
                 href="/"
                 style={{
@@ -88,7 +94,7 @@ export default function OrganizePDFPage() {
               />
               <span
                 style={{
-                  color: '#8B5CF6',
+                  color: colors.primary,
                   fontSize: '13px',
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
@@ -101,17 +107,17 @@ export default function OrganizePDFPage() {
             {/* Badge */}
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#F5F3FF', border: '1.5px solid #DDD6FE' }}
+              style={{ background: colors.surface, border: `1.5px solid ${colors.border}` }}
             >
               <Icon
                 name="Squares2X2Icon"
                 size={13}
                 variant="solid"
-                style={{ color: '#8B5CF6' } as React.CSSProperties}
+                style={{ color: colors.primary } as React.CSSProperties}
               />
               <span
                 style={{
-                  color: '#8B5CF6',
+                  color: colors.primary,
                   fontSize: '11px',
                   fontWeight: 700,
                   textTransform: 'uppercase',
@@ -135,7 +141,7 @@ export default function OrganizePDFPage() {
               Organize PDF Pages{' '}
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
+                  background: `linear-gradient(135deg, ${colors.primary} 0%, #A78BFA 100%)`,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -155,8 +161,8 @@ export default function OrganizePDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Rearrange, rotate, and manage your PDF pages easily with our
-              drag-and-drop organizer tool.
+              Rearrange, rotate, and manage your PDF pages easily with our drag-and-drop organizer
+              tool.
             </p>
 
             {/* Trust Badges */}
@@ -179,7 +185,7 @@ export default function OrganizePDFPage() {
                     name={badge.icon as any}
                     size={12}
                     variant="solid"
-                    style={{ color: '#8B5CF6' } as React.CSSProperties}
+                    style={{ color: colors.primary } as React.CSSProperties}
                   />
                   <span
                     style={{
