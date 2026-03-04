@@ -31,12 +31,12 @@ export const lockPDFData = {
     {
       step: 4,
       title: 'Click Lock PDF',
-      desc: 'Press the "Lock PDF with Password" button. Our servers will apply 256-bit AES encryption to your document in just a few seconds.',
+      desc: 'Press the "Lock PDF with Password" button. Our secure tool will apply 256-bit AES encryption to your document in just a few seconds, right in your browser.',
     },
     {
       step: 5,
       title: 'Download Your Protected PDF',
-      desc: 'Once locked, click the download button to save your password-protected PDF. The file is automatically deleted from our servers within 1 hour. Store your password in a secure location.',
+      desc: 'Once locked, click the download button to save your password-protected PDF. Because we value your privacy, your files are never stored on our servers — everything happens locally.',
     },
   ],
 

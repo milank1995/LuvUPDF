@@ -29,4 +29,16 @@ export const TOOL_COLORS = {
     border: '#FDE68A',
     shadow: 'rgba(245, 158, 11, 0.28)',
   },
+  lock: {
+    primary: '#7C5CBF',
+    surface: '#F3EEFF',
+    border: '#E0D4FF',
+    shadow: 'rgba(124, 92, 191, 0.28)',
+  },
+  unlock: {
+    primary: '#0EA5B0',
+    surface: '#EDFCFD',
+    border: '#BFEFEF',
+    shadow: 'rgba(14, 165, 176, 0.28)',
+  },
 } as const;
