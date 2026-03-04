@@ -74,10 +74,10 @@ const tools = [
     bg: '#FFFBEB',
     title: 'Rotate PDF',
     description: 'Coming Soon: Rotate PDF pages to the correct orientation easily.',
-    badge: 'Coming Soon',
+    badge: null,
     badgeBg: '#F1F5F9',
     badgeColor: '#64748B',
-    isComingSoon: true,
+    isComingSoon: false,
   },
   {
     id: 'lock-pdf',

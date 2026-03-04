@@ -23,4 +23,10 @@ export const TOOL_COLORS = {
     border: '#DBEAFE',
     shadow: 'rgba(59, 130, 246, 0.28)',
   },
+  rotate: {
+    primary: '#F59E0B',
+    surface: '#FFFBEB',
+    border: '#FDE68A',
+    shadow: 'rgba(245, 158, 11, 0.28)',
+  },
 } as const;
