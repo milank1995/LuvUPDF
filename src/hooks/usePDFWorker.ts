@@ -42,7 +42,8 @@ export function usePDFWorker() {
           case 'SUCCESS':
             setIsProcessing(false);
             resolve({
-              blob: new Blob([result], { type: 'application/pdf' }),
+              ...e.data, // Spread everything: results, bytes, blob, etc.
+              blob: result ? new Blob([result], { type: 'application/pdf' }) : null,
               errors: errors || [],
             });
             break;
@@ -51,7 +52,7 @@ export function usePDFWorker() {
             if (message) {
               reject(new Error(message));
             } else {
-              resolve({ blob: null, errors: errors || [] });
+              resolve({ ...e.data, blob: null, errors: errors || [] });
             }
             break;
         }

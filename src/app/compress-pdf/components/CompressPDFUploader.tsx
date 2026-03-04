@@ -1,8 +1,16 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import Icon from '@/components/ui/AppIcon';
+import { useToast } from '@/components/ui/Toast';
+import { BRAND_COLORS, PDF_CONFIG } from '@/constants/pdfConfig';
+import { TOOL_COLORS } from '@/constants/toolColors';
+import UploadZone from '@/components/pdf/UploadZone';
+import { usePDFWorker } from '@/hooks/usePDFWorker';
+import Script from 'next/script';
+import JSZip from 'jszip';
+
+const colors = TOOL_COLORS.compress;
 
 interface UploadedFile {
   id: string;
@@ -10,126 +18,222 @@ interface UploadedFile {
   size: number;
   type: string;
   file: File;
+  previewUrl?: string;
+  pageCount?: number;
+  isPreviewLoading?: boolean;
 }
 
-const MAX_SIZE = 100 * 1024 * 1024; // 100MB
+interface CompressionResult {
+  name: string;
+  originalSize: number;
+  compressedSize: number;
+  bytes: Uint8Array;
+}
 
-async function mergePDF(
-  files: UploadedFile[],
-  setProgress: (value: number) => void
-): Promise<Blob> {
-  const mergedPdf = await PDFDocument.create();
+/**
+ * Individual File Preview Card Component
+ */
+function FilePreviewCard({
+  file,
+  onRemove,
+  isProcessing,
+}: {
+  file: UploadedFile;
+  onRemove: (id: string) => void;
+  isProcessing: boolean;
+}) {
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    try {
-      const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
+  return (
+    <div className="group relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col h-full">
+      {/* Delete Button */}
+      {!isProcessing && (
+        <button
+          onClick={() => onRemove(file.id)}
+          className="absolute top-2 right-2 z-20 p-1.5 rounded-full bg-white/90 text-slate-400 hover:text-red-500 hover:bg-white shadow-sm border border-slate-100 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+          title="Remove file"
+        >
+          <Icon name="TrashIcon" size={14} />
+        </button>
+      )}
 
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
-    }
-  }
+      {/* Preview Area */}
+      <div className="aspect-[4/5] bg-slate-50 border-b border-slate-100 flex items-center justify-center relative overflow-hidden bg-dot-slate-200">
+        {file.isPreviewLoading ? (
+          <div className="w-6 h-6 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+        ) : file.previewUrl ? (
+          <img
+            src={file.previewUrl}
+            alt={file.name}
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="text-slate-300">
+            <Icon name="DocumentIcon" size={40} />
+          </div>
+        )}
 
-  const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
+        {/* Page Count Badge */}
+        {file.pageCount !== undefined && (
+          <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md bg-white/90 backdrop-blur-sm border border-slate-100 text-[9px] font-bold text-slate-500 shadow-sm">
+            {file.pageCount} PAGES
+          </div>
+        )}
+      </div>
+
+      {/* Info Area */}
+      <div className="p-3 space-y-1">
+        <p className="text-xs font-bold text-slate-700 truncate pr-2" title={file.name}>
+          {file.name}
+        </p>
+        <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold uppercase tracking-tight">
+          <span>{formatSize(file.size)}</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function CompressPDFUploader() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isMerging, setIsMerging] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
-  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounter = useRef(0);
-
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
-
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
-    );
-
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
-
-    if (validFiles.length === 0) return;
-
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
-
-    if (uniqueFiles.length === 0) return;
-
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
-
-    setFiles((prev) => [...prev, ...mapped]);
-    setIsDone(false);
-  }, []);
-
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current++;
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current--;
-    if (dragCounter.current === 0) setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-  }, []);
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      dragCounter.current = 0;
-      setIsDragging(false);
-      handleFiles(e.dataTransfer.files);
-    },
-    [handleFiles]
+  const [results, setResults] = useState<CompressionResult[]>([]);
+  const [compressionLevel, setCompressionLevel] = useState<'recommended' | 'extreme'>(
+    'recommended'
   );
+
+  const { showToast } = useToast();
+  const { processPDFs, isProcessing, progress } = usePDFWorker();
+
+  /** Handle File Selection & Metadata Extraction */
+  const handleFiles = useCallback(
+    async (newFiles: FileList | null) => {
+      if (!newFiles) return;
+
+      const validFiles = Array.from(newFiles).filter(
+        (f) =>
+          (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
+          f.size <= PDF_CONFIG.MAX_FILE_SIZE
+      );
+
+      if (validFiles.length < newFiles.length) {
+        showToast(
+          `${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`,
+          'error'
+        );
+      }
+
+      const uniqueFiles = validFiles.filter(
+        (f) => !files.some((existing) => existing.name === f.name)
+      );
+
+      if (uniqueFiles.length > 0) {
+        const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
+          id: crypto.randomUUID(),
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          file: f,
+          isPreviewLoading: true,
+        }));
+
+        setFiles((prev) => [...prev, ...mapped]);
+        setIsDone(false);
+        setResults([]);
+      } else if (validFiles.length > 0) {
+        showToast('Files already added.', 'info');
+      }
+    },
+    [files, showToast]
+  );
+
+  /** Preview Generation for All Files */
+  useEffect(() => {
+    const filesNeedingPreview = files.filter((f) => f.isPreviewLoading && !f.previewUrl);
+    if (filesNeedingPreview.length === 0) return;
+
+    let cancelled = false;
+
+    const generatePreviews = async () => {
+      const pdfjsLib = (window as any).pdfjsLib;
+      if (!pdfjsLib) return;
+
+      if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+      }
+
+      for (const fileItem of filesNeedingPreview) {
+        if (cancelled) break;
+
+        try {
+          const bytes = await fileItem.file.arrayBuffer();
+          const loadingTask = pdfjsLib.getDocument({ data: bytes });
+          const pdf = await loadingTask.promise;
+
+          const numPages = pdf.numPages;
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({ scale: 0.2 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/jpeg', 0.7)
+          );
+
+          if (blob && !cancelled) {
+            const url = URL.createObjectURL(blob);
+            setFiles((prev) =>
+              prev.map((f) =>
+                f.id === fileItem.id
+                  ? {
+                      ...f,
+                      previewUrl: url,
+                      pageCount: numPages,
+                      isPreviewLoading: false,
+                    }
+                  : f
+              )
+            );
+          }
+        } catch (err) {
+          console.error(`Preview error for ${fileItem.name}:`, err);
+          setFiles((prev) =>
+            prev.map((f) => (f.id === fileItem.id ? { ...f, isPreviewLoading: false } : f))
+          );
+        }
+      }
+    };
+
+    generatePreviews();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [files]);
 
   const removeFile = useCallback(
     (id: string) => {
-      if (isMerging) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
+      if (isProcessing) return;
+      setFiles((prev) => {
+        const fileToRemove = prev.find((f) => f.id === id);
+        if (fileToRemove?.previewUrl) URL.revokeObjectURL(fileToRemove.previewUrl);
+        return prev.filter((f) => f.id !== id);
+      });
       setIsDone(false);
     },
-    [isMerging]
-  );
-
-  const moveFile = useCallback(
-    (index: number, direction: 'up' | 'down') => {
-      if (isMerging) return;
-      setFiles((prev) => {
-        const arr = [...prev];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-        return arr;
-      });
-    },
-    [isMerging]
+    [isProcessing]
   );
 
   const formatSize = useCallback((bytes: number) => {
@@ -138,412 +242,325 @@ export default function CompressPDFUploader() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }, []);
 
-  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+  const totalOriginalSize = useMemo(() => files.reduce((acc, f) => acc + f.size, 0), [files]);
+  const totalCompressedSize = useMemo(
+    () => results.reduce((acc, r) => acc + r.compressedSize, 0),
+    [results]
+  );
+  const savingsPercent = useMemo(() => {
+    if (totalOriginalSize === 0) return 0;
+    const savings = totalOriginalSize - totalCompressedSize;
+    if (savings <= 0) return 0;
+    return Math.round((savings / totalOriginalSize) * 100);
+  }, [totalOriginalSize, totalCompressedSize]);
 
-  const handleMerge = useCallback(async () => {
-    if (files.length < 2) return;
+  const handleCompress = async () => {
+    if (files.length === 0) return;
 
     try {
-      setIsMerging(true);
-      setProgress(0);
+      const response = await processPDFs(
+        'COMPRESS_PDF',
+        files.map((f) => ({ blob: f.file, name: f.name, level: compressionLevel }))
+      );
 
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
-      setIsDone(true);
+      const { results: compressedResults, errors } = response as any;
+
+      if (errors && errors.length > 0) {
+        errors.forEach((err: any) => {
+          const message = err.isEncrypted
+            ? `"${err.fileName}" is password protected.`
+            : `"${err.fileName}" could not be processed.`;
+          showToast(message, 'error');
+        });
+      }
+
+      if (compressedResults && compressedResults.length > 0) {
+        setResults(compressedResults as CompressionResult[]);
+        setIsDone(true);
+        showToast(`Successfully compressed ${compressedResults.length} PDF(s)!`, 'success');
+      } else {
+        showToast('No files were compressed. Check for errors.', 'error');
+      }
     } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    } finally {
-      setIsMerging(false);
+      showToast(err.message || 'Failed to compress PDF', 'error');
     }
-  }, [files]);
+  };
 
   const handleReset = useCallback(() => {
+    files.forEach((f) => f.previewUrl && URL.revokeObjectURL(f.previewUrl));
     setFiles([]);
     setIsDone(false);
-    setProgress(0);
-    setIsMerging(false);
-    setMergedBlob(null);
-  }, []);
+    setResults([]);
+  }, [files]);
 
-  const handleDownload = useCallback(() => {
-    try {
-      if (!mergedBlob) return;
-      const url = URL.createObjectURL(mergedBlob);
+  const handleDownload = useCallback(async () => {
+    if (results.length === 0) return;
 
+    if (results.length === 1) {
+      const res = results[0];
+      const blob = new Blob([res.bytes as any], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'merged.pdf';
-
+      a.download = `compressed_${res.name}`;
       document.body.appendChild(a);
       a.click();
-
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+    } else {
+      // Batch download via ZIP
+      const zip = new JSZip();
+      results.forEach((res) => {
+        zip.file(`compressed_${res.name}`, res.bytes);
+      });
+      const content = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'compressed_pdfs.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
     }
-  }, [mergedBlob]);
+  }, [results]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
+
       {/* Upload Zone */}
       {files.length === 0 && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF files to merge"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            multiple
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
+        <div className="max-w-2xl mx-auto">
+          <UploadZone
+            onFilesSelected={handleFiles}
+            accentColor={colors.primary}
+            iconName="ArchiveBoxIcon"
           />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? '#10B981' : '#FFF0F2',
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="ArchiveBoxIcon"
-              size={28}
-              variant="solid"
-              style={
-                {
-                  color: isDragging ? 'white' : '#10B981',
-                } as React.CSSProperties
-              }
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — supports multiple files
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: '#10B981',
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF Files
-          </div>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF files only · Max 100MB per file
-          </p>
         </div>
       )}
 
-      {/* File List */}
+      {/* Grid of Files */}
       {files.length > 0 && !isDone && (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
+        <div className="space-y-6">
+          {/* Header Controls */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <h3 className="font-heading font-extrabold text-xl text-slate-800">
+              {files.length} PDF{files.length > 1 ? 's' : ''} to compress
             </h3>
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isMerging}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                color: '#10B981',
-                background: '#FFF0F2',
-                border: '1px solid #FFD6DB',
-                fontFamily: 'var(--font-heading)',
-              }}
-            >
-              <Icon name="PlusIcon" size={14} />
-              Add More
-            </button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              className="hidden"
-              onChange={(e) => handleFiles(e.target.files)}
-            />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => document.getElementById('grid-add-input')?.click()}
+                disabled={isProcessing}
+                className="flex items-center gap-1.5 text-sm font-bold px-5 py-2.5 rounded-full transition-all hover:shadow-md disabled:opacity-50"
+                style={{
+                  color: colors.primary,
+                  background: colors.surface,
+                  border: `1.5px solid ${colors.border}`,
+                }}
+              >
+                <Icon name="PlusIcon" size={16} />
+                Add Files
+              </button>
+              <input
+                id="grid-add-input"
+                type="file"
+                accept=".pdf,application/pdf"
+                multiple
+                className="hidden"
+                onChange={(e) => handleFiles(e.target.files)}
+              />
+              <button
+                onClick={handleReset}
+                disabled={isProcessing}
+                className="p-2.5 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all border border-slate-200"
+                title="Clear all"
+              >
+                <Icon name="TrashIcon" size={18} />
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-2 mb-5">
-            {files.map((file, i) => (
-              <div key={file.id} className="file-item flex items-center gap-3 p-3">
-                {/* PDF Icon */}
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFF0F2' }}
-                >
-                  <Icon
-                    name="DocumentIcon"
-                    size={18}
-                    variant="solid"
-                    style={{ color: '#10B981' } as React.CSSProperties}
-                  />
-                </div>
-
-                {/* Name + Size */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="truncate"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      color: '#1A1A2E',
-                    }}
-                  >
-                    {file.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '11px',
-                      color: '#8888A8',
-                    }}
-                  >
-                    {formatSize(file.size)}
-                  </p>
-                </div>
-
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === 0 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move up"
-                  >
-                    <Icon name="ChevronUpIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === files.length - 1 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move down"
-                  >
-                    <Icon name="ChevronDownIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    disabled={isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
-                    style={{
-                      background: '#FFF0F2',
-                      color: '#10B981',
-                      border: '1px solid #FFD6DB',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Remove file"
-                  >
-                    <Icon name="XMarkIcon" size={13} />
-                  </button>
-                </div>
-              </div>
+          {/* Grid Container */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {files.map((file) => (
+              <FilePreviewCard
+                key={file.id}
+                file={file}
+                onRemove={removeFile}
+                isProcessing={isProcessing}
+              />
             ))}
           </div>
 
-          {/* Progress */}
-          {isMerging && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '13px',
-                    color: '#4A4A6A',
-                  }}
-                >
-                  Merging files...
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#10B981',
-                  }}
-                >
-                  {Math.round(progress)}%
-                </span>
+          {/* Settings & Progress Section */}
+          <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 shadow-inner space-y-6">
+            <div className="max-w-xl mx-auto space-y-6">
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center flex items-center justify-center gap-2">
+                  <div className="w-8 h-[1px] bg-slate-200" />
+                  Choose compression level
+                  <div className="w-8 h-[1px] bg-slate-200" />
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setCompressionLevel('recommended')}
+                    className={`px-6 py-4 rounded-2xl border-2 text-center transition-all ${
+                      compressionLevel === 'recommended'
+                        ? 'bg-white border-emerald-500 shadow-lg text-emerald-600'
+                        : 'bg-white/50 border-slate-200 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    <p className="font-bold text-sm">Recommended</p>
+                    <p className="text-[10px] opacity-70">Optimal quality & size</p>
+                  </button>
+                  <button
+                    onClick={() => setCompressionLevel('extreme')}
+                    className={`px-6 py-4 rounded-2xl border-2 text-center transition-all ${
+                      compressionLevel === 'extreme'
+                        ? 'bg-white border-emerald-500 shadow-lg text-emerald-600'
+                        : 'bg-white/50 border-slate-200 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    <p className="font-bold text-sm">Extreme</p>
+                    <p className="text-[10px] opacity-70">Smallest file possible</p>
+                  </button>
+                </div>
               </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#FFD6DB' }}
-              >
-                <div
-                  className="progress-bar h-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: '#10B981',
-                    transition: 'width 0.2s ease-out',
-                  }}
-                />
-              </div>
+
+              {isProcessing ? (
+                <div className="space-y-3 px-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-600 animate-pulse uppercase tracking-wider">
+                      Processing...
+                    </span>
+                    <span className="text-sm font-black text-slate-700">
+                      {Math.round(progress)}%
+                    </span>
+                  </div>
+                  <div className="h-3 rounded-full bg-slate-200 overflow-hidden p-0.5 shadow-inner">
+                    <div
+                      className="h-full rounded-full transition-all duration-300 ease-out shadow-sm"
+                      style={{
+                        width: `${progress}%`,
+                        background: `linear-gradient(90deg, ${colors.primary}, #34D399)`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleCompress}
+                  className="w-full py-5 rounded-2xl font-heading font-black text-lg shadow-xl hover:translate-y-[-3px] transition-all group"
+                  style={{ background: colors.primary, color: 'white', boxShadow: colors.shadow }}
+                >
+                  <span className="flex items-center justify-center gap-3">
+                    <Icon
+                      name="BoltIcon"
+                      size={24}
+                      variant="solid"
+                      className="group-hover:animate-bounce"
+                    />
+                    Optimize {files.length} Document{files.length > 1 ? 's' : ''}
+                  </span>
+                </button>
+              )}
             </div>
-          )}
-
-          {/* Merge Button */}
-          {!isMerging && (
-            <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || isMerging}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: files.length >= 2 ? '#10B981' : '#ccc',
-                color: 'white',
-                fontSize: '16px',
-                border: 'none',
-                cursor: files.length >= 2 ? 'pointer' : 'not-allowed',
-                boxShadow: files.length >= 2 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
-              }}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-                Merge {files.length} PDF{files.length !== 1 ? 's' : ''}
-              </span>
-            </button>
-          )}
-
-          {files.length < 2 && !isMerging && (
-            <p
-              className="text-center mt-2"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: '#8888A8',
-              }}
-            >
-              Add at least 2 PDF files to merge
-            </p>
-          )}
+          </div>
         </div>
       )}
 
       {/* Done State */}
       {isDone && (
-        <div className="text-center py-8">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 pulse-anim"
-            style={{ background: '#F0FDF4' }}
-          >
-            <Icon
-              name="CheckIcon"
-              size={28}
-              variant="solid"
-              style={{ color: '#16A34A' } as React.CSSProperties}
-            />
+        <div className="max-w-2xl mx-auto text-center py-6">
+          <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50/50">
+            <Icon name="CheckIcon" size={36} variant="solid" className="text-emerald-500" />
           </div>
 
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '20px', color: '#1A1A2E' }}
-          >
-            Merge Complete!
-          </h3>
-
-          <p
-            style={{
-              color: '#4A4A6A',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
-            }}
-          >
-            Your {files.length} PDFs have been merged into one file.
+          <h3 className="font-heading font-extrabold text-3xl mb-2 text-slate-900">Success!</h3>
+          <p className="text-slate-500 mb-8 font-medium">
+            Your files have been compressed effectively.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="bg-slate-50 rounded-3xl p-8 mb-10 border border-slate-100 shadow-sm relative overflow-hidden">
+            <div className="absolute top-[-20px] right-[-20px] p-4 opacity-5 text-emerald-500">
+              <Icon name="SparklesIcon" size={140} variant="solid" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 relative z-10">
+              <div className="text-left space-y-1">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  Initial Size
+                </p>
+                <p className="text-2xl font-black text-slate-700">
+                  {formatSize(totalOriginalSize)}
+                </p>
+              </div>
+              <div className="text-right space-y-1">
+                <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest">
+                  Optimized Size
+                </p>
+                <p className="text-2xl font-black text-emerald-600">
+                  {formatSize(totalCompressedSize)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-sm font-black text-slate-700 uppercase tracking-tight">
+                  Total Reduction
+                </span>
+              </div>
+              <div className="px-5 py-2 bg-emerald-500 text-white rounded-xl text-lg font-black shadow-lg shadow-emerald-500/30">
+                Saved {savingsPercent}%
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
-              className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#10B981',
-                color: 'white',
-                border: 'none',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
-              }}
               onClick={handleDownload}
+              className="w-full sm:w-auto px-12 py-5 rounded-2xl font-heading font-black text-lg shadow-xl hover:translate-y-[-4px] transition-all group"
+              style={{ background: colors.primary, color: 'white', boxShadow: colors.shadow }}
             >
-              <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
-              Download Merged PDF
+              <div className="flex items-center justify-center gap-2.5">
+                <Icon
+                  name="ArrowDownTrayIcon"
+                  size={24}
+                  variant="solid"
+                  className="group-hover:translate-y-1 transition-transform"
+                />
+                {results.length > 1 ? 'Download Zip' : 'Download PDF'}
+              </div>
             </button>
 
             <button
               onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
+              className="w-full sm:w-auto px-10 py-5 rounded-2xl font-heading font-bold text-lg transition-all hover:bg-slate-100"
               style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
+                background: BRAND_COLORS.secondarySurface,
+                color: BRAND_COLORS.secondary,
+                border: `1.5px solid ${BRAND_COLORS.secondaryBorder}`,
               }}
             >
-              <Icon name="ArrowPathIcon" size={16} />
-              Merge More Files
+              <div className="flex items-center justify-center gap-2">
+                <Icon name="ArrowPathIcon" size={20} />
+                Try More
+              </div>
             </button>
           </div>
+
+          <p className="mt-10 text-[11px] font-bold text-slate-400 flex items-center justify-center gap-2 uppercase tracking-wide">
+            <Icon name="ShieldCheckIcon" size={16} className="text-emerald-400" />
+            Secure high-grade encryption. All files deleted in 60m.
+          </p>
         </div>
       )}
     </div>
