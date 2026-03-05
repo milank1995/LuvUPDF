@@ -85,7 +85,7 @@ export default function LockPDFUploader() {
       formData.append('file', file.file);
       formData.append('password', password);
 
-      const res = await fetch('/api/pdf/combined-lock-pdf', {
+      const res = await fetch('https://api.luvupdf.com/api/pdf/combined-lock-pdf', {
         method: 'POST',
         body: formData,
       });
