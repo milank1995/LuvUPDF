@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react';
 import Icon from '@/components/ui/AppIcon';
 import UploadZone from '@/components/pdf/UploadZone';
-import { usePDFWorker } from '@/hooks/usePDFWorker';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import { useToast } from '@/components/ui/Toast';
 
@@ -27,7 +26,6 @@ export default function LockPDFUploader() {
   const [lockedBlob, setLockedBlob] = useState<Blob | null>(null);
 
   const { showToast } = useToast();
-  const { processPDFs, isProcessing, progress } = usePDFWorker();
 
   const handleFilesSelected = useCallback(
     (files: FileList | null) => {
@@ -73,25 +71,42 @@ export default function LockPDFUploader() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [manualProgress, setManualProgress] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleLock = async () => {
     if (!file || !validate()) return;
 
     try {
-      console.log('UI: Locking PDF with password...');
-      const result = await processPDFs('LOCK_PDF', [{ blob: file.file, name: file.name }]);
+      setIsProcessing(true);
+      setManualProgress(20);
 
-      if (result && result.blob) {
-        console.log('UI: PDF locked successfully, blob received');
-        setLockedBlob(result.blob);
-        setIsDone(true);
-        showToast('PDF locked successfully!', 'success');
-      } else {
-        console.error('UI: Process returned successfully but blob is missing', result);
-        showToast('Processing failed: Output file missing.', 'error');
+      const formData = new FormData();
+      formData.append('file', file.file);
+      formData.append('password', password);
+
+      const res = await fetch('/api/pdf/combined-lock-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      setManualProgress(80);
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Failed to lock PDF: ${res.statusText}`);
       }
+
+      const blob = await res.blob();
+      setManualProgress(100);
+
+      setLockedBlob(blob);
+      setIsDone(true);
+      showToast('PDF locked successfully!', 'success');
     } catch (err: any) {
-      console.error('UI: Error in handleLock:', err);
       showToast(err.message || 'Failed to lock PDF', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -102,6 +117,7 @@ export default function LockPDFUploader() {
     setIsDone(false);
     setErrors({});
     setLockedBlob(null);
+    setManualProgress(0);
   };
 
   const handleDownload = () => {
@@ -377,14 +393,14 @@ export default function LockPDFUploader() {
                     color: colors.primary,
                   }}
                 >
-                  {Math.round(progress)}%
+                  {Math.round(manualProgress)}%
                 </span>
               </div>
               <div className="w-full h-2.5 rounded-full overflow-hidden bg-slate-100">
                 <div
                   className="h-full rounded-full transition-all duration-300 shadow-sm"
                   style={{
-                    width: `${progress}%`,
+                    width: `${manualProgress}%`,
                     background: `linear-gradient(90deg, ${colors.primary} 0%, #A07CE8 100%)`,
                   }}
                 />
