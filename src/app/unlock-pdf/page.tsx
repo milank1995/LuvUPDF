@@ -131,7 +131,7 @@ export default function UnlockPDFPage() {
             {/* Badge */}
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#ECFEFF', border: '1.5px solid #A5F3FC' }}
+              style={{ background: '#EDFCFD', border: '1.5px solid #BFEFEF' }}
             >
               <Icon
                 name="LockOpenIcon"
@@ -149,7 +149,7 @@ export default function UnlockPDFPage() {
                   textTransform: 'uppercase',
                 }}
               >
-                Unlock PDF · Coming Soon
+                Unlock PDF · 100% Free
               </span>
             </div>
 
@@ -163,7 +163,7 @@ export default function UnlockPDFPage() {
                 lineHeight: 1.1,
               }}
             >
-              Unlock PDF Files Online{' '}
+              Unlock PDF Online{' '}
               <span
                 style={{
                   background: 'linear-gradient(135deg, #0EA5B0 0%, #14B8A6 100%)',
@@ -186,10 +186,42 @@ export default function UnlockPDFPage() {
                 lineHeight: 1.65,
               }}
             >
-              Safely remove passwords from your own PDF files in a few clicks. This dedicated Unlock
-              PDF page is fully optimized for SEO and user experience while the processing engine is
-              being finalized.
+              Instantly remove password protection from your PDF documents for free. Regain access to
+              your files in seconds — no account required.
             </p>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+              {[
+                { icon: 'ShieldCheckIcon', text: 'Secure Decryption' },
+                { icon: 'EyeSlashIcon', text: 'Privacy Protected' },
+                { icon: 'CurrencyDollarIcon', text: '100% Free' },
+                { icon: 'BoltIcon', text: 'Instant Results' },
+              ].map((badge) => (
+                <div
+                  key={badge.text}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                  style={{ background: '#F8F8FC', border: '1px solid #EEEEF5' }}
+                >
+                  <Icon
+                    name={badge.icon as any}
+                    size={12}
+                    variant="solid"
+                    style={{ color: '#0EA5B0' } as React.CSSProperties}
+                  />
+                  <span
+                    style={{
+                      color: '#4A4A6A',
+                      fontSize: '12px',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {badge.text}
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/* Upload Tool */}
             <div
