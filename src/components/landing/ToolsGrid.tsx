@@ -86,7 +86,8 @@ const tools = [
     color: '#0EA5B0',
     bg: '#EDFCFD',
     title: 'Unlock PDF',
-    description: 'Remove password protection from your PDF files instantly. 100% secure and private.',
+    description:
+      'Remove password protection from your PDF files instantly. 100% secure and private.',
     badge: 'Free',
     badgeBg: '#EDFCFD',
     badgeColor: '#0EA5B0',
@@ -99,12 +100,12 @@ const tools = [
     color: '#10B981',
     bg: '#ECFDF5',
     title: 'Compress PDF',
-    description: 'Coming Soon: Reduce PDF file size without losing quality.',
-    badge: 'Coming Soon',
+    description: 'Reduce PDF file size without losing quality.',
+    badge: null,
     badgeBg: '#F1F5F9',
     badgeColor: '#64748B',
-    isComingSoon: true,
-  }
+    isComingSoon: false,
+  },
 ];
 
 export default function ToolsGrid() {

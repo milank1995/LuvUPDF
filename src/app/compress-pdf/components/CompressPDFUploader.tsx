@@ -1,547 +1,459 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/AppIcon';
+import UploadZone from '@/components/pdf/UploadZone';
+import { TOOL_COLORS } from '@/constants/toolColors';
+import { useToast } from '@/components/ui/Toast';
+
+const colors = TOOL_COLORS.compress;
 
 interface UploadedFile {
   id: string;
   name: string;
   size: number;
-  type: string;
   file: File;
 }
 
-const MAX_SIZE = 100 * 1024 * 1024; // 100MB
+type StepStatus = 'idle' | 'active' | 'done' | 'error';
 
-async function mergePDF(
-  files: UploadedFile[],
-  setProgress: (value: number) => void
-): Promise<Blob> {
-  const mergedPdf = await PDFDocument.create();
-
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    try {
-      const bytes = await item.file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-    } catch (error) {
-      console.error(`Failed to load ${item.name}`, error);
-      throw new Error(`The file "${item.name}" is encrypted or corrupted and cannot be merged.`);
-    }
-  }
-
-  const mergedBytes: any = await mergedPdf.save();
-  return new Blob([mergedBytes], { type: 'application/pdf' });
+interface ProcessStep {
+  id: string;
+  label: string;
+  detail: string;
+  status: StepStatus;
 }
 
+type CompressionMode = 'low' | 'medium' | 'high';
+
+const INITIAL_STEPS: ProcessStep[] = [
+  {
+    id: 'upload',
+    label: 'Uploading PDF',
+    detail: 'Securely transferring to server — no files are stored',
+    status: 'idle',
+  },
+  {
+    id: 'compress',
+    label: 'Compressing PDF',
+    detail: 'Optimizing images and fonts to reduce file size',
+    status: 'idle',
+  },
+  {
+    id: 'optimize',
+    label: 'Finalizing & Optimizing',
+    detail: 'Preparing your compressed file for download',
+    status: 'idle',
+  },
+];
+
 export default function CompressPDFUploader() {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isMerging, setIsMerging] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [mode, setMode] = useState<CompressionMode>('medium');
   const [isDone, setIsDone] = useState(false);
-  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [steps, setSteps] = useState<ProcessStep[]>(INITIAL_STEPS);
+  const [overallProgress, setOverallProgress] = useState(0);
+  const [results, setResults] = useState<{
+    originalSize: string;
+    compressedSize: string;
+    reductionPercent: string;
+    pdfUrl: string;
+  } | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounter = useRef(0);
+  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { showToast } = useToast();
 
-  const handleFiles = useCallback((newFiles: FileList | null) => {
-    if (!newFiles) return;
-
-    const validFiles = Array.from(newFiles).filter(
-      (f) =>
-        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
-        f.size <= MAX_SIZE
-    );
-
-    if (validFiles.length < newFiles.length) {
-      alert(`${newFiles.length - validFiles.length} file(s) skipped (invalid type or size).`);
-    }
-
-    if (validFiles.length === 0) return;
-
-    const uniqueFiles = validFiles.filter(
-      (f) => !files.some((existing) => existing.name === f.name)
-    );
-
-    if (uniqueFiles.length === 0) return;
-
-    const mapped: UploadedFile[] = uniqueFiles.map((f) => ({
-      id: crypto.randomUUID(),
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      file: f,
-    }));
-
-    setFiles((prev) => [...prev, ...mapped]);
-    setIsDone(false);
-  }, []);
-
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current++;
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    dragCounter.current--;
-    if (dragCounter.current === 0) setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-  }, []);
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      dragCounter.current = 0;
-      setIsDragging(false);
-      handleFiles(e.dataTransfer.files);
-    },
-    [handleFiles]
-  );
-
-  const removeFile = useCallback(
-    (id: string) => {
-      if (isMerging) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
-      setIsDone(false);
-    },
-    [isMerging]
-  );
-
-  const moveFile = useCallback(
-    (index: number, direction: 'up' | 'down') => {
-      if (isMerging) return;
-      setFiles((prev) => {
-        const arr = [...prev];
-        const swapIndex = direction === 'up' ? index - 1 : index + 1;
-        if (swapIndex < 0 || swapIndex >= arr.length) return arr;
-        [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
-        return arr;
+  const animateToProgress = (target: number) => {
+    if (progressTimerRef.current) clearInterval(progressTimerRef.current);
+    progressTimerRef.current = setInterval(() => {
+      setOverallProgress((prev) => {
+        if (prev >= target) {
+          clearInterval(progressTimerRef.current!);
+          return target;
+        }
+        return Math.min(prev + 1, target);
       });
+    }, 20);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (progressTimerRef.current) clearInterval(progressTimerRef.current);
+    };
+  }, []);
+
+  const setStepStatus = (stepId: string, status: StepStatus) => {
+    setSteps((prev) => prev.map((s) => (s.id === stepId ? { ...s, status } : s)));
+  };
+
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+
+  const isEncryptedPDF = async (file: File): Promise<boolean> => {
+    const chunkSize = Math.min(file.size, 65536);
+    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
+    const tail = new Uint8Array(tailBuffer);
+
+    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
+    const head = new Uint8Array(headBuffer);
+
+    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
+      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
+        for (let j = 0; j < pattern.length; j++) {
+          if (buf[i + j] !== pattern[j]) continue outer;
+        }
+        return true;
+      }
+      return false;
+    };
+
+    const encryptPattern = new TextEncoder().encode('/Encrypt');
+    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
+  };
+
+  const handleFilesSelected = useCallback(
+    (files: FileList | null) => {
+      if (!files || files.length === 0) return;
+      const f = files[0];
+      if (!f.name.endsWith('.pdf') && f.type !== 'application/pdf') {
+        showToast('Invalid file type. Please upload a PDF.', 'error');
+        return;
+      }
+      if (f.size > MAX_FILE_SIZE) {
+        showToast(
+          `File too large. Maximum allowed size is 50 MB.`,
+          'error'
+        );
+        return;
+      }
+      setFile({ id: crypto.randomUUID(), name: f.name, size: f.size, file: f });
+      setIsDone(false);
+      setSteps(INITIAL_STEPS);
+      setOverallProgress(0);
     },
-    [isMerging]
+    [showToast]
   );
 
-  const formatSize = useCallback((bytes: number) => {
+  const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  }, []);
+  };
 
-  const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+  const handleCompress = async () => {
+    if (!file) return;
 
-  const handleMerge = useCallback(async () => {
-    if (files.length < 2) return;
+    setIsProcessing(true);
+    setSteps(INITIAL_STEPS);
+    setOverallProgress(0);
 
     try {
-      setIsMerging(true);
-      setProgress(0);
+      // 1. Pre-flight check
+      setStepStatus('upload', 'active');
+      animateToProgress(10);
 
-      const blob = await mergePDF(files, setProgress);
-      setMergedBlob(blob);
+      const alreadyEncrypted = await isEncryptedPDF(file.file);
+      if (alreadyEncrypted) {
+        setStepStatus('upload', 'error');
+        showToast(
+          'This PDF is password-protected. Please unlock it first before compressing.',
+          'error',
+          { text: 'Unlock PDF', href: '/unlock-pdf' }
+        );
+        setIsProcessing(false);
+        return;
+      }
+
+      // 2. Upload
+      animateToProgress(30);
+      const formData = new FormData();
+      formData.append('file', file.file);
+
+      const response = await fetch(`/api/pdf/compress-pdf/${mode}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      setStepStatus('upload', 'done');
+      setStepStatus('compress', 'active');
+      animateToProgress(70);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Compression failed');
+      }
+
+      setStepStatus('compress', 'done');
+      setStepStatus('optimize', 'active');
+      animateToProgress(95);
+
+      setResults({
+        originalSize: data.originalSize,
+        compressedSize: data.compressedSize,
+        reductionPercent: data.reductionPercent,
+        pdfUrl: data.pdfUrl,
+      });
+
+      animateToProgress(100);
+      await new Promise((r) => setTimeout(r, 500));
+      setStepStatus('optimize', 'done');
       setIsDone(true);
+      showToast('PDF compressed successfully!', 'success');
     } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
+      showToast(err.message || 'An error occurred during compression', 'error');
+      setSteps((prev) => prev.map((s) => (s.status === 'active' ? { ...s, status: 'error' } : s)));
     } finally {
-      setIsMerging(false);
+      setIsProcessing(false);
     }
-  }, [files]);
+  };
 
-  const handleReset = useCallback(() => {
-    setFiles([]);
+  const handleReset = () => {
+    setFile(null);
     setIsDone(false);
-    setProgress(0);
-    setIsMerging(false);
-    setMergedBlob(null);
-  }, []);
+    setResults(null);
+    setSteps(INITIAL_STEPS);
+    setOverallProgress(0);
+  };
 
-  const handleDownload = useCallback(() => {
-    try {
-      if (!mergedBlob) return;
-      const url = URL.createObjectURL(mergedBlob);
+  const modeOptions = [
+    { id: 'low', label: 'Low', desc: 'Slight compression, high quality' },
+    { id: 'medium', label: 'Medium', desc: 'Good compression, good quality', recommended: true },
+    { id: 'high', label: 'High', desc: 'High compression, standard quality' },
+  ];
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'merged.pdf';
-
-      document.body.appendChild(a);
-      a.click();
-
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err: any) {
-      alert(err.message || 'Failed to merge PDFs');
-    }
-  }, [mergedBlob]);
+  /* Step indicator icons (consistent with LockPDF) */
+  const StepIcon = ({ status }: { status: StepStatus }) => {
+    if (status === 'done')
+      return (
+        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#10B981' }}>
+          <Icon name="CheckIcon" size={14} style={{ color: '#fff' } as React.CSSProperties} />
+        </div>
+      );
+    if (status === 'error')
+      return (
+        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#EF4444' }}>
+          <Icon name="XMarkIcon" size={14} style={{ color: '#fff' } as React.CSSProperties} />
+        </div>
+      );
+    if (status === 'active')
+      return (
+        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: colors.primary }}>
+          <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.25)" strokeWidth="3" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+        </div>
+      );
+    return (
+      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#EEEEF5' }}>
+        <div className="w-2 h-2 rounded-full" style={{ background: '#C4C4D4' }} />
+      </div>
+    );
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {/* Upload Zone */}
-      {files.length === 0 && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-          aria-label="Upload PDF files to merge"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            multiple
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? '#10B981' : '#FFF0F2',
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="ArchiveBoxIcon"
-              size={28}
-              variant="solid"
-              style={
-                {
-                  color: isDragging ? 'white' : '#10B981',
-                } as React.CSSProperties
-              }
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — supports multiple files
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: '#10B981',
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF Files
-          </div>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF files only · Max 100MB per file
-          </p>
-        </div>
+      {!file && (
+        <UploadZone
+          onFilesSelected={handleFilesSelected}
+          multiple={false}
+          accentColor={colors.primary}
+          iconName="ArchiveBoxIcon"
+        />
       )}
 
-      {/* File List */}
-      {files.length > 0 && !isDone && (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-bold" style={{ fontSize: '16px', color: '#1A1A2E' }}>
-              {files.length} file{files.length > 1 ? 's' : ''} selected ({formatSize(totalSize)})
-            </h3>
-
+      {file && !isDone && (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* File Item */}
+          <div
+            className="file-item flex items-center gap-3 p-4 mb-6"
+            style={{
+              background: colors.surface,
+              border: `1.5px solid ${colors.border}`,
+              borderRadius: '16px',
+            }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'white' }}>
+              <Icon name="DocumentIcon" size={20} variant="solid" style={{ color: colors.primary } as React.CSSProperties} />
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="truncate font-heading font-bold text-[15px] text-[#1A1A2E]">{file.name}</p>
+              <p className="font-body text-[12px] text-[#8888A8]">{formatSize(file.size)}</p>
+            </div>
             <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isMerging}
-              className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                color: '#10B981',
-                background: '#FFF0F2',
-                border: '1px solid #FFD6DB',
-                fontFamily: 'var(--font-heading)',
-              }}
+              onClick={handleReset}
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-red-50 text-red-400"
+              disabled={isProcessing}
             >
-              <Icon name="PlusIcon" size={14} />
-              Add More
+              <Icon name="XMarkIcon" size={16} />
             </button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              className="hidden"
-              onChange={(e) => handleFiles(e.target.files)}
-            />
           </div>
 
-          <div className="space-y-2 mb-5">
-            {files.map((file, i) => (
-              <div key={file.id} className="file-item flex items-center gap-3 p-3">
-                {/* PDF Icon */}
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFF0F2' }}
-                >
-                  <Icon
-                    name="DocumentIcon"
-                    size={18}
-                    variant="solid"
-                    style={{ color: '#10B981' } as React.CSSProperties}
-                  />
-                </div>
-
-                {/* Name + Size */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="truncate"
+          {/* Mode Selector */}
+          {!isProcessing && (
+            <div className="mb-6 text-left">
+              <h4 className="font-heading font-bold text-sm text-[#1A1A2E] mb-3">Compression Level</h4>
+              <div className="grid grid-cols-1 gap-3">
+                {modeOptions.map((opt) => (
+                  <label
+                    key={opt.id}
+                    className="relative flex items-center gap-3 p-4 rounded-2xl cursor-pointer transition-all border-2"
                     style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      color: '#1A1A2E',
+                      background: mode === opt.id ? colors.surface : 'white',
+                      borderColor: mode === opt.id ? colors.primary : '#EEEEF5',
                     }}
                   >
-                    {file.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '11px',
-                      color: '#8888A8',
-                    }}
-                  >
-                    {formatSize(file.size)}
-                  </p>
-                </div>
-
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => moveFile(i, 'up')}
-                    disabled={i === 0 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === 0 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move up"
-                  >
-                    <Icon name="ChevronUpIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => moveFile(i, 'down')}
-                    disabled={i === files.length - 1 || isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                    style={{
-                      background: '#F8F8FC',
-                      color: '#4A4A6A',
-                      border: '1px solid #EEEEF5',
-                      cursor: i === files.length - 1 ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-label="Move down"
-                  >
-                    <Icon name="ChevronDownIcon" size={13} />
-                  </button>
-
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    disabled={isMerging}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all ml-1 disabled:opacity-50"
-                    style={{
-                      background: '#FFF0F2',
-                      color: '#10B981',
-                      border: '1px solid #FFD6DB',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Remove file"
-                  >
-                    <Icon name="XMarkIcon" size={13} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Progress */}
-          {isMerging && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '13px',
-                    color: '#4A4A6A',
-                  }}
-                >
-                  Merging files...
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#10B981',
-                  }}
-                >
-                  {Math.round(progress)}%
-                </span>
-              </div>
-              <div
-                className="w-full h-2 rounded-full overflow-hidden"
-                style={{ background: '#FFD6DB' }}
-              >
-                <div
-                  className="progress-bar h-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: '#10B981',
-                    transition: 'width 0.2s ease-out',
-                  }}
-                />
+                    <input
+                      type="radio"
+                      name="compression-mode"
+                      className="hidden"
+                      checked={mode === opt.id}
+                      onChange={() => setMode(opt.id as CompressionMode)}
+                    />
+                    <div
+                      className="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                      style={{ borderColor: mode === opt.id ? colors.primary : '#C4C4D4' }}
+                    >
+                      {mode === opt.id && <div className="w-2.5 h-2.5 rounded-full" style={{ background: colors.primary }} />}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading font-extrabold text-[15px] text-[#1A1A2E]">{opt.label}</span>
+                        {opt.recommended && (
+                          <span
+                            className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider"
+                            style={{ background: colors.primary, color: 'white' }}
+                          >
+                            Recommended
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-body text-[12px] text-[#8888A8]">{opt.desc}</p>
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Merge Button */}
-          {!isMerging && (
+          {/* Progress Steps */}
+          {isProcessing && (
+            <div className="mb-6 animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-heading font-semibold text-[13px] text-[#4A4A6A]">Processing your PDF…</span>
+                <span className="font-heading font-extrabold text-[13px]" style={{ color: colors.primary }}>
+                  {Math.round(overallProgress)}%
+                </span>
+              </div>
+              <div className="w-full h-2.5 rounded-full overflow-hidden bg-slate-100 mb-5 text-left">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{
+                    width: `${overallProgress}%`,
+                    background: `linear-gradient(90deg, ${colors.primary} 0%, #34D399 100%)`,
+                  }}
+                />
+              </div>
+
+              <div className="space-y-3 text-left">
+                {steps.map((step) => (
+                  <div
+                    key={step.id}
+                    className="flex items-start gap-3 p-3 rounded-xl transition-all duration-300"
+                    style={{
+                      background: step.status === 'active' ? colors.surface : step.status === 'done' ? '#F0FDF4' : step.status === 'error' ? '#FEF2F2' : '#F8F8FC',
+                      border: `1.5px solid ${step.status === 'active' ? colors.border : step.status === 'done' ? '#BBF7D0' : step.status === 'error' ? '#FECACA' : '#EEEEF5'}`,
+                    }}
+                  >
+                    <StepIcon status={step.status} />
+                    <div className="flex-1 min-w-0">
+                      <p
+                        style={{
+                          fontFamily: 'var(--font-heading)',
+                          fontWeight: 700,
+                          fontSize: '13px',
+                          color: step.status === 'done' ? '#10B981' : step.status === 'error' ? '#DC2626' : step.status === 'active' ? '#1A1A2E' : '#8888A8',
+                        }}
+                      >
+                        {step.label}
+                      </p>
+                      {(step.status === 'active' || step.status === 'done') && (
+                        <p className="font-body text-[12px] text-[#8888A8] mt-0.5">{step.detail}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Compress Button */}
+          {!isProcessing && (
             <button
-              onClick={handleMerge}
-              disabled={files.length < 2 || isMerging}
-              className="w-full py-4 rounded-2xl font-heading font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleCompress}
+              className="w-full py-4 rounded-2xl font-heading font-extrabold text-white transition-all hover:translate-y-[-2px] active:translate-y-0"
               style={{
-                background: files.length >= 2 ? '#10B981' : '#ccc',
-                color: 'white',
-                fontSize: '16px',
-                border: 'none',
-                cursor: files.length >= 2 ? 'pointer' : 'not-allowed',
-                boxShadow: files.length >= 2 ? '0 6px 20px rgba(232,68,90,0.28)' : 'none',
+                background: colors.primary,
+                boxShadow: colors.shadow,
               }}
             >
               <span className="flex items-center justify-center gap-2">
-                <Icon name="DocumentPlusIcon" size={18} variant="solid" />
-                Merge {files.length} PDF{files.length !== 1 ? 's' : ''}
+                <Icon name="ArchiveBoxIcon" size={20} variant="solid" />
+                Compress PDF Now
               </span>
             </button>
-          )}
-
-          {files.length < 2 && !isMerging && (
-            <p
-              className="text-center mt-2"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: '#8888A8',
-              }}
-            >
-              Add at least 2 PDF files to merge
-            </p>
           )}
         </div>
       )}
 
-      {/* Done State */}
-      {isDone && (
-        <div className="text-center py-8">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 pulse-anim"
-            style={{ background: '#F0FDF4' }}
-          >
-            <Icon
-              name="CheckIcon"
-              size={28}
-              variant="solid"
-              style={{ color: '#16A34A' } as React.CSSProperties}
-            />
+      {/* Success State */}
+      {isDone && results && (
+        <div className="text-center py-10 animate-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: '#F0FDF4', boxShadow: '0 0 0 10px #F0FDF444' }}>
+            <Icon name="CheckBadgeIcon" size={36} variant="solid" style={{ color: '#16A34A' } as React.CSSProperties} />
           </div>
 
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '20px', color: '#1A1A2E' }}
-          >
-            Merge Complete!
-          </h3>
-
-          <p
-            style={{
-              color: '#4A4A6A',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '24px',
-            }}
-          >
-            Your {files.length} PDFs have been merged into one file.
+          <h3 className="font-heading font-extrabold text-2xl mb-2 text-slate-900">Compression Success!</h3>
+          <p className="font-body text-[15px] text-[#4A4A6A] mb-8">
+            Your file <strong>{file?.name}</strong> has been reduced by <strong>{results.reductionPercent}</strong>.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              className="btn-primary flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#10B981',
-                color: 'white',
-                border: 'none',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 6px 20px rgba(232,68,90,0.28)',
-              }}
-              onClick={handleDownload}
-            >
-              <Icon name="ArrowDownTrayIcon" size={18} variant="solid" />
-              Download Merged PDF
-            </button>
+          {/* Size Comparison Card */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Before</p>
+              <p className="font-heading font-extrabold text-lg text-slate-600">{results.originalSize}</p>
+            </div>
+            <div className="p-4 rounded-2xl border-2" style={{ background: colors.surface, borderColor: colors.border }}>
+              <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: colors.primary }}>After</p>
+              <p className="font-heading font-extrabold text-lg" style={{ color: '#1A1A2E' }}>{results.compressedSize}</p>
+            </div>
+          </div>
 
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href={results.pdfUrl}
+              download
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full transition-all hover:scale-105 active:scale-95 shadow-lg no-underline"
+              style={{
+                background: colors.primary,
+                color: 'white',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 800,
+                fontSize: '15px',
+                boxShadow: colors.shadow,
+              }}
+            >
+              <Icon name="ArrowDownTrayIcon" size={20} variant="solid" />
+              Download Compressed PDF
+            </a>
             <button
               onClick={handleReset}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full"
-              style={{
-                background: '#F8F8FC',
-                color: '#4A4A6A',
-                border: '1.5px solid #EEEEF5',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full border-[1.5px] border-slate-200 bg-white text-slate-600 font-heading font-bold text-[15px] transition-all hover:bg-slate-50"
             >
-              <Icon name="ArrowPathIcon" size={16} />
-              Merge More Files
+              <Icon name="ArrowPathIcon" size={18} />
+              Start Fresh
             </button>
           </div>
         </div>
