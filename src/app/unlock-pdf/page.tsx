@@ -10,11 +10,13 @@ import { unlockPDFData } from './components/unlockPDFData';
 export const metadata: Metadata = {
   title: 'Unlock PDF Online Free — Remove PDF Passwords Safely | LuvUPDF',
   description:
-    'Unlock password-protected PDF files online for free. Regain access to your own documents while keeping quality intact. No installation, no sign-up, works in your browser.',
+    'Unlock password-protected PDF files online for free. Regain access to your own documents while keeping quality intact. No installation, no sign-up, no data stored. Works in your browser.',
+  keywords:
+    'unlock PDF, remove PDF password, decrypt PDF, PDF password remover, unlock PDF online, remove PDF protection, free PDF unlock, no data stored, private PDF unlock',
   openGraph: {
     title: 'Unlock PDF Online Free — Remove PDF Passwords | LuvUPDF',
     description:
-      'Remove passwords from your own PDF files in a few simple steps. Free, secure, and browser-based.',
+      'Remove passwords from your own PDF files in a few simple steps. Free, secure, and browser-based. No data stored.',
     type: 'website',
     url: 'https://luvupdf.com/unlock-pdf',
   },
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Unlock PDF Online Free | LuvUPDF',
     description:
-      'Unlock password-protected PDFs you own without installing heavy desktop software. 100% free.',
+      'Unlock password-protected PDFs you own without installing heavy desktop software. 100% free. No data stored.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/unlock-pdf',
@@ -194,7 +196,7 @@ export default function UnlockPDFPage() {
             <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
               {[
                 { icon: 'ShieldCheckIcon', text: 'Secure Decryption' },
-                { icon: 'EyeSlashIcon', text: 'Privacy Protected' },
+                { icon: 'ServerIcon', text: 'No Data Stored' },
                 { icon: 'CurrencyDollarIcon', text: '100% Free' },
                 { icon: 'BoltIcon', text: 'Instant Results' },
               ].map((badge) => (
@@ -234,6 +236,22 @@ export default function UnlockPDFPage() {
             >
               <UnlockPDFUploader />
             </div>
+
+            {/* Privacy Statement */}
+            <p
+              className="mt-5 text-center"
+              style={{
+                color: '#8888A8',
+                fontSize: '12px',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.7,
+              }}
+            >
+              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We
+              call our API only to perform the server-side unlocking process.{' '}
+              <strong style={{ color: '#4A4A6A' }}>No file or password data is ever stored</strong>{' '}
+              on our servers — everything is processed in memory and discarded immediately.
+            </p>
           </div>
         </section>
 

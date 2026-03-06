@@ -128,7 +128,7 @@ export default function UploadZone({
           marginTop: '16px',
         }}
       >
-        PDF files only · Max 100MB per file
+        PDF files only
       </p>
     </div>
   );

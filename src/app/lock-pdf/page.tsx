@@ -10,20 +10,20 @@ import Icon from '@/components/ui/AppIcon';
 export const metadata: Metadata = {
   title: 'Lock PDF Online Free — Password Protect PDF Instantly | LuvUPDF',
   description:
-    'Lock and password protect your PDF files online for free using 256-bit AES encryption. No sign-up required. Secure your PDFs instantly with LuvUPDF.',
+    'Lock and password protect your PDF files online for free using 256-bit AES encryption. No sign-up required. No data stored. Files are processed in memory and discarded immediately. Secure your PDFs instantly with LuvUPDF.',
   keywords:
-    'lock PDF, password protect PDF, encrypt PDF, PDF password, secure PDF online, protect PDF free, PDF encryption, lock PDF online',
+    'lock PDF, password protect PDF, encrypt PDF, PDF password, secure PDF online, protect PDF free, PDF encryption, lock PDF online, no data stored, private PDF encryption',
   openGraph: {
     title: 'Lock PDF Online Free — Password Protect PDF | LuvUPDF',
     description:
-      'Add 256-bit AES password protection to any PDF file for free. No registration, instant results, SSL secured.',
+      'Add 256-bit AES password protection to any PDF file for free. No registration, no data stored, instant results, SSL secured. Files processed in memory and discarded immediately.',
     type: 'website',
     url: 'https://luvupdf.com/lock-pdf',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Lock PDF Online Free | LuvUPDF',
-    description: 'Password protect any PDF with 256-bit encryption. Free, instant, no sign-up.',
+    description: 'Password protect any PDF with 256-bit encryption. Free, instant, no sign-up, no data stored.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/lock-pdf',
@@ -202,7 +202,7 @@ export default function LockPDFPage() {
             <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
               {[
                 { icon: 'ShieldCheckIcon', text: '256-bit AES' },
-                { icon: 'EyeSlashIcon', text: 'Password Not Stored' },
+                { icon: 'ServerIcon', text: 'No Data Stored' },
                 { icon: 'CurrencyDollarIcon', text: '100% Free' },
                 { icon: 'BoltIcon', text: 'Instant Encryption' },
               ].map((badge) => (
@@ -242,6 +242,22 @@ export default function LockPDFPage() {
             >
               <LockPDFUploader />
             </div>
+
+            {/* Privacy Statement */}
+            <p
+              className="mt-5 text-center"
+              style={{
+                color: '#8888A8',
+                fontSize: '12px',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.7,
+              }}
+            >
+              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We
+              call our API only to perform the server-side locking process.{' '}
+              <strong style={{ color: '#4A4A6A' }}>No file or password data is ever stored</strong>{' '}
+              on our servers — everything is processed in memory and discarded immediately.
+            </p>
           </div>
         </section>
 
