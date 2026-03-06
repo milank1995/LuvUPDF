@@ -10,11 +10,11 @@ export const compressPDFData = {
   stepCircleColor: '#10B981',
 
   steps: [
-    { step: 1, title: 'Upload PDF', desc: 'Upload your file (up to 100MB).' },
+    { step: 1, title: 'Upload PDF', desc: 'Upload your file (up to 50MB).' },
     {
       step: 2,
       title: 'Choose Compression Level',
-      desc: 'Select recommended or maximum compression.',
+      desc: 'Select Low, Medium, or High compression.',
     },
     { step: 3, title: 'Click Compress PDF', desc: 'Processing takes only seconds.' },
     { step: 4, title: 'Download Compressed File', desc: 'Download smaller PDF instantly.' },
@@ -62,8 +62,8 @@ export const compressPDFData = {
       a: 'The final size depends on the content of your PDF. Files with large images usually shrink more, while text-only documents may see a smaller reduction.',
     },
     {
-      q: 'What is the difference between recommended and maximum compression?',
-      a: 'Recommended compression balances file size and quality. Maximum compression reduces the file size further but may slightly lower image quality.',
+      q: 'What is the difference between the compression levels?',
+      a: 'Low compression maintains high quality with a slight size reduction. Medium (Recommended) balances size and quality. High compression offers maximum reduction with standard quality.',
     },
     {
       q: 'Can I compress a PDF for email attachments?',

@@ -203,6 +203,20 @@ export default function CompressPDFPage() {
             >
               <CompressPDFUploader />
             </div>
+
+            {/* Privacy Statement */}
+            <p
+              className="mt-5 text-center"
+              style={{
+                color: '#8888A8',
+                fontSize: '12px',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.7,
+              }}
+            >
+              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We call our API only to perform the server-side compression process.{' '}
+              <strong style={{ color: '#4A4A6A' }}>No file data is ever stored</strong> on our servers — everything is processed in memory and discarded immediately.
+            </p>
           </div>
         </section>
 

@@ -13,7 +13,7 @@ export const unlockPDFData = {
     {
       step: 1,
       title: 'Upload Your Locked PDF',
-      desc: 'Click the upload area or drag and drop your password-protected PDF onto the page. LuvUPDF accepts files up to 100MB. Your file is encrypted during transfer using SSL technology.',
+      desc: 'Click the upload area or drag and drop your password-protected PDF onto the page. LuvUPDF accepts files up to 50 MB. Your file is encrypted during transfer using SSL technology.',
     },
     {
       step: 2,
@@ -28,7 +28,7 @@ export const unlockPDFData = {
     {
       step: 4,
       title: 'Download Your Unlocked PDF',
-      desc: 'Once unlocked, click the download button to save your PDF without a password. The file is automatically deleted from our servers within 1 hour.',
+      desc: 'Once unlocked, click the download button to save your PDF without a password. The file is processed in memory and discarded from our servers immediately — nothing is ever stored.',
     },
   ],
 
@@ -47,7 +47,7 @@ export const unlockPDFData = {
     {
       icon: 'KeyIcon',
       title: 'No Password Storage',
-      desc: 'We never store your password. Unlocking is performed client-side and your password is immediately forgotten.',
+      desc: 'We never store your password or file. All processing is performed server-side in memory and discarded immediately after the unlocked PDF is returned to you.',
       color: '#F59E0B',
       bg: '#FFFBEB',
     },
@@ -82,7 +82,7 @@ export const unlockPDFData = {
   securitySectionTitle: 'Is It Safe to Unlock PDFs Online?',
   security: [
     'Yes. All file transfers use secure HTTPS connections with encryption.',
-    'Files are automatically deleted from servers within 1 hour.',
+    'Files and passwords are processed in server memory and discarded immediately — nothing is ever stored.',
     'We never store, read, or share the contents of your documents.',
   ],
 

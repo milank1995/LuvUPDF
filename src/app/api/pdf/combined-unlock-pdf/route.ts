@@ -15,19 +15,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No password provided' }, { status: 400 });
     }
 
-    // Forward to external API - single combined call
+    // Forward to external API
     const upstream = new FormData();
     upstream.append('file', file);
     upstream.append('password', password);
 
-    const res = await fetch(`${API_BASE}/api/pdf/combined-lock-pdf`, {
+    const res = await fetch(`${API_BASE}/api/pdf/combined-unlock-pdf`, {
       method: 'POST',
       body: upstream,
     });
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      const message = errData.error || errData.message || `Lock failed: ${res.statusText}`;
+      const message = errData.error || errData.message || `Unlock failed: ${res.statusText}`;
       return NextResponse.json({ error: message }, { status: res.status });
     }
 
@@ -38,11 +38,11 @@ export async function POST(request: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="locked_${originalName}.pdf"`,
+        'Content-Disposition': `attachment; filename="unlocked_${originalName}.pdf"`,
       },
     });
   } catch (error: any) {
-    console.error('API Proxy Error (combined-lock-pdf):', error);
+    console.error('API Proxy Error (combined-unlock-pdf):', error);
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }

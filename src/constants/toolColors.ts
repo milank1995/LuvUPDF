@@ -41,4 +41,10 @@ export const TOOL_COLORS = {
     border: '#BFEFEF',
     shadow: 'rgba(14, 165, 176, 0.28)',
   },
+  compress: {
+    primary: '#10B981',
+    surface: '#ECFDF5',
+    border: '#A7F3D0',
+    shadow: 'rgba(16, 185, 129, 0.28)',
+  },
 } as const;
