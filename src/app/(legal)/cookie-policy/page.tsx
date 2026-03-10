@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy | LuvUPDF — Secure & Minimal Tracking',
@@ -15,7 +13,6 @@ export const metadata: Metadata = {
 export default function CookiePolicyPage() {
   return (
     <>
-      <Header />
       <main>
         <section className="pt-24 pb-16 px-4 sm:px-6" style={{ background: '#FFFFFF' }}>
           <div className="max-w-4xl mx-auto">
@@ -103,7 +100,6 @@ export default function CookiePolicyPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

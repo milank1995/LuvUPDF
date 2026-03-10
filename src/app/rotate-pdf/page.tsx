@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import RotatePDFUploader from './components/RotatePDFUploader';
@@ -87,7 +85,6 @@ export default function RotatePDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -207,7 +204,6 @@ export default function RotatePDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...rotatePDFData} />
       </main>
-      <Footer />
     </>
   );
 }

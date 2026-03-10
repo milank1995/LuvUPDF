@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import MergePDFUploader from './components/MergePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { mergePDFData } from './components/mergePDFData';
@@ -133,7 +131,6 @@ export default function MergePDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -287,7 +284,6 @@ export default function MergePDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...mergePDFData} />
       </main>
-      <Footer />
     </>
   );
 }

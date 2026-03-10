@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import RemovePagesPDFUploader from './components/RemovePagesPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { removePagesPDFData } from './components/removePagesPDFData';
@@ -138,7 +136,6 @@ export default function RemovePagesPDFPage() {
         strategy="afterInteractive"
       />
 
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -293,7 +290,6 @@ export default function RemovePagesPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...removePagesPDFData} />
       </main>
-      <Footer />
     </>
   );
 }

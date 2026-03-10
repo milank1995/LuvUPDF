@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import UnlockPDFUploader from './components/UnlockPDFUploader';
@@ -89,7 +87,6 @@ export default function UnlockPDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -258,7 +255,6 @@ export default function UnlockPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...unlockPDFData} />
       </main>
-      <Footer />
     </>
   );
 }

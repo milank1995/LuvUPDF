@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import SplitPDFUploader from './components/SplitPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { splitPDFData } from './components/splitPDFData';
@@ -51,7 +49,6 @@ export default function SplitPDFPage() {
         type="module"
         strategy="afterInteractive"
       />
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -202,7 +199,6 @@ export default function SplitPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...splitPDFData} />
       </main>
-      <Footer />
     </>
   );
 }

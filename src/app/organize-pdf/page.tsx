@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import OrganizePDFUploader from './components/OrganizePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { organizePDFData } from './components/organizePDFData';
@@ -64,7 +62,6 @@ export default function OrganizePDFPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -218,8 +215,6 @@ export default function OrganizePDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...organizePDFData} />
       </main>
-
-      <Footer />
     </>
   );
 }

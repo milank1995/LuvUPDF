@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CompressPDFUploader from './components/CompressPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { compressPDFData } from './components/compressPDFData';
@@ -54,7 +52,6 @@ export default function CompressPDFPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -223,8 +220,6 @@ export default function CompressPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...compressPDFData} />
       </main>
-
-      <Footer />
     </>
   );
 }

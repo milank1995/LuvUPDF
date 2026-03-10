@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import LockPDFUploader from './components/LockPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { lockPDFData } from './components/lockPDFData';
@@ -95,7 +93,6 @@ export default function LockPDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
-      <Header />
       <main>
         {/* Page Hero */}
         <section
@@ -264,7 +261,6 @@ export default function LockPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...lockPDFData} />
       </main>
-      <Footer />
     </>
   );
 }
