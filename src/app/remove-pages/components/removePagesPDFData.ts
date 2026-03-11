@@ -103,16 +103,5 @@ export const removePagesPDFData = {
       a: 'Yes! LuvUPDF is fully responsive and works perfectly on iPhone, iPad, Android, and all modern mobile browsers. You can manage your PDF documents on the go just as easily as on a desktop.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/organize-pdf',
-      icon: 'Squares2X2Icon',
-      title: 'Organize PDF',
-      desc: 'Easily reorder or rearrange pages in your PDF document.',
-      color: '#7C5CBF',
-      bg: '#F3EEFF',
-    },
-  ],
 };
 

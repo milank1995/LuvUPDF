@@ -108,23 +108,4 @@ export const organizePDFData = {
       a: 'No. Our tool creates a new organized version of your file for you to download. Your original file stays untouched on your device.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentPlusIcon',
-      title: 'Merge PDF',
-      desc: 'Combine multiple PDFs',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-    {
-      href: '/remove-pages',
-      icon: 'TrashIcon',
-      title: 'Remove Pages',
-      desc: 'Quickly delete pages',
-      color: '#EF4444',
-      bg: '#FEF2F2',
-    },
-  ],
 };

@@ -108,23 +108,4 @@ export const splitPDFData = {
       a: 'No. You can split your PDF instantly without signing up or installing any software.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentDuplicateIcon',
-      title: 'Merge PDF',
-      desc: 'Combine multiple PDFs into one file',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-    {
-      href: '/organize-pdf',
-      icon: 'Squares2X2Icon',
-      title: 'Organize PDF',
-      desc: 'Reorder and manage PDF pages',
-      color: '#7C5CBF',
-      bg: '#F3EEFF',
-    },
-  ],
 };

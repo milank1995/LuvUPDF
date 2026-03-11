@@ -119,31 +119,4 @@ export const mergePDFData = {
       a: 'Yes. LuvUPDF is a browser-based tool that works perfectly on iOS (iPhone), Android, and all tablet browsers, with no app installation required.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/lock-pdf',
-      icon: 'LockClosedIcon',
-      title: 'Lock PDF',
-      desc: 'Password protect your sensitive PDF files.',
-      color: '#7C5CBF',
-      bg: '#F3EEFF',
-    },
-    {
-      href: '/unlock-pdf',
-      icon: 'LockOpenIcon',
-      title: 'Unlock PDF',
-      desc: 'Remove passwords from your own PDF files.',
-      color: '#0EA5B0',
-      bg: '#EDFCFD',
-    },
-    {
-      href: '/rotate-pdf',
-      icon: 'ArrowPathIcon',
-      title: 'Rotate PDF',
-      desc: 'Correct orientation of PDF pages easily.',
-      color: '#F59E0B',
-      bg: '#FFFBEB',
-    },
-  ],
 };
