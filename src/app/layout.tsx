@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: 'LuvUPDF — Free & Secure Online PDF Tools',
   description:
     'Merge, edit, and manage your PDF files online with 100% privacy and security. No login required.',
+  icons: {
+    icon: '/assets/images/favicon.png',
+    shortcut: '/assets/images/favicon.png',
+    apple: '/assets/images/favicon.png',
+  },
 };
 
 import { ToastProvider } from '@/components/ui/Toast';
