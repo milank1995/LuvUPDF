@@ -9,23 +9,10 @@ const tools = [
     color: '#E8445A',
     bg: '#FFF0F2',
     title: 'Merge PDF',
-    description: 'Merge PDF online free by combining multiple files into one secure document.',
+    description: 'Merge multiple PDF files into one single document easily and securely.',
     badge: 'Popular',
     badgeBg: '#FFF0F2',
     badgeColor: '#E8445A',
-  },
-  {
-    id: 'remove-pages',
-    href: '/remove-pages',
-    icon: 'TrashIcon',
-    color: '#EF4444',
-    bg: '#FEF2F2',
-    title: 'Remove PDF Pages',
-    description: 'Remove pages from PDF online and delete unwanted pages for free.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
-    isComingSoon: false,
   },
   {
     id: 'split-pdf',
@@ -34,64 +21,10 @@ const tools = [
     color: '#3B82F6',
     bg: '#EFF6FF',
     title: 'Split PDF',
-    description: 'Coming Soon: Extract pages or split one PDF into multiple files instantly.',
+    description: 'Separate one PDF page or whole set for easy conversion into independent PDF files.',
     badge: null,
     badgeBg: '#F1F5F9',
     badgeColor: '#64748B',
-    isComingSoon: true,
-  },
-  {
-    id: 'organize-pdf',
-    href: '/organize-pdf',
-    icon: 'Squares2X2Icon',
-    color: '#8B5CF6',
-    bg: '#F5F3FF',
-    title: 'Organize PDF',
-    description: 'Reorder, rotate, and manage PDF pages with our intuitive drag-and-drop tool.',
-    badge: 'New',
-    badgeBg: '#F5F3FF',
-    badgeColor: '#8B5CF6',
-    isComingSoon: false,
-  },
-  {
-    id: 'rotate-pdf',
-    href: '/rotate-pdf',
-    icon: 'ArrowPathIcon',
-    color: '#F59E0B',
-    bg: '#FFFBEB',
-    title: 'Rotate PDF',
-    description: 'Permanently rotate PDF pages or entire documents to the correct orientation.',
-    badge: null,
-    badgeBg: '',
-    badgeColor: '',
-    isComingSoon: false,
-  },
-  {
-    id: 'lock-pdf',
-    href: '/lock-pdf',
-    icon: 'LockClosedIcon',
-    color: '#7C5CBF',
-    bg: '#F3EEFF',
-    title: 'Lock PDF',
-    description: 'Securely password protect PDF files with military-grade 256-bit AES encryption.',
-    badge: 'AES-256',
-    badgeBg: '#F3EEFF',
-    badgeColor: '#7C5CBF',
-    isComingSoon: false,
-  },
-  {
-    id: 'unlock-pdf',
-    href: '/unlock-pdf',
-    icon: 'LockOpenIcon',
-    color: '#0EA5B0',
-    bg: '#EDFCFD',
-    title: 'Unlock PDF',
-    description:
-      'Remove password protection from your PDF files instantly. 100% secure and private.',
-    badge: 'Free',
-    badgeBg: '#EDFCFD',
-    badgeColor: '#0EA5B0',
-    isComingSoon: false,
   },
   {
     id: 'compress-pdf',
@@ -100,11 +33,70 @@ const tools = [
     color: '#10B981',
     bg: '#ECFDF5',
     title: 'Compress PDF',
-    description: 'Reduce PDF file size without losing quality.',
+    description: 'Reduce the size of your PDF while optimizing for maximal PDF quality.',
+    badge: 'Fast',
+    badgeBg: '#ECFDF5',
+    badgeColor: '#10B981',
+  },
+  {
+    id: 'rotate-pdf',
+    href: '/rotate-pdf',
+    icon: 'ArrowPathIcon',
+    color: '#F59E0B',
+    bg: '#FFFBEB',
+    title: 'Rotate PDF',
+    description: 'Rotate your PDF pages to the exact orientation you need.',
     badge: null,
-    badgeBg: '#F1F5F9',
-    badgeColor: '#64748B',
-    isComingSoon: false,
+    badgeBg: '',
+    badgeColor: '',
+  },
+  {
+    id: 'lock-pdf',
+    href: '/lock-pdf',
+    icon: 'LockClosedIcon',
+    color: '#7C5CBF',
+    bg: '#F3EEFF',
+    title: 'Lock PDF',
+    description: 'Protect PDF files with a password and encrypt them for secure sharing.',
+    badge: 'Secure',
+    badgeBg: '#F3EEFF',
+    badgeColor: '#7C5CBF',
+  },
+  {
+    id: 'unlock-pdf',
+    href: '/unlock-pdf',
+    icon: 'LockOpenIcon',
+    color: '#0EA5B0',
+    bg: '#EDFCFD',
+    title: 'Unlock PDF',
+    description: 'Remove PDF password security, so you can use your PDFs as you want.',
+    badge: null,
+    badgeBg: '',
+    badgeColor: '',
+  },
+  {
+    id: 'organize-pdf',
+    href: '/organize-pdf',
+    icon: 'Squares2X2Icon',
+    color: '#8B5CF6',
+    bg: '#F5F3FF',
+    title: 'Organize PDF',
+    description: 'Sort, add and delete PDF pages. Drag and drop to reorder pages as you like.',
+    badge: 'New',
+    badgeBg: '#F5F3FF',
+    badgeColor: '#8B5CF6',
+  },
+  {
+    id: 'remove-pages',
+    href: '/remove-pages',
+    icon: 'TrashIcon',
+    color: '#EF4444',
+    bg: '#FEF2F2',
+    title: 'Remove PDF Pages',
+    description: 'Delete unwanted pages from your PDF document in a few clicks.',
+    badge: null,
+    badgeBg: '',
+    badgeColor: '',
   },
 ];
 
@@ -204,53 +196,6 @@ export default function ToolsGrid() {
           ))}
         </div>
 
-        {/* More tools teaser */}
-        <div
-          className="mt-8 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ background: 'white', border: '1.5px dashed #FFD6DB' }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: '#FFF0F2' }}
-            >
-              <Icon
-                name="SparklesIcon"
-                size={18}
-                variant="solid"
-                style={{ color: '#E8445A' } as React.CSSProperties}
-              />
-            </div>
-            <div>
-              <p
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  fontSize: '15px',
-                  color: '#1A1A2E',
-                }}
-              >
-                More tools coming soon
-              </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#8888A8' }}>
-                Compress PDF, PDF to Word, OCR, AI tools & more
-              </p>
-            </div>
-          </div>
-          <button
-            className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
-            style={{
-              background: '#FFF0F2',
-              color: '#E8445A',
-              border: '1.5px solid #FFD6DB',
-              fontFamily: 'var(--font-heading)',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Get Notified
-          </button>
-        </div>
       </div>
     </section>
   );
