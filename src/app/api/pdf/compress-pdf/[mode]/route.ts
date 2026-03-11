@@ -34,10 +34,10 @@ export async function POST(
         }
 
         // Rewrite pdfUrl to use our local proxy if it points to api.luvupdf.com
-        if (data.pdfUrl && data.pdfUrl.includes('api.luvupdf.com')) {
-            const url = new URL(data.pdfUrl);
-            data.pdfUrl = url.pathname;
-        }
+        // if (data.pdfUrl && data.pdfUrl.includes('api.luvupdf.com')) {
+        //     const url = new URL(data.pdfUrl);
+        //     data.pdfUrl = url.pathname;
+        // }
 
         // Return the JSON data directly to the client
         return NextResponse.json(data);
