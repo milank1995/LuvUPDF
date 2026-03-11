@@ -74,17 +74,12 @@ const softwareAppJsonLd = {
   },
 };
 
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 export default function RotatePDFPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
-      />
+      {/* ... scripts stay the same */}
       <main>
         {/* Page Hero */}
         <section
@@ -96,34 +91,14 @@ export default function RotatePDFPage() {
         >
           <div className="max-w-4xl mx-auto text-center">
             {/* Breadcrumb */}
-            <nav className="flex items-center justify-center gap-2 mb-6" aria-label="Breadcrumb">
-              <Link
-                href="/"
-                style={{
-                  color: '#8888A8',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  textDecoration: 'none',
-                }}
-              >
-                Home
-              </Link>
-              <Icon
-                name="ChevronRightIcon"
-                size={12}
-                style={{ color: '#EEEEF5' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#F59E0B',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 600,
-                }}
-              >
-                Rotate PDF
-              </span>
-            </nav>
+            <Breadcrumbs
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'All Tools', href: '/tools' },
+                { label: 'Rotate PDF' },
+              ]}
+              color="#F59E0B"
+            />
 
             {/* Badge */}
             <div

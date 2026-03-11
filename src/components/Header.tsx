@@ -6,22 +6,7 @@ import { usePathname } from 'next/navigation';
 
 import Icon from '@/components/ui/AppIcon';
 
-const tools = [
-  { label: 'Merge PDF', href: '/merge-pdf', icon: 'DocumentPlusIcon', color: '#E8445A' },
-  { label: 'Split PDF', href: '/split-pdf', icon: 'ScissorsIcon', color: '#3B82F6' },
-  { label: 'Compress PDF', href: '/compress-pdf', icon: 'ArchiveBoxIcon', color: '#10B981' },
-  { label: 'Rotate PDF', href: '/rotate-pdf', icon: 'ArrowPathIcon', color: '#F59E0B' },
-  { label: 'Lock PDF', href: '/lock-pdf', icon: 'LockClosedIcon', color: '#7C5CBF' },
-  { label: 'Unlock PDF', href: '/unlock-pdf', icon: 'LockOpenIcon', color: '#0EA5B0' },
-  { label: 'Organize PDF', href: '/organize-pdf', icon: 'Squares2X2Icon', color: '#8B5CF6' },
-  { label: 'Remove Pages', href: '/remove-pages', icon: 'TrashIcon', color: '#EF4444' },
-];
-
-const navLinks = [
-  { label: 'All Tools', href: '/tools' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
+import { tools, navLinks } from '@/config/tools';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
