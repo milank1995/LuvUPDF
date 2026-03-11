@@ -25,6 +25,8 @@ interface PageThumbnail {
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
+import Script from 'next/script';
+
 export default function RemovePagesPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([]);
@@ -239,6 +241,11 @@ export default function RemovePagesPDFUploader() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
       {/* Upload Zone */}
       {!file && (
         <UploadZone

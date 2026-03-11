@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import Icon from '@/components/ui/AppIcon';
 
 const tools = [
@@ -31,61 +32,35 @@ export default function Footer() {
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
           {/* Logo + Title */}
-          <div className="flex flex-col items-center md:items-start gap-2 md:gap-3">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #E8445A 0%, #FF7A8A 100%)' }}
+          <div className="flex flex-col items-center md:items-start">
+            <div className="flex items-center">
+              <Image
+                src="/assets/images/favicon.png"
+                alt="LoveUPDF Icon"
+                width={120}
+                height={120}
+                className="w-20 h-20 object-contain"
+              />
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 900,
+                  fontSize: '36px',
+                  lineHeight: '1',
+                  color: '#1A1A2E',
+                }}
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
-                    fill="white"
-                    fillOpacity="0.9"
-                  />
-                  <path
-                    d="M14 2V8H20"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M9 13H15M9 17H13"
-                    stroke="#E8445A"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-              <div className="flex flex-col items-center md:items-start">
+                LoveU
                 <span
                   style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 900,
-                    fontSize: '18px',
-                    lineHeight: '1',
-                    color: '#1A1A2E',
+                    background: 'linear-gradient(135deg, #E8445A, #FF7A8A)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  LuvU
-                  <span
-                    style={{
-                      background: 'linear-gradient(135deg, #E8445A, #FF7A8A)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    PDF
-                  </span>
+                  PDF
                 </span>
-              </div>
+              </span>
             </div>
           </div>
 
