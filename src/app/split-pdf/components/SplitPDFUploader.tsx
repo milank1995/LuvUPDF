@@ -7,6 +7,7 @@ import Icon from '@/components/ui/AppIcon';
 import { useToast } from '@/components/ui/Toast';
 import { BRAND_COLORS, PDF_CONFIG } from '@/constants/pdfConfig';
 import UploadZone from '@/components/pdf/UploadZone';
+import { isEncryptedPDF } from '@/utils/pdf';
 
 interface UploadedFile {
   id: string;
@@ -44,29 +45,6 @@ export default function SplitPDFUploader() {
   const [fixedInterval, setFixedInterval] = useState(1);
 
   const { showToast } = useToast();
-
-  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
-  const isEncryptedPDF = async (file: File): Promise<boolean> => {
-    const chunkSize = Math.min(file.size, 65536);
-    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
-    const tail = new Uint8Array(tailBuffer);
-
-    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
-    const head = new Uint8Array(headBuffer);
-
-    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
-      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
-        for (let j = 0; j < pattern.length; j++) {
-          if (buf[i + j] !== pattern[j]) continue outer;
-        }
-        return true;
-      }
-      return false;
-    };
-
-    const encryptPattern = new TextEncoder().encode('/Encrypt');
-    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
-  };
 
   /** Handle File Upload (Single File Only) */
   const handleFiles = useCallback(
@@ -322,7 +300,7 @@ export default function SplitPDFUploader() {
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       {/* Upload Zone */}
       {!file && (
         <UploadZone
@@ -330,6 +308,10 @@ export default function SplitPDFUploader() {
           multiple={false}
           accentColor={SPLIT_THEME.primary}
           iconName="ScissorsIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
         />
       )}
 
@@ -436,8 +418,8 @@ export default function SplitPDFUploader() {
                   key={mode.id}
                   onClick={() => setSplitMode(mode.id as SplitMode)}
                   className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${splitMode === mode.id
-                      ? 'shadow-sm'
-                      : 'bg-transparent border-transparent hover:bg-brand-surface'
+                    ? 'shadow-sm'
+                    : 'bg-transparent border-transparent hover:bg-brand-surface'
                     }`}
                   style={{
                     backgroundColor: splitMode === mode.id ? SPLIT_THEME.primaryLight : undefined,

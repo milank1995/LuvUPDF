@@ -9,6 +9,10 @@ interface UploadZoneProps {
   multiple?: boolean;
   accentColor?: string;
   iconName?: string;
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+  dragTitle?: string;
 }
 
 export default function UploadZone({
@@ -16,6 +20,10 @@ export default function UploadZone({
   multiple = true,
   accentColor = BRAND_COLORS.primary,
   iconName = 'DocumentPlusIcon',
+  title,
+  subtitle,
+  buttonText,
+  dragTitle,
 }: UploadZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dragCounter = useRef(0);
@@ -92,7 +100,9 @@ export default function UploadZone({
       </div>
 
       <h3 className="font-heading font-bold mb-2" style={{ fontSize: '18px', color: '#1A1A2E' }}>
-        {isDragging ? 'Drop your PDFs here!' : 'Drop PDF files here'}
+        {isDragging
+          ? dragTitle || (multiple ? 'Drop your PDFs here!' : 'Drop your PDF here!')
+          : title || (multiple ? 'Drop PDF files here' : 'Drop PDF file here')}
       </h3>
 
       <p
@@ -103,7 +113,10 @@ export default function UploadZone({
           marginBottom: '20px',
         }}
       >
-        or click to browse — supports multiple files
+        {subtitle ||
+          (multiple
+            ? 'or click to browse — supports multiple files'
+            : 'or click to browse — single file only')}
       </p>
 
       <div
@@ -117,7 +130,7 @@ export default function UploadZone({
         }}
       >
         <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-        Select PDF Files
+        {buttonText || (multiple ? 'Select PDF Files' : 'Select PDF File')}
       </div>
 
       <p

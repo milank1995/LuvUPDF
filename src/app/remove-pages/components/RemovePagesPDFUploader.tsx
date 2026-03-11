@@ -4,6 +4,8 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
 import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
+import UploadZone from '@/components/pdf/UploadZone';
 
 interface UploadedFile {
   id: string;
@@ -32,29 +34,6 @@ export default function RemovePagesPDFUploader() {
   const dragCounter = useRef(0);
 
   const { showToast } = useToast();
-
-  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
-  const isEncryptedPDF = async (file: File): Promise<boolean> => {
-    const chunkSize = Math.min(file.size, 65536);
-    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
-    const tail = new Uint8Array(tailBuffer);
-
-    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
-    const head = new Uint8Array(headBuffer);
-
-    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
-      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
-        for (let j = 0; j < pattern.length; j++) {
-          if (buf[i + j] !== pattern[j]) continue outer;
-        }
-        return true;
-      }
-      return false;
-    };
-
-    const encryptPattern = new TextEncoder().encode('/Encrypt');
-    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
-  };
 
   /** Handle File Upload (Single File Only) */
   const handleFiles = useCallback(
@@ -259,96 +238,19 @@ export default function RemovePagesPDFUploader() {
   }, [file, thumbnails]);
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Upload Zone (Styled Like Merge) */}
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Upload Zone */}
       {!file && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              fileInputRef.current?.click();
-            }
-          }}
-          aria-label="Upload PDF file to remove pages"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? '#E8445A' : '#FFF0F2',
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="TrashIcon"
-              size={28}
-              variant="solid"
-              style={
-                {
-                  color: isDragging ? 'white' : '#E8445A',
-                } as React.CSSProperties
-              }
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDF here!' : 'Drop PDF file here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — single file only
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: '#E8445A',
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF File
-          </div>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '12px',
-              fontFamily: 'var(--font-body)',
-              marginTop: '16px',
-            }}
-          >
-            PDF only · Max 100MB
-          </p>
-        </div>
+        <UploadZone
+          onFilesSelected={handleFiles}
+          multiple={false}
+          accentColor="#E8445A"
+          iconName="TrashIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
+        />
       )}
 
       {/* File Loaded */}

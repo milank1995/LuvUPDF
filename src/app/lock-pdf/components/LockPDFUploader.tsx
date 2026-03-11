@@ -5,6 +5,7 @@ import Icon from '@/components/ui/AppIcon';
 import UploadZone from '@/components/pdf/UploadZone';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
 
 const colors = TOOL_COLORS.lock;
 
@@ -86,31 +87,6 @@ export default function LockPDFUploader() {
   };
 
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-
-  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
-  const isEncryptedPDF = async (file: File): Promise<boolean> => {
-    // Read up to 64 KB from the end of the file (trailers live there)
-    const chunkSize = Math.min(file.size, 65536);
-    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
-    const tail = new Uint8Array(tailBuffer);
-
-    // Also read the first 2 KB (cross-ref may point to Encrypt in header)
-    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
-    const head = new Uint8Array(headBuffer);
-
-    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
-      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
-        for (let j = 0; j < pattern.length; j++) {
-          if (buf[i + j] !== pattern[j]) continue outer;
-        }
-        return true;
-      }
-      return false;
-    };
-
-    const encryptPattern = new TextEncoder().encode('/Encrypt');
-    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
-  };
 
   const handleFilesSelected = useCallback(
     (files: FileList | null) => {
@@ -339,6 +315,10 @@ export default function LockPDFUploader() {
           multiple={false}
           accentColor={colors.primary}
           iconName="LockClosedIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
         />
       )}
 
@@ -597,15 +577,14 @@ export default function LockPDFUploader() {
                             : step.status === 'error'
                               ? '#FEF2F2'
                               : '#F8F8FC',
-                      border: `1.5px solid ${
-                        step.status === 'active'
-                          ? colors.border
-                          : step.status === 'done'
-                            ? '#BBF7D0'
-                            : step.status === 'error'
-                              ? '#FECACA'
-                              : '#EEEEF5'
-                      }`,
+                      border: `1.5px solid ${step.status === 'active'
+                        ? colors.border
+                        : step.status === 'done'
+                          ? '#BBF7D0'
+                          : step.status === 'error'
+                            ? '#FECACA'
+                            : '#EEEEF5'
+                        }`,
                     }}
                   >
                     <StepIcon status={step.status} />

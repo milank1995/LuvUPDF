@@ -6,6 +6,8 @@ import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import Script from 'next/script';
 import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
+import UploadZone from '@/components/pdf/UploadZone';
 
 const colors = TOOL_COLORS.organize;
 
@@ -43,29 +45,6 @@ export default function OrganizePDFUploader() {
   const dragCounter = useRef(0);
 
   const { showToast } = useToast();
-
-  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
-  const isEncryptedPDF = async (file: File): Promise<boolean> => {
-    const chunkSize = Math.min(file.size, 65536);
-    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
-    const tail = new Uint8Array(tailBuffer);
-
-    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
-    const head = new Uint8Array(headBuffer);
-
-    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
-      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
-        for (let j = 0; j < pattern.length; j++) {
-          if (buf[i + j] !== pattern[j]) continue outer;
-        }
-        return true;
-      }
-      return false;
-    };
-
-    const encryptPattern = new TextEncoder().encode('/Encrypt');
-    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
-  };
 
   /** Handle File Upload */
   const handleFiles = useCallback(
@@ -325,7 +304,7 @@ export default function OrganizePDFUploader() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
         type="module"
@@ -334,73 +313,16 @@ export default function OrganizePDFUploader() {
 
       {/* Upload Zone */}
       {!file && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDropRoot}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? colors.primary : colors.surface,
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="Squares2X2Icon"
-              size={28}
-              variant="solid"
-              style={{ color: isDragging ? 'white' : colors.primary } as React.CSSProperties}
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDF here!' : 'Drop PDF file here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — single file for organization
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: colors.primary,
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF File
-          </div>
-        </div>
+        <UploadZone
+          onFilesSelected={handleFiles}
+          multiple={false}
+          accentColor={colors.primary}
+          iconName="Squares2X2Icon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file for organization"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
+        />
       )}
 
       {/* Page List View */}

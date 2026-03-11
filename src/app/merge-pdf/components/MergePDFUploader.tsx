@@ -159,7 +159,16 @@ export default function MergePDFUploader() {
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Upload Zone */}
-      {files.length === 0 && <UploadZone onFilesSelected={handleFiles} />}
+      {files.length === 0 && (
+        <UploadZone
+          onFilesSelected={handleFiles}
+          multiple={true}
+          title="Drop PDF files here"
+          subtitle="or click to browse — supports multiple files"
+          buttonText="Select PDF Files"
+          dragTitle="Drop your PDFs here!"
+        />
+      )}
 
       {/* File List */}
       {files.length > 0 && !isDone && (
