@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions | LuvUPDF — Free PDF Tool Usage',
@@ -21,7 +19,6 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <>
-      <Header />
       <main>
         <section className="pt-24 pb-16 px-4 sm:px-6" style={{ background: '#FFFFFF' }}>
           <div className="max-w-4xl mx-auto">
@@ -154,7 +151,6 @@ export default function TermsPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

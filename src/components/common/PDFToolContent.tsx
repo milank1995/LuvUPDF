@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Icon from '@/components/ui/AppIcon';
 import FAQAccordion from '@/components/common/FAQAccordion';
+import { tools } from '@/config/tools';
 
 interface Step {
   step: number;
@@ -21,15 +23,6 @@ interface Feature {
 interface FAQ {
   q: string;
   a: string;
-}
-
-interface RelatedTool {
-  href: string;
-  icon: string;
-  title: string;
-  desc: string;
-  color?: string;
-  bg?: string;
 }
 
 interface PDFToolContentProps {
@@ -53,8 +46,6 @@ interface PDFToolContentProps {
 
   faqSectionTitle: string;
   faqs: FAQ[];
-
-  relatedTools: RelatedTool[];
 }
 
 export default function PDFToolContent({
@@ -73,8 +64,13 @@ export default function PDFToolContent({
   security,
   faqSectionTitle,
   faqs,
-  relatedTools,
 }: PDFToolContentProps) {
+  const pathname = usePathname();
+
+  // Filter out the current tool and shuffle/slice if needed,
+  // but here we just show all other tools.
+  const filteredTools = tools.filter((t) => t.href !== pathname);
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6">
       {/* ================= INTRO ================= */}
@@ -236,23 +232,26 @@ export default function PDFToolContent({
       <section className="pb-16">
         <h2 className="font-heading font-bold mb-6 text-lg">Other Free PDF Tools</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {relatedTools.map((tool) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTools.map((tool) => (
             <Link
               key={tool.href}
               href={tool.href}
-              className="flex items-center gap-3 p-4 border border-[#EEEEF5] rounded-xl"
+              title={`${tool.label} — ${tool.description}`}
+              className="flex items-center gap-3 p-4 border border-[#EEEEF5] rounded-xl hover:border-gray-300 transition-colors group"
             >
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: tool.bg }}
+                className="w-10 h-10 shrink-0 aspect-square rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform"
+                style={{ background: `${tool.color}15` }}
               >
                 <Icon name={tool.icon} size={18} variant="solid" style={{ color: tool.color }} />
               </div>
 
               <div>
-                <p className="font-heading font-bold text-sm text-[#1A1A2E]">{tool.title}</p>
-                <p className="text-xs text-[#8888A8]">{tool.desc}</p>
+                <p className="font-heading font-bold text-sm text-[#1A1A2E] group-hover:text-black transition-colors">
+                  {tool.label}
+                </p>
+                <p className="text-[11px] text-[#8888A8] line-clamp-1">{tool.description}</p>
               </div>
             </Link>
           ))}

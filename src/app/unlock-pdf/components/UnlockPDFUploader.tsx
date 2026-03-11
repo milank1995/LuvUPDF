@@ -5,6 +5,7 @@ import Icon from '@/components/ui/AppIcon';
 import UploadZone from '@/components/pdf/UploadZone';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
 
 const colors = TOOL_COLORS.unlock;
 
@@ -83,32 +84,6 @@ export default function UnlockPDFUploader() {
 
   const setStepStatus = (stepId: string, status: StepStatus) => {
     setSteps((prev) => prev.map((s) => (s.id === stepId ? { ...s, status } : s)));
-  };
-
-  /**
-   * Lightweight client-side check: scan PDF bytes for the /Encrypt dictionary.
-   * Returns true if the PDF is already password-protected, false otherwise.
-   */
-  const isEncryptedPDF = async (f: File): Promise<boolean> => {
-    const chunkSize = Math.min(f.size, 65536);
-    const tailBuffer = await f.slice(f.size - chunkSize).arrayBuffer();
-    const tail = new Uint8Array(tailBuffer);
-
-    const headBuffer = await f.slice(0, Math.min(f.size, 2048)).arrayBuffer();
-    const head = new Uint8Array(headBuffer);
-
-    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
-      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
-        for (let j = 0; j < pattern.length; j++) {
-          if (buf[i + j] !== pattern[j]) continue outer;
-        }
-        return true;
-      }
-      return false;
-    };
-
-    const encryptPattern = new TextEncoder().encode('/Encrypt');
-    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
   };
 
   const handleFilesSelected = useCallback(
@@ -305,6 +280,10 @@ export default function UnlockPDFUploader() {
           multiple={false}
           accentColor={colors.primary}
           iconName="LockOpenIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
         />
       )}
 
@@ -472,12 +451,12 @@ export default function UnlockPDFUploader() {
                               ? '#FEF2F2'
                               : '#F8F8FC',
                       border: `1.5px solid ${step.status === 'active'
-                          ? colors.border
-                          : step.status === 'done'
-                            ? '#BBF7D0'
-                            : step.status === 'error'
-                              ? '#FECACA'
-                              : '#EEEEF5'
+                        ? colors.border
+                        : step.status === 'done'
+                          ? '#BBF7D0'
+                          : step.status === 'error'
+                            ? '#FECACA'
+                            : '#EEEEF5'
                         }`,
                     }}
                   >

@@ -105,31 +105,4 @@ export const unlockPDFData = {
       a: 'Yes. Once unlocked, PDFs can be freely shared. Ensure you store sensitive files securely to avoid unauthorized access.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/lock-pdf',
-      icon: 'LockClosedIcon',
-      title: 'Lock PDF',
-      desc: 'Password protect your PDF files',
-      color: '#7C5CBF',
-      bg: '#F3EEFF',
-    },
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentDuplicateIcon',
-      title: 'Merge PDF',
-      desc: 'Combine multiple PDFs into one file',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-    {
-      href: '/compress-pdf',
-      icon: 'ArchiveBoxIcon',
-      title: 'Compress PDF',
-      desc: 'Reduce PDF file size instantly',
-      color: '#F4A261',
-      bg: '#FFF4E6',
-    },
-  ],
 };

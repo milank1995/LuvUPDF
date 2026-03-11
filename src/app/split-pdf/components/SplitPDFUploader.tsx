@@ -7,6 +7,7 @@ import Icon from '@/components/ui/AppIcon';
 import { useToast } from '@/components/ui/Toast';
 import { BRAND_COLORS, PDF_CONFIG } from '@/constants/pdfConfig';
 import UploadZone from '@/components/pdf/UploadZone';
+import { isEncryptedPDF } from '@/utils/pdf';
 
 interface UploadedFile {
   id: string;
@@ -61,6 +62,17 @@ export default function SplitPDFUploader() {
       }
 
       try {
+        // Pre-flight: check for encryption
+        const alreadyEncrypted = await isEncryptedPDF(f);
+        if (alreadyEncrypted) {
+          showToast(
+            'This PDF is password-protected. Please unlock it first.',
+            'error',
+            { text: 'Unlock PDF', href: '/unlock-pdf' }
+          );
+          return;
+        }
+
         // Cleanup old thumbnails
         thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
         setThumbnails([]);
@@ -288,7 +300,7 @@ export default function SplitPDFUploader() {
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       {/* Upload Zone */}
       {!file && (
         <UploadZone
@@ -296,6 +308,10 @@ export default function SplitPDFUploader() {
           multiple={false}
           accentColor={SPLIT_THEME.primary}
           iconName="ScissorsIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
         />
       )}
 
@@ -401,11 +417,10 @@ export default function SplitPDFUploader() {
                 <button
                   key={mode.id}
                   onClick={() => setSplitMode(mode.id as SplitMode)}
-                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${
-                    splitMode === mode.id
-                      ? 'shadow-sm'
-                      : 'bg-transparent border-transparent hover:bg-brand-surface'
-                  }`}
+                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${splitMode === mode.id
+                    ? 'shadow-sm'
+                    : 'bg-transparent border-transparent hover:bg-brand-surface'
+                    }`}
                   style={{
                     backgroundColor: splitMode === mode.id ? SPLIT_THEME.primaryLight : undefined,
                     borderColor: splitMode === mode.id ? SPLIT_THEME.primaryBorder : undefined,

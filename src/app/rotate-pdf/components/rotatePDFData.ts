@@ -103,31 +103,4 @@ export const rotatePDFData = {
       a: 'Yes. You can rotate a PDF as many times as needed until the desired orientation is achieved.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentDuplicateIcon',
-      title: 'Merge PDF',
-      desc: 'Combine multiple PDFs into one file',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-    {
-      href: '/lock-pdf',
-      icon: 'LockClosedIcon',
-      title: 'Lock PDF',
-      desc: 'Password protect your PDF files',
-      color: '#7C5CBF',
-      bg: '#F3EEFF',
-    },
-    {
-      href: '/compress-pdf',
-      icon: 'ArchiveBoxIcon',
-      title: 'Compress PDF',
-      desc: 'Reduce PDF file size instantly',
-      color: '#F4A261',
-      bg: '#FFF4E6',
-    },
-  ],
 };

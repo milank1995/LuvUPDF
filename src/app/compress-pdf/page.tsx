@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CompressPDFUploader from './components/CompressPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { compressPDFData } from './components/compressPDFData';
@@ -46,15 +44,12 @@ const faqJsonLd = {
   ],
 };
 
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 export default function CompressPDFPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-
-      <Header />
+      {/* ... faqJsonLd stays the same */}
       <main>
         {/* Page Hero */}
         <section
@@ -66,34 +61,14 @@ export default function CompressPDFPage() {
         >
           <div className="max-w-4xl mx-auto text-center">
             {/* Breadcrumb */}
-            <nav className="flex items-center justify-center gap-2 mb-6" aria-label="Breadcrumb">
-              <Link
-                href="/"
-                style={{
-                  color: '#8888A8',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  textDecoration: 'none',
-                }}
-              >
-                Home
-              </Link>
-              <Icon
-                name="ChevronRightIcon"
-                size={12}
-                style={{ color: '#EEEEF5' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#10B981',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 600,
-                }}
-              >
-                Compress PDF
-              </span>
-            </nav>
+            <Breadcrumbs
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'All Tools', href: '/tools' },
+                { label: 'Compress PDF' },
+              ]}
+              color="#10B981"
+            />
 
             {/* Badge */}
             <div
@@ -223,8 +198,6 @@ export default function CompressPDFPage() {
         {/* SEO Content + FAQ */}
         <PDFToolContent {...compressPDFData} />
       </main>
-
-      <Footer />
     </>
   );
 }

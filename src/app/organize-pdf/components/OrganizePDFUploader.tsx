@@ -5,6 +5,9 @@ import { PDFDocument, degrees } from 'pdf-lib';
 import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import Script from 'next/script';
+import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
+import UploadZone from '@/components/pdf/UploadZone';
 
 const colors = TOOL_COLORS.organize;
 
@@ -41,6 +44,8 @@ export default function OrganizePDFUploader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
+  const { showToast } = useToast();
+
   /** Handle File Upload */
   const handleFiles = useCallback(
     async (newFiles: FileList | null) => {
@@ -52,11 +57,21 @@ export default function OrganizePDFUploader() {
         !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
         f.size > MAX_SIZE
       ) {
-        alert('Invalid file type or file too large (max 100MB).');
+        showToast('Invalid file type or file too large (max 100MB).', 'error');
         return;
       }
 
       try {
+        // Pre-flight: check for encryption
+        const alreadyEncrypted = await isEncryptedPDF(f);
+        if (alreadyEncrypted) {
+          showToast('This PDF is password-protected. Please unlock it first.', 'error', {
+            text: 'Unlock PDF',
+            href: '/unlock-pdf',
+          });
+          return;
+        }
+
         // Cleanup old thumbnails
         pages.forEach((p) => URL.revokeObjectURL(p.url));
         setPages([]);
@@ -289,7 +304,7 @@ export default function OrganizePDFUploader() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
         type="module"
@@ -298,73 +313,16 @@ export default function OrganizePDFUploader() {
 
       {/* Upload Zone */}
       {!file && (
-        <div
-          className={`upload-zone ${isDragging ? 'drag-over' : ''}`}
-          style={{ padding: '60px 24px', textAlign: 'center' }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDropRoot}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300"
-            style={{
-              background: isDragging ? colors.primary : colors.surface,
-              transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-            }}
-          >
-            <Icon
-              name="Squares2X2Icon"
-              size={28}
-              variant="solid"
-              style={{ color: isDragging ? 'white' : colors.primary } as React.CSSProperties}
-            />
-          </div>
-
-          <h3
-            className="font-heading font-bold mb-2"
-            style={{ fontSize: '18px', color: '#1A1A2E' }}
-          >
-            {isDragging ? 'Drop your PDF here!' : 'Drop PDF file here'}
-          </h3>
-
-          <p
-            style={{
-              color: '#8888A8',
-              fontSize: '14px',
-              fontFamily: 'var(--font-body)',
-              marginBottom: '20px',
-            }}
-          >
-            or click to browse — single file for organization
-          </p>
-
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              background: colors.primary,
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-          >
-            <Icon name="DocumentPlusIcon" size={16} variant="solid" />
-            Select PDF File
-          </div>
-        </div>
+        <UploadZone
+          onFilesSelected={handleFiles}
+          multiple={false}
+          accentColor={colors.primary}
+          iconName="Squares2X2Icon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file for organization"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
+        />
       )}
 
       {/* Page List View */}
@@ -398,122 +356,129 @@ export default function OrganizePDFUploader() {
           <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mb-8">
             {pages.length === 0
               ? Array.from({ length: file.pageCount }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-xl bg-slate-50 animate-pulse border border-slate-100"
-                />
-              ))
-              : pages.map((page, i) => {
-                return (
                   <div
-                    key={page.id}
-                    draggable
-                    onDragStart={(e) => onDragStart(e, i)}
-                    onDragOver={(e) => onDragOver(e, i)}
-                    onDrop={(e) => onDropPage(e, i)}
-                    className={`relative border rounded-xl overflow-hidden transition-all duration-200 cursor-move group ${draggedIdx === i ? 'opacity-30 scale-95' : 'opacity-100 scale-100'
-                      }`}
-                    style={{
-                      borderColor: page.deleted ? '#FECACA' : page.rotation !== 0 ? colors.primary : '#EEEEF5',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                      borderWidth: page.rotation !== 0 ? '2px' : '1px',
-                    }}
-                  >
-                    {/* Thumbnail Image Container */}
+                    key={i}
+                    className="aspect-square rounded-xl bg-slate-50 animate-pulse border border-slate-100"
+                  />
+                ))
+              : pages.map((page, i) => {
+                  return (
                     <div
-                      className={`aspect-square flex items-center justify-center bg-slate-50/50 transition-transform duration-300 ${page.deleted ? 'grayscale opacity-30' : ''
-                        }`}
+                      key={page.id}
+                      draggable
+                      onDragStart={(e) => onDragStart(e, i)}
+                      onDragOver={(e) => onDragOver(e, i)}
+                      onDrop={(e) => onDropPage(e, i)}
+                      className={`relative border rounded-xl overflow-hidden transition-all duration-200 cursor-move group ${
+                        draggedIdx === i ? 'opacity-30 scale-95' : 'opacity-100 scale-100'
+                      }`}
+                      style={{
+                        borderColor: page.deleted
+                          ? '#FECACA'
+                          : page.rotation !== 0
+                            ? colors.primary
+                            : '#EEEEF5',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                        borderWidth: page.rotation !== 0 ? '2px' : '1px',
+                      }}
                     >
-                      <img
-                        src={page.url}
-                        alt={`Page ${i + 1}`}
-                        className="w-full h-full object-contain transition-transform duration-300"
-                        style={{
-                          transform: `rotate(${page.rotation}deg)`,
-                          // If rotated, we might need to adjust aspect to preserve visual scale
-                          // but object-contain usually handles the fit.
-                        }}
-                      />
-                    </div>
-
-                    {/* Page Number Badge */}
-                    <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-white/90 border border-slate-100 shadow-sm flex items-center gap-x-1.5">
-                      <span className="text-[10px] font-bold text-slate-600">Page {i + 1}</span>
-                      {file.pageCount > 1 && (
-                        <span className="text-[9px] text-slate-400 font-medium">
-                          (Orig. {page.originalIndex + 1})
-                        </span>
-                      )}
-                      {page.rotation !== 0 && (
-                        <span
-                          className="text-[10px] font-extrabold ml-0.5"
-                          style={{ color: colors.primary }}
-                        >
-                          {page.rotation}°
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Action Overlay */}
-                    <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          rotatePage(i);
-                        }}
-                        className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-amber-500 hover:scale-110 transition-transform"
-                        title="Rotate 90°"
+                      {/* Thumbnail Image Container */}
+                      <div
+                        className={`aspect-square flex items-center justify-center bg-slate-50/50 transition-transform duration-300 ${
+                          page.deleted ? 'grayscale opacity-30' : ''
+                        }`}
                       >
-                        <Icon name="ArrowPathIcon" size={14} />
-                      </button>
-                      {page.rotation !== 0 && (
+                        <img
+                          src={page.url}
+                          alt={`Page ${i + 1}`}
+                          className="w-full h-full object-contain transition-transform duration-300"
+                          style={{
+                            transform: `rotate(${page.rotation}deg)`,
+                            // If rotated, we might need to adjust aspect to preserve visual scale
+                            // but object-contain usually handles the fit.
+                          }}
+                        />
+                      </div>
+
+                      {/* Page Number Badge */}
+                      <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-white/90 border border-slate-100 shadow-sm flex items-center gap-x-1.5">
+                        <span className="text-[10px] font-bold text-slate-600">Page {i + 1}</span>
+                        {file.pageCount > 1 && (
+                          <span className="text-[9px] text-slate-400 font-medium">
+                            (Orig. {page.originalIndex + 1})
+                          </span>
+                        )}
+                        {page.rotation !== 0 && (
+                          <span
+                            className="text-[10px] font-extrabold ml-0.5"
+                            style={{ color: colors.primary }}
+                          >
+                            {page.rotation}°
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Action Overlay */}
+                      <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            revertRotate(i);
+                            rotatePage(i);
                           }}
-                          className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-slate-500 hover:scale-110 transition-transform border border-slate-100"
-                          title="Revert Rotate"
+                          className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-amber-500 hover:scale-110 transition-transform"
+                          title="Rotate 90°"
                         >
-                          <Icon name="ArrowUturnLeftIcon" size={12} />
+                          <Icon name="ArrowPathIcon" size={14} />
                         </button>
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDelete(i);
-                        }}
-                        className={`w-7 h-7 rounded-full shadow-md flex items-center justify-center transition-transform hover:scale-110 ${page.deleted ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                        {page.rotation !== 0 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              revertRotate(i);
+                            }}
+                            className="w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-slate-500 hover:scale-110 transition-transform border border-slate-100"
+                            title="Revert Rotate"
+                          >
+                            <Icon name="ArrowUturnLeftIcon" size={12} />
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDelete(i);
+                          }}
+                          className={`w-7 h-7 rounded-full shadow-md flex items-center justify-center transition-transform hover:scale-110 ${
+                            page.deleted ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                           }`}
-                        title={page.deleted ? 'Restore Page' : 'Remove Page'}
-                      >
-                        <Icon name={page.deleted ? 'PlusIcon' : 'XMarkIcon'} size={14} />
-                      </button>
-                    </div>
-
-                    {/* Deleted Overlay */}
-                    {page.deleted && (
-                      <div className="absolute inset-0 bg-red-50/20 pointer-events-none flex items-center justify-center">
-                        <span className="text-[10px] font-extrabold text-red-500 uppercase tracking-wider bg-white px-2 py-1 rounded-md shadow-sm border border-red-100">
-                          Deleted
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Rotated Badge */}
-                    {page.rotation !== 0 && !page.deleted && (
-                      <div className="absolute top-2 left-2 pointer-events-none">
-                        <div
-                          className="text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm"
-                          style={{ background: colors.primary }}
+                          title={page.deleted ? 'Restore Page' : 'Remove Page'}
                         >
-                          Rotated
-                        </div>
+                          <Icon name={page.deleted ? 'PlusIcon' : 'XMarkIcon'} size={14} />
+                        </button>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+
+                      {/* Deleted Overlay */}
+                      {page.deleted && (
+                        <div className="absolute inset-0 bg-red-50/20 pointer-events-none flex items-center justify-center">
+                          <span className="text-[10px] font-extrabold text-red-500 uppercase tracking-wider bg-white px-2 py-1 rounded-md shadow-sm border border-red-100">
+                            Deleted
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Rotated Badge */}
+                      {page.rotation !== 0 && !page.deleted && (
+                        <div className="absolute top-2 left-2 pointer-events-none">
+                          <div
+                            className="text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm"
+                            style={{ background: colors.primary }}
+                          >
+                            Rotated
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
           </div>
 
           {/* Progress Bar */}

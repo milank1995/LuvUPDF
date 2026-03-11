@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 import { ToastProvider } from '@/components/ui/Toast';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function RootLayout({
   children,
@@ -23,7 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          <Header />
+          {children}
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

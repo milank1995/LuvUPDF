@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import MergePDFUploader from './components/MergePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { mergePDFData } from './components/mergePDFData';
@@ -118,22 +116,14 @@ const softwareAppJsonLd = {
   },
 };
 
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
+// ... metadata and other constants stay the same
+
 export default function MergePDFPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
-      />
-      <Header />
+      {/* ... scripts stay the same */}
       <main>
         {/* Page Hero */}
         <section
@@ -145,34 +135,14 @@ export default function MergePDFPage() {
         >
           <div className="max-w-4xl mx-auto text-center">
             {/* Breadcrumb */}
-            <nav className="flex items-center justify-center gap-2 mb-6" aria-label="Breadcrumb">
-              <Link
-                href="/"
-                style={{
-                  color: '#8888A8',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  textDecoration: 'none',
-                }}
-              >
-                Home
-              </Link>
-              <Icon
-                name="ChevronRightIcon"
-                size={12}
-                style={{ color: '#EEEEF5' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#E8445A',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 600,
-                }}
-              >
-                Merge PDF
-              </span>
-            </nav>
+            <Breadcrumbs
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'All Tools', href: '/tools' },
+                { label: 'Merge PDF' },
+              ]}
+              color="#E8445A"
+            />
 
             {/* Badge */}
             <div
@@ -281,13 +251,27 @@ export default function MergePDFPage() {
             >
               <MergePDFUploader />
             </div>
+
+            {/* Privacy Statement */}
+            <p
+              className="mt-5 text-center px-4"
+              style={{
+                color: '#8888A8',
+                fontSize: '12px',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.7,
+              }}
+            >
+              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
+              not call any APIs or send your files to a server. All processing is done entirely on
+              the client side for your privacy.
+            </p>
           </div>
         </section>
 
         {/* SEO Content + FAQ */}
         <PDFToolContent {...mergePDFData} />
       </main>
-      <Footer />
     </>
   );
 }

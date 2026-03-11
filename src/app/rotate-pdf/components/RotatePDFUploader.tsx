@@ -6,6 +6,8 @@ import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import Script from 'next/script';
 import UploadZone from '@/components/pdf/UploadZone';
+import { useToast } from '@/components/ui/Toast';
+import { isEncryptedPDF } from '@/utils/pdf';
 
 const colors = TOOL_COLORS.rotate;
 
@@ -40,6 +42,8 @@ export default function RotatePDFUploader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
+  const { showToast } = useToast();
+
   /** Handle File Upload */
   const handleFiles = useCallback(
     async (newFiles: FileList | null) => {
@@ -51,11 +55,21 @@ export default function RotatePDFUploader() {
         !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
         f.size > MAX_SIZE
       ) {
-        alert('Invalid file type or file too large (max 100MB).');
+        showToast('Invalid file type or file too large (max 100MB).', 'error');
         return;
       }
 
       try {
+        // Pre-flight: check for encryption
+        const alreadyEncrypted = await isEncryptedPDF(f);
+        if (alreadyEncrypted) {
+          showToast('This PDF is password-protected. Please unlock it first.', 'error', {
+            text: 'Unlock PDF',
+            href: '/unlock-pdf',
+          });
+          return;
+        }
+
         // Cleanup old thumbnails
         pages.forEach((p) => URL.revokeObjectURL(p.url));
         setPages([]);
@@ -248,7 +262,7 @@ export default function RotatePDFUploader() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
         type="module"
@@ -262,6 +276,10 @@ export default function RotatePDFUploader() {
           multiple={false}
           accentColor={colors.primary}
           iconName="ArrowPathIcon"
+          title="Drop PDF file here"
+          subtitle="or click to browse — single file only"
+          buttonText="Select PDF File"
+          dragTitle="Drop your PDF here!"
         />
       )}
 

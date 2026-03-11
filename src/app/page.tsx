@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import HeroSection from '../components/landing/HeroSection';
 import ToolsGrid from '../components/landing/ToolsGrid';
 import HowItWorksSection from '../components/landing/HowItWorksSection';
@@ -94,7 +92,6 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <Header />
       <main>
         <HeroSection />
         <ToolsGrid />
@@ -102,7 +99,6 @@ export default function LandingPage() {
         <BenefitsSection />
         <FAQSection />
       </main>
-      <Footer />
     </>
   );
 }

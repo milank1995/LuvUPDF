@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Contact Us | LuvUPDF — Support & Feedback',
@@ -15,7 +13,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <Header />
       <main>
         <section className="pt-24 pb-16 px-4 sm:px-6" style={{ background: '#FFFFFF' }}>
           <div className="max-w-3xl mx-auto">
@@ -153,7 +150,6 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

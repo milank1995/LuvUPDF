@@ -137,32 +137,5 @@ export const lockPDFData = {
     },
   ],
 
-  /* ================= RELATED TOOLS ================= */
-
-  relatedTools: [
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentDuplicateIcon',
-      title: 'Merge PDF',
-      desc: 'Combine multiple PDFs into one file',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-    {
-      href: '/unlock-pdf',
-      icon: 'LockOpenIcon',
-      title: 'Unlock PDF',
-      desc: 'Remove password from secured PDFs',
-      color: '#2BB673',
-      bg: '#E9FBF3',
-    },
-    {
-      href: '/compress-pdf',
-      icon: 'ArchiveBoxIcon',
-      title: 'Compress PDF',
-      desc: 'Reduce PDF file size instantly',
-      color: '#F4A261',
-      bg: '#FFF4E6',
-    },
-  ],
 };
+

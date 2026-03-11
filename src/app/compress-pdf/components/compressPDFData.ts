@@ -78,15 +78,4 @@ export const compressPDFData = {
       a: 'No. A new compressed file is created for download, and your original document remains unchanged.',
     },
   ],
-
-  relatedTools: [
-    {
-      href: '/merge-pdf',
-      icon: 'DocumentDuplicateIcon',
-      title: 'Merge PDF',
-      desc: 'Combine PDFs',
-      color: '#E8445A',
-      bg: '#FFF0F2',
-    },
-  ],
 };
