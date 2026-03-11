@@ -34,6 +34,8 @@ const SPLIT_THEME = {
   primaryShadow: 'rgba(59, 130, 246, 0.3)',
 };
 
+import Script from 'next/script';
+
 export default function SplitPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [thumbnails, setThumbnails] = useState<PageThumbnail[]>([]);
@@ -301,6 +303,11 @@ export default function SplitPDFUploader() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"
+        strategy="afterInteractive"
+      />
       {/* Upload Zone */}
       {!file && (
         <UploadZone
