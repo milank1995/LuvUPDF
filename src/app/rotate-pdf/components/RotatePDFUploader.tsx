@@ -6,6 +6,7 @@ import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import Script from 'next/script';
 import UploadZone from '@/components/pdf/UploadZone';
+import { useToast } from '@/components/ui/Toast';
 
 const colors = TOOL_COLORS.rotate;
 
@@ -40,6 +41,31 @@ export default function RotatePDFUploader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
 
+  const { showToast } = useToast();
+
+  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
+  const isEncryptedPDF = async (file: File): Promise<boolean> => {
+    const chunkSize = Math.min(file.size, 65536);
+    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
+    const tail = new Uint8Array(tailBuffer);
+
+    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
+    const head = new Uint8Array(headBuffer);
+
+    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
+      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
+        for (let j = 0; j < pattern.length; j++) {
+          if (buf[i + j] !== pattern[j]) continue outer;
+        }
+        return true;
+      }
+      return false;
+    };
+
+    const encryptPattern = new TextEncoder().encode('/Encrypt');
+    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
+  };
+
   /** Handle File Upload */
   const handleFiles = useCallback(
     async (newFiles: FileList | null) => {
@@ -51,11 +77,22 @@ export default function RotatePDFUploader() {
         !(f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) ||
         f.size > MAX_SIZE
       ) {
-        alert('Invalid file type or file too large (max 100MB).');
+        showToast('Invalid file type or file too large (max 100MB).', 'error');
         return;
       }
 
       try {
+        // Pre-flight: check for encryption
+        const alreadyEncrypted = await isEncryptedPDF(f);
+        if (alreadyEncrypted) {
+          showToast(
+            'This PDF is password-protected. Please unlock it first.',
+            'error',
+            { text: 'Unlock PDF', href: '/unlock-pdf' }
+          );
+          return;
+        }
+
         // Cleanup old thumbnails
         pages.forEach((p) => URL.revokeObjectURL(p.url));
         setPages([]);
@@ -311,87 +348,87 @@ export default function RotatePDFUploader() {
           <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mb-8">
             {pages.length === 0
               ? Array.from({ length: file.pageCount }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-[3/4] rounded-xl bg-slate-50 animate-pulse border border-slate-100"
-                  />
-                ))
+                <div
+                  key={i}
+                  className="aspect-[3/4] rounded-xl bg-slate-50 animate-pulse border border-slate-100"
+                />
+              ))
               : pages.map((page, i) => {
-                  return (
-                    <div
-                      key={page.id}
-                      className="relative border rounded-xl overflow-hidden transition-all duration-200 group bg-white"
-                      style={{
-                        borderColor: page.rotation !== 0 ? colors.primary : '#EEEEF5',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                        borderWidth: page.rotation !== 0 ? '2px' : '1px',
-                      }}
-                    >
-                      {/* Thumbnail Image Container */}
-                      <div className="aspect-[3/4] flex items-center justify-center bg-slate-50/50 p-2">
-                        <img
-                          src={page.url}
-                          alt={`Page ${i + 1}`}
-                          className="w-full h-full object-contain transition-transform duration-300"
-                          style={{
-                            transform: `rotate(${page.rotation}deg)`,
-                          }}
+                return (
+                  <div
+                    key={page.id}
+                    className="relative border rounded-xl overflow-hidden transition-all duration-200 group bg-white"
+                    style={{
+                      borderColor: page.rotation !== 0 ? colors.primary : '#EEEEF5',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      borderWidth: page.rotation !== 0 ? '2px' : '1px',
+                    }}
+                  >
+                    {/* Thumbnail Image Container */}
+                    <div className="aspect-[3/4] flex items-center justify-center bg-slate-50/50 p-2">
+                      <img
+                        src={page.url}
+                        alt={`Page ${i + 1}`}
+                        className="w-full h-full object-contain transition-transform duration-300"
+                        style={{
+                          transform: `rotate(${page.rotation}deg)`,
+                        }}
+                      />
+                    </div>
+
+                    {/* Page Number & Orientation Badge */}
+                    <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-white/95 border border-slate-100 shadow-sm flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-slate-600">Page {i + 1}</span>
+                      <div className="w-[1px] h-3 bg-slate-200" />
+                      <div
+                        className="flex items-center gap-1"
+                        title={
+                          page.width > page.height ? 'Original: Landscape' : 'Original: Portrait'
+                        }
+                      >
+                        <Icon
+                          name={
+                            page.width > page.height ? 'RectangleGroupIcon' : 'RectangleStackIcon'
+                          }
+                          size={10}
+                          className="text-slate-400"
                         />
                       </div>
-
-                      {/* Page Number & Orientation Badge */}
-                      <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-white/95 border border-slate-100 shadow-sm flex items-center gap-1.5">
-                        <span className="text-[10px] font-bold text-slate-600">Page {i + 1}</span>
-                        <div className="w-[1px] h-3 bg-slate-200" />
-                        <div
-                          className="flex items-center gap-1"
-                          title={
-                            page.width > page.height ? 'Original: Landscape' : 'Original: Portrait'
-                          }
-                        >
-                          <Icon
-                            name={
-                              page.width > page.height ? 'RectangleGroupIcon' : 'RectangleStackIcon'
-                            }
-                            size={10}
-                            className="text-slate-400"
-                          />
-                        </div>
-                        {page.rotation !== 0 && (
-                          <span
-                            className="text-[10px] font-extrabold"
-                            style={{ color: colors.primary }}
-                          >
-                            {page.rotation}°
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Action Overlay */}
-                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => rotatePage(i)}
-                          className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-amber-500 hover:scale-110 transition-transform active:rotate-45"
-                          title="Rotate 90°"
-                        >
-                          <Icon name="ArrowPathIcon" size={14} />
-                        </button>
-                      </div>
-
-                      {/* Rotated Badge */}
                       {page.rotation !== 0 && (
-                        <div className="absolute top-2 left-2 pointer-events-none">
-                          <div
-                            className="text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm"
-                            style={{ background: colors.primary }}
-                          >
-                            Rotated
-                          </div>
-                        </div>
+                        <span
+                          className="text-[10px] font-extrabold"
+                          style={{ color: colors.primary }}
+                        >
+                          {page.rotation}°
+                        </span>
                       )}
                     </div>
-                  );
-                })}
+
+                    {/* Action Overlay */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => rotatePage(i)}
+                        className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-amber-500 hover:scale-110 transition-transform active:rotate-45"
+                        title="Rotate 90°"
+                      >
+                        <Icon name="ArrowPathIcon" size={14} />
+                      </button>
+                    </div>
+
+                    {/* Rotated Badge */}
+                    {page.rotation !== 0 && (
+                      <div className="absolute top-2 left-2 pointer-events-none">
+                        <div
+                          className="text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm"
+                          style={{ background: colors.primary }}
+                        >
+                          Rotated
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
           </div>
 
           {/* Progress Bar */}

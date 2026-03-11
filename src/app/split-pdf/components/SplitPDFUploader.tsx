@@ -45,6 +45,29 @@ export default function SplitPDFUploader() {
 
   const { showToast } = useToast();
 
+  /** Lightweight check: scan PDF bytes for the /Encrypt dictionary */
+  const isEncryptedPDF = async (file: File): Promise<boolean> => {
+    const chunkSize = Math.min(file.size, 65536);
+    const tailBuffer = await file.slice(file.size - chunkSize).arrayBuffer();
+    const tail = new Uint8Array(tailBuffer);
+
+    const headBuffer = await file.slice(0, Math.min(file.size, 2048)).arrayBuffer();
+    const head = new Uint8Array(headBuffer);
+
+    const searchBytes = (buf: Uint8Array, pattern: Uint8Array): boolean => {
+      outer: for (let i = 0; i <= buf.length - pattern.length; i++) {
+        for (let j = 0; j < pattern.length; j++) {
+          if (buf[i + j] !== pattern[j]) continue outer;
+        }
+        return true;
+      }
+      return false;
+    };
+
+    const encryptPattern = new TextEncoder().encode('/Encrypt');
+    return searchBytes(tail, encryptPattern) || searchBytes(head, encryptPattern);
+  };
+
   /** Handle File Upload (Single File Only) */
   const handleFiles = useCallback(
     async (newFiles: FileList | null) => {
@@ -61,6 +84,17 @@ export default function SplitPDFUploader() {
       }
 
       try {
+        // Pre-flight: check for encryption
+        const alreadyEncrypted = await isEncryptedPDF(f);
+        if (alreadyEncrypted) {
+          showToast(
+            'This PDF is password-protected. Please unlock it first.',
+            'error',
+            { text: 'Unlock PDF', href: '/unlock-pdf' }
+          );
+          return;
+        }
+
         // Cleanup old thumbnails
         thumbnails.forEach((t) => URL.revokeObjectURL(t.url));
         setThumbnails([]);
@@ -401,11 +435,10 @@ export default function SplitPDFUploader() {
                 <button
                   key={mode.id}
                   onClick={() => setSplitMode(mode.id as SplitMode)}
-                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${
-                    splitMode === mode.id
+                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${splitMode === mode.id
                       ? 'shadow-sm'
                       : 'bg-transparent border-transparent hover:bg-brand-surface'
-                  }`}
+                    }`}
                   style={{
                     backgroundColor: splitMode === mode.id ? SPLIT_THEME.primaryLight : undefined,
                     borderColor: splitMode === mode.id ? SPLIT_THEME.primaryBorder : undefined,

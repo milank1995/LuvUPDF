@@ -251,6 +251,21 @@ export default function MergePDFPage() {
             >
               <MergePDFUploader />
             </div>
+
+            {/* Privacy Statement */}
+            <p
+              className="mt-5 text-center px-4"
+              style={{
+                color: '#8888A8',
+                fontSize: '12px',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.7,
+              }}
+            >
+              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
+              not call any APIs or send your files to a server. All processing is done entirely on
+              the client side for your privacy.
+            </p>
           </div>
         </section>
 
