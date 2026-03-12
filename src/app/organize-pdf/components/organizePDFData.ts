@@ -3,109 +3,118 @@ import { TOOL_COLORS } from '@/constants/toolColors';
 const colors = TOOL_COLORS.organize;
 
 export const organizePDFData = {
-  title: 'How to Organize PDF Pages Online — Complete Guide',
+  title: 'How to Organize PDF Pages',
 
   intro: [
-    'Organizing PDFs allows you to reorder, rotate, or delete pages easily in one place.',
-    'LuvUPDF provides a simple drag-and-drop interface to manage your PDF documents instantly and securely.',
+    'Reorder, rotate, or delete pages with simple drag and drop.',
+    'Client-side processing — files never leave your device. No account needed.',
   ],
 
-  stepSectionTitle: 'How to Organize PDF Pages: A 4-Step Guide',
+  stepSectionTitle: 'Organize PDF in 4 Steps',
   stepCircleColor: colors.primary,
 
   steps: [
     {
       step: 1,
-      title: 'Selection & Upload',
-      desc: 'Pick a PDF from your computer or drag it into the secure upload area. We support files up to 100MB for fast processing.',
+      title: 'Upload',
+      desc: 'Select or drag your PDF. Up to 100MB. All processing stays in your browser.',
     },
     {
       step: 2,
-      title: 'Visual Arrangement',
-      desc: 'View your pages as thumbnails. Use drag-and-drop to reorder, the rotate icon to fix orientation, or the delete icon to remove unwanted pages.',
+      title: 'Arrange Pages',
+      desc: 'Drag thumbnails to reorder. Use rotate icon to fix orientation.',
     },
     {
       step: 3,
-      title: 'Apply & Process',
-      desc: 'Once you are happy with the layout, click "Organize PDF". Our system will rebuild your document with the exact sequence and rotations you chose.',
+      title: 'Delete Pages',
+      desc: 'Remove unwanted pages with delete icon. Changes previewed instantly.',
     },
     {
       step: 4,
-      title: 'Secure Download',
-      desc: 'Download your organized PDF instantly. For your privacy, all files are permanently deleted from our servers after 60 minutes.',
+      title: 'Download',
+      desc: 'Click organize. Your new PDF is ready. Files never leave your device.',
     },
   ],
 
-  featureSectionTitle: 'Why Use LuvUPDF to Organize PDFs?',
-  featureIntro: 'Professional tools for flexible page management:',
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and fast.',
 
   features: [
     {
       icon: 'ArrowsUpDownIcon',
-      title: 'Drag & Drop Reordering',
-      desc: 'Physically move pages to change their sequence in seconds.',
+      title: 'Drag & Drop',
+      desc: 'Reorder pages by dragging thumbnails.',
       color: colors.primary,
       bg: colors.surface,
     },
     {
       icon: 'ArrowPathIcon',
-      title: 'Easy Page Rotation',
-      desc: 'Fix upside-down or sideways pages with a single click.',
+      title: 'Rotate Pages',
+      desc: 'Fix sideways pages with one click.',
       color: '#F59E0B',
       bg: '#FFFBEB',
     },
     {
       icon: 'TrashIcon',
-      title: 'Selective Deletion',
-      desc: 'Remove unnecessary pages without affecting the rest of the document.',
+      title: 'Delete Pages',
+      desc: 'Remove unwanted pages easily.',
       color: '#EF4444',
       bg: '#FEF2F2',
     },
     {
       icon: 'ShieldCheckIcon',
-      title: 'Privacy First',
-      desc: 'All processing is secure and files are deleted from our servers after 1 hour.',
+      title: '100% Private',
+      desc: 'Files stay in your browser. No upload.',
       color: '#16A34A',
       bg: '#F0FDF4',
     },
   ],
 
-  useCaseSectionTitle: 'Common Use Cases',
-  useCaseIntro: 'Organizing PDFs is essential for various professional and personal needs:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you might need to organize a PDF:',
 
   useCases: [
-    'Academic Papers: Reorder chapters, rotate charts, or remove draft pages from complex thesis documents.',
-    'Business Reports: Organize financial statements, fix landscape spreadsheets orientation, and prune appendices.',
-    'Legal & Compliance: Manage court filings by arranging exhibits correctly and fixing scanned affidavit orientation.',
-    'Creative Portfolios: Sort projects for better visual flow and remove layout errors instantly.',
-    'Personal Documents: Organize family records, rotate scanned IDs, and remove sensitive info before sharing.',
+    'Reorder chapters in a thesis or book',
+    'Remove blank or unwanted pages',
+    'Fix sideways scanned documents',
+    'Rearrange slides in presentations',
+    'Prepare documents for printing',
   ],
 
-  securitySectionTitle: 'Is It Safe?',
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'Bank-Level Security: Files are protected with 256-bit SSL encryption during the entire organization process.',
-    'Absolute Privacy: We do not read, store, or share your PDFs. Processing happens in a secure, isolated environment.',
-    'Automated Cleanup: All files are permanently purged from our servers exactly 60 minutes after you finish.',
-    'Privacy-First Platform: LuvUPDF is built on privacy; your data remains 100% yours and is never stored.',
+    'Files processed in your browser — no servers, no uploads.',
+    '256-bit SSL encryption for any data transfer.',
+    'We never see or store your documents.',
+    'Original file stays untouched on your device.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Organize PDF',
+  faqSectionTitle: 'Common Questions',
+
   faqs: [
     {
-      q: 'Can I change the order of pages in my PDF?',
-      a: 'Yes. Simply drag and drop the page thumbnails into the exact order you want before clicking "Organize PDF".',
+      q: 'Can I reorder pages by dragging?',
+      a: 'Yes. Simply drag page thumbnails up or down to rearrange them.',
     },
     {
-      q: 'Can I rotate specific pages while organizing?',
-      a: 'Absolutely. Each page thumbnail has a rotate button that lets you turn that specific page 90 degrees at a time.',
+      q: 'Can I delete multiple pages at once?',
+      a: 'Yes. Delete pages individually while reordering. All changes applied before download.',
     },
     {
-      q: 'Will removing pages change the quality of my PDF?',
-      a: 'No. Reordering, rotating, or deleting pages does not affect the text, images, or layout quality. Your PDF remains high-quality.',
+      q: 'Will rotating pages affect quality?',
+      a: 'No. Text, images, and formatting stay exactly the same.',
     },
     {
-      q: 'Is my original PDF modified?',
-      a: 'No. Our tool creates a new organized version of your file for you to download. Your original file stays untouched on your device.',
+      q: 'Where are my files processed?',
+      a: 'Right in your browser. Files never leave your device.',
+    },
+    {
+      q: 'Is my original file modified?',
+      a: 'No. A new organized version is created. Your original stays unchanged.',
+    },
+    {
+      q: 'Do you keep copies of my PDF?',
+      a: 'No. Files stay on your device. We have no access to your documents.',
     },
   ],
 };

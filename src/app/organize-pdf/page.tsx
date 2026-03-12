@@ -2,31 +2,34 @@ import type { Metadata } from 'next';
 import OrganizePDFUploader from './components/OrganizePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { organizePDFData } from './components/organizePDFData';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const colors = TOOL_COLORS.organize;
 
 export const metadata: Metadata = {
-  title: 'Organize PDF Pages Online Free — Reorder & Arrange PDF Instantly | LuvUPDF',
+  title: 'Organize PDF Pages Online Free — Reorder & Arrange | LoveUPDF',
   description:
-    'Organize PDF pages online for free. Reorder, rearrange, rotate, or delete pages easily. Fast, secure, and no registration required.',
+    'Organize PDF pages online free. Drag and drop to reorder, rotate, or delete pages. Client-side processing — files never leave your device.',
   keywords:
-    'organize PDF, reorder PDF pages, rearrange PDF pages, manage PDF pages online, sort PDF pages free',
+    'organize PDF online free, reorder PDF pages, rearrange PDF pages, PDF page organizer, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Organize PDF Pages Online Free | LuvUPDF',
+    title: 'Organize PDF Pages Online Free | LoveUPDF',
     description:
-      'Rearrange and organize your PDF pages instantly. Free and secure PDF page organizer.',
+      'Rearrange and organize PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
     url: 'https://luvupdf.com/organize-pdf',
-    siteName: 'LuvUPDF',
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Organize PDF Pages Online Free | LuvUPDF',
-    description:
-      'Rearrange and organize your PDF pages instantly. Free and secure PDF page organizer.',
+    title: 'Organize PDF Pages Online Free | LoveUPDF',
+    description: 'Reorder PDF pages with drag and drop. Free and private.',
   },
   alternates: { canonical: 'https://luvupdf.com/organize-pdf' },
 };
@@ -40,32 +43,91 @@ const faqJsonLd = {
       name: 'How do I organize PDF pages online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Upload your PDF, drag and drop pages to rearrange them, delete or rotate pages if needed, then download your organized PDF instantly.',
+        text: 'Upload your PDF, drag and drop pages to reorder, then download your organized file instantly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Can I reorder and delete pages at the same time?',
+      name: 'Can I delete pages while organizing?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. You can reorder, rotate, and delete pages within the same tool before downloading your updated PDF.',
+        text: 'Yes. Delete unwanted pages while reordering. All changes made before download.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Are my files safe?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Files are processed in your browser and never uploaded to any server.',
       },
     },
   ],
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+const softwareAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LoveUPDF Organize PDF',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: 'https://luvupdf.com/organize-pdf',
+  description: 'Free online PDF organizer. Rearrange, rotate, and delete pages in your browser.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Organize PDF',
+      item: 'https://luvupdf.com/organize-pdf',
+    },
+  ],
+};
 
 export default function OrganizePDFPage() {
   return (
     <>
-      {/* ... faqJsonLd stays the same */}
-      <main>
-        {/* Page Hero */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="organize-pdf-heading"
           style={{
-            background: `radial-gradient(ellipse 70% 50% at 50% -5%, ${colors.primary}12 0%, transparent 65%), #FFFFFF`,
+            background: `radial-gradient(ellipse 70% 50% at 50% -5%, ${colors.primary}12 0%, transparent 70%), #FFFFFF`,
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -79,129 +141,73 @@ export default function OrganizePDFPage() {
               color={colors.primary}
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: colors.surface, border: `1.5px solid ${colors.border}` }}
-            >
-              <Icon
-                name="Squares2X2Icon"
-                size={13}
-                variant="solid"
-                style={{ color: colors.primary } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: colors.primary,
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                Free PDF Organizer
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              id="organize-pdf-heading"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Organize PDF Pages{' '}
-              <span
-                style={{
-                  background: `linear-gradient(135deg, ${colors.primary} 0%, #A78BFA 100%)`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Organize PDF Pages
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Rearrange, rotate, and manage your PDF pages easily with our drag-and-drop organizer
-              tool.
+              Reorder, rotate, or delete pages with drag and drop.
+              <span className="block mt-1">No upload. No account. 100% private.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
-                { icon: 'ArrowsUpDownIcon', text: 'Drag & Drop' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Results' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{
-                    background: '#F8F8FC',
-                    border: '1px solid #EEEEF5',
-                  }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: colors.primary } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: colors.primary }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Client-side · No server upload
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <OrganizePDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center px-4"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
-              not call any APIs or send your files to a server. All processing is done entirely on
-              the client side for your privacy.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including organize PDF, merge PDF, split PDF,
+                compress PDF, rotate PDF, lock PDF, unlock PDF, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 
