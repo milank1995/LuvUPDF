@@ -138,8 +138,8 @@ const breadcrumbJsonLd = {
     {
       '@type': 'ListItem',
       position: 2,
-      name: 'PDF Tools',
-      item: 'https://luvupdf.com',
+      name: 'Free PDF Tools',
+      item: 'https://luvupdf.com/tools',
     },
   ],
 };

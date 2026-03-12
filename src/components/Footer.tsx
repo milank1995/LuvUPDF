@@ -35,7 +35,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center">
               <Image
-                src="/assets/images/favicon.png"
+                src="/assets/images/app_logo.png"
                 alt="LoveUPDF Icon"
                 width={120}
                 height={120}

@@ -46,7 +46,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center group" aria-label="LuvUPDF Home">
             <Image
-              src="/assets/images/favicon.png"
+              src="/assets/images/app_logo.png"
               alt="LoveUPDF Icon"
               width={48}
               height={48}

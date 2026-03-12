@@ -2,29 +2,52 @@
 
 import FAQAccordion from '../common/FAQAccordion';
 
-const faqs = [
+// faqData.ts
+export const faqs = [
+  {
+    question: 'What is LoveUPDF?',
+    answer:
+      'LoveUPDF is a privacy-first, free online PDF tool platform. We offer 8 PDF tools: merge, split, compress, rotate, lock, unlock, organize, and remove pages. All tools are 100% free with no account required. Your privacy is our priority. files never leave your device for most tools, and server-side tools auto-delete instantly.',
+  },
   {
     question: 'Is LoveUPDF really free?',
-    answer: 'Yes. All tools are 100% free. No hidden fees, no subscriptions, no credit cards.',
-  },
-  {
-    question: 'Are my files private?',
     answer:
-      '100% private. Files are encrypted with 256-bit SSL and auto-deleted immediately after processing. We never store your documents.',
+      'Yes. All PDF tools are 100% free. No hidden fees, no subscriptions, no credit cards, no premium tiers. Every feature is available to everyone at no cost.',
   },
   {
-    question: 'Do I need an account?',
-    answer: 'No account, no email, no login. Just use the tools directly in your browser.',
-  },
-  {
-    question: 'Works on mobile?',
+    question: 'Are my files private when I use LoveUPDF?',
     answer:
-      'Yes. Works perfectly on iPhone, Android, iPad, and desktop. Any device with a browser.',
+      '100% private. Files are encrypted with 256-bit SSL during transfer. Client-side tools process in your browser with no upload. Server-side tools process in memory and are permanently deleted immediately after download. We never store your documents.',
   },
   {
-    question: 'What tools are available?',
+    question: 'Do I need to create an account to use LoveUPDF?',
     answer:
-      'Merge, split, compress, rotate, lock, unlock, organize, and remove pages. All free, all private.',
+      "No account, no email, no login required. Just visit the website and use any tool directly in your browser. Your privacy matters. we don't track who you are.",
+  },
+  {
+    question: 'Does LoveUPDF work on mobile devices?',
+    answer:
+      'Yes. Works perfectly on iPhone, Android, iPad, tablets, and desktop. Any device with a modern browser can access all LoveUPDF tools with the same functionality.',
+  },
+  {
+    question: 'What PDF tools does LoveUPDF offer?',
+    answer:
+      'LoveUPDF offers 8 free PDF tools: merge PDF, split PDF, compress PDF, rotate PDF, lock PDF with password, unlock PDF, organize PDF pages, and remove PDF pages. All tools are free and privacy-first.',
+  },
+  {
+    question: 'What is the difference between client-side and server-side tools?',
+    answer:
+      'Client-side tools (merge, split, rotate, organize, remove pages) process entirely in your browser. files never leave your device. Server-side tools (compress, lock, unlock) process in memory and are permanently deleted immediately after download. Both approaches prioritize your privacy.',
+  },
+  {
+    question: 'How long are my files stored on LoveUPDF?',
+    answer:
+      'For client-side tools: files never leave your device, so nothing is stored. For server-side tools: files are processed in memory and permanently deleted immediately after download. typically within seconds. We never keep copies.',
+  },
+  {
+    question: 'Can I use LoveUPDF for commercial purposes?',
+    answer:
+      'Yes. All tools are free for personal and commercial use. No restrictions. Process business documents, client files, or work projects without any limitations.',
   },
 ];
 
