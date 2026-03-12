@@ -1,107 +1,109 @@
 export const removePagesPDFData = {
-  title: 'How to Remove Pages from a PDF — Complete Online Guide',
+  title: 'How to Remove Pages from a PDF',
 
   intro: [
-    'Removing unwanted pages from a PDF is a simple and effective way to clean up your documents before sharing, printing, or archiving. Whether you need to delete a single page or multiple sections, our online tool makes it seamless.',
-    'LuvUPDF provides a powerful, free platform that allows you to delete specific pages instantly in your browser. No installation, no registration, and 100% security guaranteed.',
+    'Delete unwanted or blank pages from any PDF instantly.',
+    'Client-side processing — files never leave your device. No account needed.',
   ],
 
-  stepSectionTitle: 'Step-by-Step: How to Delete PDF Pages Online',
+  stepSectionTitle: 'Remove Pages in 3 Steps',
   stepCircleColor: '#EF4444',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your PDF File',
-      desc: 'Drag and drop your PDF into the upload area or select it from your device to begin.',
+      title: 'Upload PDF',
+      desc: 'Select or drag your file. All processing stays in your browser.',
     },
     {
       step: 2,
-      title: 'Select Pages to Remove',
-      desc: 'View all page thumbnails and click on the specific pages you want to delete from your document.',
+      title: 'Select Pages',
+      desc: 'Click on page thumbnails to choose which to delete. Selected pages highlighted.',
     },
     {
       step: 3,
-      title: 'Click "Remove Pages"',
-      desc: 'Once you’ve selected the unwanted pages, press the button to process your PDF instantly.',
-    },
-    {
-      step: 4,
-      title: 'Download Your Updated PDF',
-      desc: 'Save your cleaned file to your device. For your privacy, all files are auto-deleted within 1 hour.',
+      title: 'Download',
+      desc: 'Click remove. Your updated PDF is ready instantly. Files never leave your device.',
     },
   ],
 
-  featureSectionTitle: 'Why Choose LuvUPDF to Remove PDF Pages?',
-  featureIntro: 'Experience the fastest and most secure way to manage your PDF pages online:',
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and fast.',
 
   features: [
     {
       icon: 'TrashIcon',
-      title: 'Selective Page Removal',
-      desc: 'Precisely choose which pages to keep and which to delete. Perfect for extracting only what you need.',
+      title: 'Selective Deletion',
+      desc: 'Pick exact pages to remove. Keep what matters.',
       color: '#EF4444',
       bg: '#FEF2F2',
     },
     {
       icon: 'BoltIcon',
-      title: 'Fast & High-Quality',
-      desc: 'Our tool processes deletions in seconds without compressing or reducing the quality of your remaining pages.',
+      title: 'Fast',
+      desc: 'Removes pages in seconds. No waiting.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'ShieldCheckIcon',
-      title: '100% Secure & Private',
-      desc: 'All file transfers are protected by SSL encryption. Your documents are never stored or shared with third parties.',
+      title: '100% Private',
+      desc: 'Files stay in your browser. No upload.',
       color: '#0EA5B0',
       bg: '#EDFCFD',
     },
+    {
+      icon: 'DocumentCheckIcon',
+      title: 'Quality Preserved',
+      desc: 'Remaining pages keep original formatting.',
+      color: '#10B981',
+      bg: '#ECFDF5',
+    },
   ],
 
-  useCaseSectionTitle: 'When to Use Our PDF Page Remover',
-  useCaseIntro: 'Removing pages from a PDF is highly useful for several practical reasons:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you might need to remove PDF pages:',
 
   useCases: [
-    'Deleting blank or unintentional duplicate pages from scanned documents.',
-    'Removing confidential or sensitive sections before sharing a PDF.',
-    'Cleaning up large documents to reduce file size and focus on important content.',
-    'Splitting a large report by deleting unnecessary appendix or intro pages.',
+    'Delete blank or duplicate pages',
+    'Remove sensitive sections before sharing',
+    'Clean up scanned documents',
+    'Reduce file size by removing extras',
   ],
 
-  securitySectionTitle: 'Is My Data Protected?',
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'All uploads are processed via secure HTTPS (SSL) connections.',
-    'We follow a strict privacy policy: files are deleted from our servers automatically after 1 hour.',
-    'No data is viewed or used by our system beyond the requested processing.',
+    'Files processed in your browser — no servers, no uploads.',
+    'We never see or store your documents.',
+    'Original file stays untouched on your device.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Remove PDF Pages',
+  faqSectionTitle: 'Common Questions',
+
   faqs: [
     {
-      q: 'How do I select multiple pages to remove from a PDF online?',
-      a: 'After uploading your file, the LuvUPDF interface displays a preview of all pages. Simply click on each thumbnail you wish to delete. Selected pages will be highlighted with a red border and a trash icon, making it and easy to confirm your choice before processing.',
+      q: 'How do I select multiple pages to remove?',
+      a: 'Click each page thumbnail you want to delete. Selected pages show a red border.',
     },
     {
-      q: 'What should I do if I accidentally select the wrong page for removal?',
-      a: 'Don’t worry! You can deselect any page by clicking it again before you hit the "Remove Pages" button. If you have already downloaded the processed file, you can simply re-upload your original PDF and start the simple process again.',
+      q: 'What if I select the wrong page?',
+      a: 'Click it again to deselect before processing. Or re-upload and start over.',
     },
     {
-      q: 'Does removing PDF pages affect the formatting of the rest of the document?',
-      a: 'Not at all. Our intelligent tool only removes the specific page data for the items you’ve selected. The remaining pages, including their original text, images, fonts, and layout, stay perfectly intact and unchanged.',
+      q: 'Will removing pages affect formatting?',
+      a: 'No. Remaining pages keep original text, images, fonts, and layout.',
     },
     {
-      q: 'Can I remove pages from a PDF for free without limitations?',
-      a: 'Yes, LuvUPDF is a 100% free tool. You can remove pages from any PDF document without worrying about watermarks, hidden fees, or registration requirements.',
+      q: 'Is it really free?',
+      a: 'Yes. 100% free. No watermarks, no hidden fees, no registration.',
     },
     {
-      q: 'Is it safe to use this tool for confidential business or legal documents?',
-      a: 'Absolutely. We prioritize your privacy above all else. With 256-bit SSL encryption and automated server cleanup, your files remain confidential and are permanently erased from our system shortly after you finish.',
+      q: 'Is it safe for confidential documents?',
+      a: 'Yes. Files stay in your browser. Nothing is uploaded to any server.',
     },
     {
-      q: 'Does this PDF page remover work on mobile devices?',
-      a: 'Yes! LuvUPDF is fully responsive and works perfectly on iPhone, iPad, Android, and all modern mobile browsers. You can manage your PDF documents on the go just as easily as on a desktop.',
+      q: 'Works on mobile?',
+      a: 'Yes. Works on iPhone, Android, iPad, and desktop.',
     },
   ],
 };
-
