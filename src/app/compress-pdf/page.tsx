@@ -2,19 +2,18 @@ import type { Metadata } from 'next';
 import CompressPDFUploader from './components/CompressPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { compressPDFData } from './components/compressPDFData';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'Compress PDF Online Free — Reduce PDF File Size Instantly | LuvUPDF',
+  title: 'Compress PDF Online Free — Reduce File Size | LoveUPDF',
   description:
-    'Compress PDF files online for free. Reduce PDF file size without losing quality. Fast, secure, and no registration required.',
+    'Compress PDF files online for free. Reduce file size while maintaining quality. Secure server processing — files auto-deleted instantly.',
   keywords:
-    'compress PDF, reduce PDF size, shrink PDF file, PDF compressor online free, optimize PDF size',
+    'compress PDF online free, reduce PDF file size, PDF compressor, shrink PDF, LoveUPDF, luvupdf',
   openGraph: {
-    title: 'Compress PDF Online Free | LuvUPDF',
-    description:
-      'Reduce PDF file size instantly while maintaining quality. Free and secure PDF compressor.',
+    title: 'Compress PDF Online Free | LoveUPDF',
+    description: 'Reduce PDF file size instantly. Free, secure, auto-deleted.',
     type: 'website',
     url: 'https://luvupdf.com/compress-pdf',
   },
@@ -27,36 +26,46 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'How do I compress a PDF file online?',
+      name: 'How do I compress a PDF online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Upload your PDF, choose your compression level, click "Compress PDF", and download the reduced-size file instantly.',
+        text: 'Upload your PDF, click compress, and download the smaller file instantly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Will compressing a PDF reduce quality?',
+      name: 'Will compression reduce quality?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Our compression tool reduces file size while maintaining the best possible quality. You can choose the level of compression based on your needs.',
+        text: 'We balance file size and quality. Images are optimized but remain clear and readable.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Are my files safe?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Files are encrypted, processed in memory, and permanently deleted immediately after download.',
       },
     },
   ],
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
-
 export default function CompressPDFPage() {
   return (
     <>
-      {/* ... faqJsonLd stays the same */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       <main>
-        {/* Page Hero */}
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(16,185,129,0.07) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(16,185,129,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -70,127 +79,63 @@ export default function CompressPDFPage() {
               color="#10B981"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#ECFDF5', border: '1.5px solid #A7F3D0' }}
-            >
-              <Icon
-                name="ArchiveBoxIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#10B981' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#10B981',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                Free PDF Compressor
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Compress PDF Files{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Compress PDF Files
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Reduce PDF file size quickly without sacrificing quality. Perfect for email, sharing,
-              and faster uploads.
+              Reduce file size for email or sharing.
+              <span className="block mt-1">Secure server processing. Auto-deleted instantly.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
-                { icon: 'SparklesIcon', text: 'Optimized Quality' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Fast Compression' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{
-                    background: '#F8F8FC',
-                    border: '1px solid #EEEEF5',
-                  }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: '#10B981' } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#10B981' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  256-bit SSL · Auto-deleted
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <CompressPDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We call our API only to perform the server-side compression process.{' '}
-              <strong style={{ color: '#4A4A6A' }}>No file data is ever stored</strong> on our servers — everything is processed in memory and discarded immediately.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files encrypted during transfer. Processed in memory. Permanently deleted after
+              download.
             </p>
           </div>
         </section>
