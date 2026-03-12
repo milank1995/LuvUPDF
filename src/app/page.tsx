@@ -8,13 +8,13 @@ import FAQSection from '../components/landing/FAQSection';
 export const metadata: Metadata = {
   title: 'LoveUPDF - Free, Secure PDF Tools Online | Merge, Split & More',
   description:
-    'LoveUPDF offers private, secure PDF tools you can trust. Merge PDF files, split documents, remove pages, compress, and edit PDFs online free. No login required, files auto-deleted. Previously known as luvupdf.',
+    'LoveUPDF offers private, secure PDF tools you can trust. Merge PDF files, split documents, remove pages, compress, and edit PDFs online free. No login required, files auto-deleted.',
   keywords:
     'LoveUPDF, luvupdf, merge PDF online free, combine PDF files, split PDF online, remove pages from PDF, compress PDF free, secure PDF tools, free PDF merger, PDF editor online, privacy-first PDF tools, delete PDF pages free, rotate PDF online, organize PDF pages',
   openGraph: {
     title: 'LoveUPDF - Private, Secure PDF Tools',
     description:
-      'Free PDF tools that respect your privacy. Merge, split, compress, and edit PDFs online. No account needed, files auto-delete. Trusted by thousands, previously known as luvupdf.',
+      'Free PDF tools that respect your privacy. Merge, split, compress, and edit PDFs online. No account needed, files auto-delete. Trusted by thousands.',
     type: 'website',
     url: 'https://luvupdf.com',
     siteName: 'LoveUPDF',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  }
+  },
 };
 
 const jsonLd = {
@@ -48,7 +48,7 @@ const jsonLd = {
   alternateName: 'luvupdf',
   url: 'https://luvupdf.com',
   description:
-    'Secure and free online PDF tools. Merge PDF files, split documents, remove pages, compress, and organize PDFs without any data storage or account required. Previously operated as luvupdf.',
+    'Secure and free online PDF tools. Merge PDF files, split documents, remove pages, compress, and organize PDFs without any data storage or account required.',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
   offers: {
