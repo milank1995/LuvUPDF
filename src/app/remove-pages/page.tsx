@@ -86,6 +86,14 @@ const faqJsonLd = {
         text: 'Yes. Files are processed in your browser and never uploaded to any server.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I select multiple pages to remove?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Click multiple page thumbnails to select them all before removing.',
+      },
+    },
   ],
 };
 

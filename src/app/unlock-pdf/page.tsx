@@ -32,6 +32,33 @@ export const metadata: Metadata = {
   },
 };
 
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Unlock a Password-Protected PDF',
+  description: 'Remove password protection from your own PDF files in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your locked PDF file into the tool.',
+      url: 'https://luvupdf.com/unlock-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Enter Password',
+      text: 'Type the password used to lock the PDF.',
+      url: 'https://luvupdf.com/unlock-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click unlock and download your password-free PDF instantly.',
+      url: 'https://luvupdf.com/unlock-pdf',
+    },
+  ],
+};
+
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -66,6 +93,14 @@ const faqJsonLd = {
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'No. Files are processed in memory and permanently deleted after download.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What if I enter the wrong password?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The unlock will fail. Double-check your password and try again.',
       },
     },
   ],
@@ -114,6 +149,10 @@ const breadcrumbJsonLd = {
 export default function UnlockPDFPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

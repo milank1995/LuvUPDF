@@ -11,17 +11,50 @@ export const metadata: Metadata = {
     'Split PDF files into multiple documents or extract specific pages. Free, private, no account needed. Files stay in your browser.',
   keywords:
     'split PDF online free, extract PDF pages, separate PDF pages, PDF splitter free, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Split PDF Online Free | LoveUPDF',
     description: 'Split PDF files instantly. Free and private — files never leave your device.',
     type: 'website',
     url: 'https://luvupdf.com/split-pdf',
+    siteName: 'LoveUPDF',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Split PDF Online Free | LoveUPDF',
+    description: 'Extract PDF pages instantly. Free and private.',
   },
   alternates: { canonical: 'https://luvupdf.com/split-pdf' },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Split a PDF Online',
+  description: 'Extract specific pages or split PDFs into multiple files in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: 'https://luvupdf.com/split-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Choose Pages',
+      text: 'Select pages to extract or choose split options.',
+      url: 'https://luvupdf.com/split-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click split and download your files instantly.',
+      url: 'https://luvupdf.com/split-pdf',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -44,6 +77,54 @@ const faqJsonLd = {
         text: 'Yes. Files are processed in your browser and never uploaded to any server.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I extract specific pages only?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Enter page ranges like 1-5 or select individual pages to extract.',
+      },
+    },
+  ],
+};
+
+const softwareAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LoveUPDF Split PDF',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: 'https://luvupdf.com/split-pdf',
+  description: 'Free online PDF splitter. Extract pages or split PDFs into multiple files.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Split PDF',
+      item: 'https://luvupdf.com/split-pdf',
+    },
   ],
 };
 
@@ -52,13 +133,26 @@ export default function SplitPDFPage() {
     <>
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-      <main>
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
         {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="split-pdf-heading"
           style={{
             background:
               'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(59,130,246,0.05) 0%, transparent 70%), #FFFFFF',
@@ -77,6 +171,7 @@ export default function SplitPDFPage() {
 
             {/* H1 */}
             <h1
+              id="split-pdf-heading"
               className="font-heading font-extrabold mb-3"
               style={{
                 fontSize: 'clamp(32px, 5vw, 48px)',
@@ -132,6 +227,15 @@ export default function SplitPDFPage() {
             <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
               Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including split PDF, merge PDF, compress PDF, rotate
+                PDF, lock PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 

@@ -11,17 +11,50 @@ export const metadata: Metadata = {
     'Compress PDF files online for free. Reduce file size while maintaining quality. Secure server processing — files auto-deleted instantly.',
   keywords:
     'compress PDF online free, reduce PDF file size, PDF compressor, shrink PDF, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Compress PDF Online Free | LoveUPDF',
     description: 'Reduce PDF file size instantly. Free, secure, auto-deleted.',
     type: 'website',
     url: 'https://luvupdf.com/compress-pdf',
+    siteName: 'LoveUPDF',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Compress PDF Online Free | LoveUPDF',
+    description: 'Reduce PDF file size instantly. Free and secure.',
   },
   alternates: { canonical: 'https://luvupdf.com/compress-pdf' },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Compress a PDF Online',
+  description: 'Reduce PDF file size while maintaining quality in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: 'https://luvupdf.com/compress-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Choose Level',
+      text: 'Select compression level (low, medium, or high).',
+      url: 'https://luvupdf.com/compress-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click compress and download your smaller file instantly.',
+      url: 'https://luvupdf.com/compress-pdf',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -52,6 +85,54 @@ const faqJsonLd = {
         text: 'Yes. Files are encrypted, processed in memory, and permanently deleted immediately after download.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Which compression level should I use?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Medium works for most files. Low keeps highest quality. High for smallest size.',
+      },
+    },
+  ],
+};
+
+const softwareAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LoveUPDF Compress PDF',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: 'https://luvupdf.com/compress-pdf',
+  description: 'Free online PDF compressor. Reduce file size while maintaining quality.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Compress PDF',
+      item: 'https://luvupdf.com/compress-pdf',
+    },
   ],
 };
 
@@ -60,13 +141,26 @@ export default function CompressPDFPage() {
     <>
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-      <main>
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
         {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="compress-pdf-heading"
           style={{
             background:
               'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(16,185,129,0.05) 0%, transparent 70%), #FFFFFF',
@@ -85,6 +179,7 @@ export default function CompressPDFPage() {
 
             {/* H1 */}
             <h1
+              id="compress-pdf-heading"
               className="font-heading font-extrabold mb-3"
               style={{
                 fontSize: 'clamp(32px, 5vw, 48px)',
@@ -120,7 +215,7 @@ export default function CompressPDFPage() {
                   style={{ color: '#10B981' }}
                 />
                 <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
-                  256-bit SSL · Auto-deleted
+                  Server-side · Processed in memory · Auto-deleted
                 </span>
               </div>
             </div>
@@ -141,6 +236,16 @@ export default function CompressPDFPage() {
               Files encrypted during transfer. Processed in memory. Permanently deleted after
               download.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including compress PDF, merge PDF, split PDF, rotate
+                PDF, lock PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible. Server-side
+                tools like compress use 256-bit SSL and instant auto-deletion.
+              </p>
+            </div>
           </div>
         </section>
 

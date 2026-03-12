@@ -11,25 +11,52 @@ export const metadata: Metadata = {
     'Rotate PDF pages permanently. Fix sideways scans or upside-down pages. Free, private, no upload — all in your browser.',
   keywords:
     'rotate PDF online free, fix sideways PDF, rotate PDF pages, PDF orientation changer, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Rotate PDF Online Free | LoveUPDF',
     description: 'Rotate PDF pages instantly. Free and private — files never leave your device.',
     type: 'website',
     url: 'https://luvupdf.com/rotate-pdf',
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Rotate PDF Online Free | LoveUPDF',
-    description:
-      'Rotate individual PDF pages or whole documents to the perfect orientation with a simple, free web tool.',
+    description: 'Fix page orientation instantly. Free and private.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/rotate-pdf',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Rotate a PDF Online',
+  description: 'Fix sideways or upside-down pages in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: 'https://luvupdf.com/rotate-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Rotate Pages',
+      text: 'Click rotate on pages you want to fix. Choose clockwise, counterclockwise, or 180°.',
+      url: 'https://luvupdf.com/rotate-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click apply and download your rotated PDF instantly.',
+      url: 'https://luvupdf.com/rotate-pdf',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -60,6 +87,14 @@ const faqJsonLd = {
         text: 'No. Text, images, and formatting stay exactly the same. Only orientation changes.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I rotate pages multiple times?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Rotate as many times as needed until orientation is correct.',
+      },
+    },
   ],
 };
 
@@ -79,9 +114,38 @@ const softwareAppJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Rotate PDF',
+      item: 'https://luvupdf.com/rotate-pdf',
+    },
+  ],
+};
+
 export default function RotatePDFPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -90,11 +154,16 @@ export default function RotatePDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-      <main>
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
         {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="rotate-pdf-heading"
           style={{
             background:
               'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(245,158,11,0.05) 0%, transparent 70%), #FFFFFF',
@@ -113,6 +182,7 @@ export default function RotatePDFPage() {
 
             {/* H1 */}
             <h1
+              id="rotate-pdf-heading"
               className="font-heading font-extrabold mb-3"
               style={{
                 fontSize: 'clamp(32px, 5vw, 48px)',
@@ -168,6 +238,15 @@ export default function RotatePDFPage() {
             <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
               Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including rotate PDF, merge PDF, split PDF, compress
+                PDF, lock PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 

@@ -11,19 +11,52 @@ export const metadata: Metadata = {
     'Password protect PDF files with 256-bit AES encryption. Free, secure, no account needed. Files processed in memory and auto-deleted.',
   keywords:
     'lock PDF online free, password protect PDF, encrypt PDF, PDF security, 256-bit AES, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Lock PDF Online Free | LoveUPDF',
     description: 'Add password protection to any PDF. 256-bit encryption. Free and private.',
     type: 'website',
     url: 'https://luvupdf.com/lock-pdf',
+    siteName: 'LoveUPDF',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lock PDF Online Free | LoveUPDF',
+    description: 'Password protect PDFs with 256-bit AES encryption. Free and private.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/lock-pdf',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Password Protect a PDF',
+  description: 'Add 256-bit AES encryption to your PDF files in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: 'https://luvupdf.com/lock-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Set Password',
+      text: 'Enter and confirm a strong password.',
+      url: 'https://luvupdf.com/lock-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click lock and download your encrypted PDF instantly.',
+      url: 'https://luvupdf.com/lock-pdf',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -62,6 +95,14 @@ const faqJsonLd = {
         text: 'No. Files are processed in memory and permanently deleted after download.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I lock PDFs on mobile?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Works on iPhone, Android, iPad, and desktop browsers.',
+      },
+    },
   ],
 };
 
@@ -80,9 +121,38 @@ const softwareAppJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Lock PDF',
+      item: 'https://luvupdf.com/lock-pdf',
+    },
+  ],
+};
+
 export default function LockPDFPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -90,6 +160,10 @@ export default function LockPDFPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <main itemScope itemType="https://schema.org/SoftwareApplication">
@@ -172,6 +246,16 @@ export default function LockPDFPage() {
               Files encrypted during transfer. Processed in memory. Permanently deleted after
               download. Passwords never stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including lock PDF, merge PDF, split PDF, compress
+                PDF, rotate PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible. Server-side
+                tools like lock use 256-bit SSL and instant auto-deletion.
+              </p>
+            </div>
           </div>
         </section>
 

@@ -11,12 +11,17 @@ export const metadata: Metadata = {
     'Merge multiple PDF files into one document. Free, private, no account needed. Files stay in your browser — never uploaded.',
   keywords:
     'merge PDF online free, combine PDF files, PDF merger free, join PDF files, free PDF combiner, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Merge PDF Online Free — Combine PDF Files | LoveUPDF',
     description:
       'Free PDF merger. Combine PDFs instantly. 100% private — files never leave your device.',
     type: 'website',
     url: 'https://luvupdf.com/merge-pdf',
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
@@ -26,10 +31,33 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://luvupdf.com/merge-pdf',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Merge PDF Files Online',
+  description: 'Combine multiple PDFs into one document in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDFs',
+      text: 'Select or drag your PDF files into the tool.',
+      url: 'https://luvupdf.com/merge-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Arrange Order',
+      text: 'Drag files to arrange them in your desired order.',
+      url: 'https://luvupdf.com/merge-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click merge and download your combined PDF instantly.',
+      url: 'https://luvupdf.com/merge-pdf',
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -52,6 +80,14 @@ const faqJsonLd = {
         text: 'Yes. Files are processed in your browser and never uploaded to any server. Your documents stay private on your device.',
       },
     },
+    {
+      '@type': 'Question',
+      name: 'Can I rearrange pages before merging?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Drag and drop files to arrange them in any order before merging.',
+      },
+    },
   ],
 };
 
@@ -71,9 +107,38 @@ const softwareAppJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: 'https://luvupdf.com/tools',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Merge PDF',
+      item: 'https://luvupdf.com/merge-pdf',
+    },
+  ],
+};
+
 export default function MergePDFPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -82,11 +147,16 @@ export default function MergePDFPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-      <main>
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
         {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="merge-pdf-heading"
           style={{
             background:
               'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.05) 0%, transparent 70%), #FFFFFF',
@@ -105,6 +175,7 @@ export default function MergePDFPage() {
 
             {/* H1 */}
             <h1
+              id="merge-pdf-heading"
               className="font-heading font-extrabold mb-3"
               style={{
                 fontSize: 'clamp(32px, 5vw, 48px)',
@@ -160,6 +231,15 @@ export default function MergePDFPage() {
             <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
               Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including merge PDF, split PDF, compress PDF, rotate
+                PDF, lock PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 

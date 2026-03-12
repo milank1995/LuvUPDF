@@ -34,6 +34,33 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://luvupdf.com/organize-pdf' },
 };
 
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Organize PDF Pages Online',
+  description: 'Reorder, rotate, or delete PDF pages with simple drag and drop.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: 'https://luvupdf.com/organize-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Arrange Pages',
+      text: 'Drag thumbnails to reorder. Use rotate or delete icons as needed.',
+      url: 'https://luvupdf.com/organize-pdf',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click organize and download your rearranged PDF instantly.',
+      url: 'https://luvupdf.com/organize-pdf',
+    },
+  ],
+};
+
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -60,6 +87,14 @@ const faqJsonLd = {
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Yes. Files are processed in your browser and never uploaded to any server.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I rotate pages while organizing?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Rotate individual pages with one click while rearranging.',
       },
     },
   ],
@@ -108,6 +143,10 @@ const breadcrumbJsonLd = {
 export default function OrganizePDFPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
