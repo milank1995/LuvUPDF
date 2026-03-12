@@ -1,21 +1,19 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import SplitPDFUploader from './components/SplitPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { splitPDFData } from './components/splitPDFData';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'Split PDF Online Free — Extract Pages Instantly | LuvUPDF',
+  title: 'Split PDF Online Free — Extract Pages | LoveUPDF',
   description:
-    'Split PDF files online for free. Extract specific pages or separate PDFs into multiple files instantly. Fast, secure, no registration required.',
+    'Split PDF files into multiple documents or extract specific pages. Free, private, no account needed. Files stay in your browser.',
   keywords:
-    'split PDF, extract PDF pages, separate PDF pages, divide PDF online, PDF splitter free',
+    'split PDF online free, extract PDF pages, separate PDF pages, PDF splitter free, LoveUPDF, luvupdf',
   openGraph: {
-    title: 'Split PDF Online Free | LuvUPDF',
-    description:
-      'Extract pages from PDF files or split into multiple documents instantly. Free and secure.',
+    title: 'Split PDF Online Free | LoveUPDF',
+    description: 'Split PDF files instantly. Free and private — files never leave your device.',
     type: 'website',
     url: 'https://luvupdf.com/split-pdf',
   },
@@ -31,25 +29,35 @@ const faqJsonLd = {
       name: 'How do I split a PDF online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Upload your PDF, select specific pages or page ranges, click "Split PDF", and download your new files instantly.',
+        text: 'Upload your PDF, choose pages to extract, and click split. Download your new files instantly.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is it safe to split PDFs online?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Files are processed in your browser and never uploaded to any server.',
       },
     },
   ],
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
-
 export default function SplitPDFPage() {
   return (
     <>
-      {/* ... faqJsonLd and Script stay the same */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       <main>
-        {/* Page Hero */}
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.07) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(59,130,246,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -63,124 +71,62 @@ export default function SplitPDFPage() {
               color="#3B82F6"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#EFF6FF', border: '1.5px solid #BFDBFE' }}
-            >
-              <Icon
-                name="ScissorsIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#3B82F6' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#3B82F6',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                Free PDF Splitter Tool
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Split PDF Pages{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Split PDF Pages
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Extract specific pages or split your PDF into multiple files in seconds. Secure, fast, and no registration required.
+              Extract specific pages or split into multiple files.
+              <span className="block mt-1">No upload. No account. 100% private.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
-                { icon: 'TrashIcon', text: 'Auto-Deleted' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Results' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{ background: '#F8F8FC', border: '1px solid #EEEEF5' }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: '#3B82F6' } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#3B82F6' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Client-side · No server upload
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <SplitPDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center px-4"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
-              not call any APIs or send your files to a server. All processing is done entirely on
-              the client side for your privacy.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files processed in your browser. Nothing is uploaded or stored.
             </p>
           </div>
         </section>
