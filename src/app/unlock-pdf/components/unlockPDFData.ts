@@ -1,108 +1,115 @@
 export const unlockPDFData = {
-  title: 'How to Unlock a PDF File Online — Complete Guide',
+  title: 'How to Unlock a PDF File',
 
   intro: [
-    'Unlocking a PDF allows you to remove password protection from files you own, giving you full access to view, edit, or print them. This is especially useful if you’ve forgotten the password or need to share an unprotected version with colleagues.',
-    'LuvUPDF’s free online PDF unlock tool lets you safely remove PDF passwords directly in your browser — no software installation required and your files are never stored permanently.',
+    'Remove password protection from PDFs you own. Regain access to view, print, or edit your files.',
+    'Server-side processing with instant auto-delete. No account needed. Files never stored.',
   ],
 
-  stepSectionTitle: 'Step-by-Step: Unlocking a PDF with LuvUPDF',
+  stepSectionTitle: 'Unlock PDF in 4 Steps',
   stepCircleColor: '#0EA5B0',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your Locked PDF',
-      desc: 'Click the upload area or drag and drop your password-protected PDF onto the page. LuvUPDF accepts files up to 50 MB. Your file is encrypted during transfer using SSL technology.',
+      title: 'Upload PDF',
+      desc: 'Select or drag your locked PDF. Up to 50MB. Encrypted during transfer.',
     },
     {
       step: 2,
-      title: 'Enter the Password',
-      desc: 'Provide the password that was used to lock the PDF. This step is required to verify your access and unlock the file safely.',
+      title: 'Enter Password',
+      desc: "Type the password used to lock the file. We don't store or see your password.",
     },
     {
       step: 3,
-      title: 'Click Unlock PDF',
-      desc: 'Press the "Unlock PDF" button. Our servers will remove the password in just a few seconds while maintaining the original quality and content of your document.',
+      title: 'Click Unlock',
+      desc: 'Press unlock. Processing takes seconds. Original quality preserved.',
     },
     {
       step: 4,
-      title: 'Download Your Unlocked PDF',
-      desc: 'Once unlocked, click the download button to save your PDF without a password. The file is processed in memory and discarded from our servers immediately — nothing is ever stored.',
+      title: 'Download',
+      desc: 'Save your unlocked PDF. Files processed in memory and auto-deleted.',
     },
   ],
 
-  featureSectionTitle: 'Why Use LuvUPDF to Unlock PDFs?',
-  featureIntro:
-    'Our tool ensures a fast, secure, and seamless experience when removing PDF passwords:',
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and secure.',
 
   features: [
     {
       icon: 'ShieldCheckIcon',
-      title: 'Secure Process',
-      desc: 'All files are encrypted during transfer and processed on secure servers. Your PDF content is never accessed by anyone.',
+      title: 'Secure',
+      desc: 'Encrypted transfer. Processed in memory. Never stored.',
       color: '#0EA5B0',
       bg: '#EDFCFD',
     },
     {
       icon: 'KeyIcon',
-      title: 'No Password Storage',
-      desc: 'We never store your password or file. All processing is performed server-side in memory and discarded immediately after the unlocked PDF is returned to you.',
+      title: 'Password Private',
+      desc: 'We never store or see your password. Applied and forgotten.',
       color: '#F59E0B',
       bg: '#FFFBEB',
     },
     {
       icon: 'DevicePhoneMobileIcon',
-      title: 'Universal Compatibility',
-      desc: 'Unlocked PDFs can be opened, edited, or shared on any device and PDF reader without restrictions.',
+      title: 'Any Device',
+      desc: 'Works on phone, tablet, or desktop.',
       color: '#7C5CBF',
       bg: '#F3EEFF',
     },
     {
       icon: 'CloudIcon',
-      title: 'Quick & Easy',
-      desc: 'No software or account is required. Unlock your PDF in seconds directly in the browser.',
+      title: 'Auto-Deleted',
+      desc: 'Files permanently deleted after download.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
   ],
 
-  useCaseSectionTitle: 'When Should You Unlock a PDF?',
-  useCaseIntro: 'Unlocking PDFs is useful in many situations, including:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you might need to unlock a PDF:',
 
   useCases: [
-    'You forgot the password to a PDF you created',
-    'Need to remove restrictions before printing, copying, or editing',
-    'Sharing PDFs with colleagues without requiring a password',
-    'Combining PDFs after unlocking them',
-    'Preparing a PDF for archiving or compliance purposes',
-    'Editing or updating documents originally protected',
+    'You forgot your own PDF password',
+    'Remove restrictions before editing',
+    'Share files without password hassle',
+    'Prepare documents for archiving',
   ],
 
-  securitySectionTitle: 'Is It Safe to Unlock PDFs Online?',
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'Yes. All file transfers use secure HTTPS connections with encryption.',
-    'Files and passwords are processed in server memory and discarded immediately — nothing is ever stored.',
-    'We never store, read, or share the contents of your documents.',
+    '256-bit SSL encryption during transfer.',
+    'Files processed in server memory — never stored on disk.',
+    'Permanently deleted immediately after download.',
+    'Passwords never logged or saved.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Unlock PDF',
+  faqSectionTitle: 'Common Questions',
+
   faqs: [
     {
       q: 'Can I unlock a PDF if I forgot the password?',
-      a: 'No. LuvUPDF cannot bypass unknown passwords. You must know the password to unlock the PDF.',
+      a: 'No. You must know the password. We cannot bypass unknown passwords.',
     },
     {
-      q: 'Will unlocking a PDF affect its content or quality?',
-      a: 'No. Unlocking does not alter your PDF’s content, images, fonts, or formatting. It only removes password protection.',
+      q: 'Does unlocking affect quality?',
+      a: 'No. Content, images, and formatting stay exactly the same.',
     },
     {
-      q: 'Can I unlock PDFs on my phone or tablet?',
-      a: 'Yes! LuvUPDF is fully mobile-friendly. Upload, unlock, and download PDFs directly from your mobile browser.',
+      q: 'Works on mobile?',
+      a: 'Yes. Works on iPhone, Android, iPad, and desktop.',
     },
     {
-      q: 'Are unlocked PDFs safe to share?',
-      a: 'Yes. Once unlocked, PDFs can be freely shared. Ensure you store sensitive files securely to avoid unauthorized access.',
+      q: 'Do you keep my files?',
+      a: 'No. Files processed in memory and permanently deleted after download.',
+    },
+    {
+      q: 'Is it safe to unlock PDFs online?',
+      a: 'Yes. Encrypted transfer, no storage, passwords never saved.',
+    },
+    {
+      q: 'Can I unlock PDFs from anyone?',
+      a: 'Only files you own or have permission to access.',
     },
   ],
 };

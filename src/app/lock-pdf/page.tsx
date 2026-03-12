@@ -2,30 +2,62 @@ import type { Metadata } from 'next';
 import LockPDFUploader from './components/LockPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { lockPDFData } from './components/lockPDFData';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Lock PDF Online Free — Password Protect PDF Instantly | LuvUPDF',
+  title: 'Lock PDF Online Free — Password Protect PDF | LoveUPDF',
   description:
-    'Lock and password protect your PDF files online for free using 256-bit AES encryption. No sign-up required. No data stored. Files are processed in memory and discarded immediately. Secure your PDFs instantly with LuvUPDF.',
+    'Password protect PDF files with 256-bit AES encryption. Free, secure, no account needed. Files processed in memory and auto-deleted.',
   keywords:
-    'lock PDF, password protect PDF, encrypt PDF, PDF password, secure PDF online, protect PDF free, PDF encryption, lock PDF online, no data stored, private PDF encryption',
+    'lock PDF online free, password protect PDF, encrypt PDF, PDF security, 256-bit AES, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Lock PDF Online Free — Password Protect PDF | LuvUPDF',
-    description:
-      'Add 256-bit AES password protection to any PDF file for free. No registration, no data stored, instant results, SSL secured. Files processed in memory and discarded immediately.',
+    title: 'Lock PDF Online Free | LoveUPDF',
+    description: 'Add password protection to any PDF. 256-bit encryption. Free and private.',
     type: 'website',
-    url: 'https://luvupdf.com/lock-pdf',
+    url: `${SITE_URL}/lock-pdf`,
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lock PDF Online Free | LuvUPDF',
-    description: 'Password protect any PDF with 256-bit encryption. Free, instant, no sign-up, no data stored.',
+    title: 'Lock PDF Online Free | LoveUPDF',
+    description: 'Password protect PDFs with 256-bit AES encryption. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/lock-pdf',
+    canonical: `${SITE_URL}/lock-pdf`,
   },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Password Protect a PDF',
+  description: 'Add 256-bit AES encryption to your PDF files in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: `${SITE_URL}/lock-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Set Password',
+      text: 'Enter and confirm a strong password.',
+      url: `${SITE_URL}/lock-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click lock and download your encrypted PDF instantly.',
+      url: `${SITE_URL}/lock-pdf`,
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -34,34 +66,42 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'How do I password protect a PDF file online?',
+      name: 'How do I password protect a PDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Upload your PDF to LuvUPDF\'s Lock PDF tool, enter a strong password, confirm it, and click "Lock PDF with Password". Download your encrypted PDF instantly. No registration required.',
+        text: 'Upload your PDF, enter a password, and click lock. Download your encrypted file instantly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What type of encryption does LuvUPDF use to lock PDFs?',
+      name: 'What encryption do you use?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LuvUPDF uses 256-bit AES encryption — the same standard used by governments and financial institutions worldwide.',
+        text: 'We use 256-bit AES encryption — the same standard used by banks and governments.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What happens if I forget my PDF password?',
+      name: 'What if I forget my password?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LuvUPDF does not store passwords for security reasons. If you forget your PDF password, you will need a specialized PDF recovery tool to regain access.',
+        text: "We don't store passwords. If you forget it, the PDF cannot be unlocked.",
       },
     },
     {
       '@type': 'Question',
-      name: 'Does locking a PDF affect its quality or content?',
+      name: 'Do you keep my files?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. Adding password protection does not affect the content, formatting, images, or quality of your PDF in any way.',
+        text: 'No. Files are processed in memory and permanently deleted after download.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I lock PDFs on mobile?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Works on iPhone, Android, iPad, and desktop browsers.',
       },
     },
   ],
@@ -70,11 +110,11 @@ const faqJsonLd = {
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Lock PDF',
+  name: 'LoveUPDF Lock PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/lock-pdf',
-  description: 'Free online PDF lock tool. Password protect PDF files with 256-bit AES encryption.',
+  url: `${SITE_URL}/lock-pdf`,
+  description: 'Free online PDF lock tool. Password protect PDFs with 256-bit AES encryption.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -82,19 +122,59 @@ const softwareAppJsonLd = {
   },
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: SITE_URL,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: `${SITE_URL}/tools`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Lock PDF',
+      item: `${SITE_URL}/lock-pdf`,
+    },
+  ],
+};
 
 export default function LockPDFPage() {
   return (
     <>
-      {/* ... scripts stay the same */}
-      <main>
-        {/* Page Hero */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="lock-pdf-heading"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(124,92,191,0.07) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(124,92,191,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -108,128 +188,75 @@ export default function LockPDFPage() {
               color="#7C5CBF"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#F3EEFF', border: '1.5px solid #E0D4FF' }}
-            >
-              <Icon
-                name="LockClosedIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#7C5CBF' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#7C5CBF',
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                256-bit AES Encryption · Free
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              id="lock-pdf-heading"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Lock PDF with Password{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #7C5CBF 0%, #A07CE8 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Lock PDF with Password
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Protect your sensitive PDF documents with military-grade 256-bit AES encryption. Set a
-              password in seconds — no account required.
+              Add 256-bit AES encryption to any PDF.
+              <span className="block mt-1">Secure server processing. Auto-deleted instantly.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: '256-bit AES' },
-                { icon: 'ServerIcon', text: 'No Data Stored' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Encryption' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{ background: '#F8F8FC', border: '1px solid #EEEEF5' }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: '#7C5CBF' } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#7C5CBF' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Server-side · Processed in memory · Auto-deleted
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <LockPDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We
-              call our API only to perform the server-side locking process.{' '}
-              <strong style={{ color: '#4A4A6A' }}>No file or password data is ever stored</strong>{' '}
-              on our servers — everything is processed in memory and discarded immediately.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files encrypted during transfer. Processed in memory. Permanently deleted after
+              download. Passwords never stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including lock PDF, merge PDF, split PDF, compress
+                PDF, rotate PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible. Server-side
+                tools like lock use 256-bit SSL and instant auto-deletion.
+              </p>
+            </div>
           </div>
         </section>
 

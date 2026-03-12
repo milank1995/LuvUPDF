@@ -1,32 +1,63 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import UnlockPDFUploader from './components/UnlockPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { unlockPDFData } from './components/unlockPDFData';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Unlock PDF Online Free — Remove PDF Passwords Safely | LuvUPDF',
+  title: 'Unlock PDF Online Free — Remove PDF Passwords | LoveUPDF',
   description:
-    'Unlock password-protected PDF files online for free. Regain access to your own documents while keeping quality intact. No installation, no sign-up, no data stored. Works in your browser.',
+    'Remove passwords from your own PDF files. Free, secure, no account needed. Files processed in memory and auto-deleted instantly.',
   keywords:
-    'unlock PDF, remove PDF password, decrypt PDF, PDF password remover, unlock PDF online, remove PDF protection, free PDF unlock, no data stored, private PDF unlock',
+    'unlock PDF online free, remove PDF password, decrypt PDF, PDF password remover, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Unlock PDF Online Free — Remove PDF Passwords | LuvUPDF',
-    description:
-      'Remove passwords from your own PDF files in a few simple steps. Free, secure, and browser-based. No data stored.',
+    title: 'Unlock PDF Online Free | LoveUPDF',
+    description: 'Remove passwords from your own PDF files. Free and private.',
     type: 'website',
-    url: 'https://luvupdf.com/unlock-pdf',
+    url: `${SITE_URL}/unlock-pdf`,
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Unlock PDF Online Free | LuvUPDF',
-    description:
-      'Unlock password-protected PDFs you own without installing heavy desktop software. 100% free. No data stored.',
+    title: 'Unlock PDF Online Free | LoveUPDF',
+    description: 'Remove PDF passwords instantly. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/unlock-pdf',
+    canonical: `${SITE_URL}/unlock-pdf`,
   },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Unlock a Password-Protected PDF',
+  description: 'Remove password protection from your own PDF files in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your locked PDF file into the tool.',
+      url: `${SITE_URL}/unlock-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Enter Password',
+      text: 'Type the password used to lock the PDF.',
+      url: `${SITE_URL}/unlock-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click unlock and download your password-free PDF instantly.',
+      url: `${SITE_URL}/unlock-pdf`,
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -35,26 +66,42 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Can I unlock any PDF file with this tool?',
+      name: 'How do I unlock a password-protected PDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LuvUPDF Unlock PDF is designed for documents that you already own or are authorized to access. You will need to know the correct password or have legitimate permission to remove it. The tool is not intended for bypassing security on unauthorized files.',
+        text: 'Upload your PDF, enter the password, and click unlock. Download your file instantly without password protection.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is the Unlock PDF tool free?',
+      name: 'Can I unlock any PDF file?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Unlock PDF tool, like other core utilities in LuvUPDF, is planned to be completely free to use with no watermarks and no registration required.',
+        text: 'Only PDFs you own or have permission to access. You must know the correct password.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Will unlocking a PDF change its content or quality?',
+      name: 'Does unlocking affect quality?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. Unlocking a PDF simply removes the password requirement. The text, images, layout, fonts, and internal structure of the document remain the same.',
+        text: 'No. Content, images, and formatting stay exactly the same. Only the password is removed.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you keep my files?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Files are processed in memory and permanently deleted after download.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What if I enter the wrong password?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The unlock will fail. Double-check your password and try again.',
       },
     },
   ],
@@ -63,12 +110,11 @@ const faqJsonLd = {
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Unlock PDF',
+  name: 'LoveUPDF Unlock PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/unlock-pdf',
-  description:
-    'Free online Unlock PDF tool. Remove passwords from your own PDF files quickly and safely in the browser.',
+  url: `${SITE_URL}/unlock-pdf`,
+  description: 'Free online PDF unlock tool. Remove passwords from your own PDF files.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -76,19 +122,59 @@ const softwareAppJsonLd = {
   },
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: SITE_URL,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: `${SITE_URL}/tools`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Unlock PDF',
+      item: `${SITE_URL}/unlock-pdf`,
+    },
+  ],
+};
 
 export default function UnlockPDFPage() {
   return (
     <>
-      {/* ... scripts stay the same */}
-      <main>
-        {/* Page Hero */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="unlock-pdf-heading"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(14,165,176,0.06) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(14,165,176,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -102,128 +188,75 @@ export default function UnlockPDFPage() {
               color="#0EA5B0"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#EDFCFD', border: '1.5px solid #BFEFEF' }}
-            >
-              <Icon
-                name="LockOpenIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#0EA5B0' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#0EA5B0',
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Unlock PDF · 100% Free
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              id="unlock-pdf-heading"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Unlock PDF Online{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #0EA5B0 0%, #14B8A6 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Unlock PDF Files
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Instantly remove password protection from your PDF documents for free. Regain access to
-              your files in seconds — no account required.
+              Remove password protection from your own PDFs.
+              <span className="block mt-1">Secure server processing. Auto-deleted instantly.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: 'Secure Decryption' },
-                { icon: 'ServerIcon', text: 'No Data Stored' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Results' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{ background: '#F8F8FC', border: '1px solid #EEEEF5' }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: '#0EA5B0' } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#0EA5B0' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Server-side · Processed in memory · Auto-deleted
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <UnlockPDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We
-              call our API only to perform the server-side unlocking process.{' '}
-              <strong style={{ color: '#4A4A6A' }}>No file or password data is ever stored</strong>{' '}
-              on our servers — everything is processed in memory and discarded immediately.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files encrypted during transfer. Processed in memory. Permanently deleted after
+              download. Passwords never stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including unlock PDF, lock PDF, merge PDF, split PDF,
+                compress PDF, rotate PDF, organize PDF, and remove PDF pages. All tools prioritize
+                your privacy with client-side or secure server-side processing with instant
+                auto-deletion.
+              </p>
+            </div>
           </div>
         </section>
 

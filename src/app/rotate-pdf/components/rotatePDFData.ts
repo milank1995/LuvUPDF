@@ -1,106 +1,109 @@
 export const rotatePDFData = {
-  title: 'How to Rotate PDF Pages Online — Complete Guide',
+  title: 'How to Rotate PDF Pages',
 
   intro: [
-    'Sometimes PDF pages are scanned or saved in the wrong orientation. Rotating PDF pages allows you to correct sideways or upside-down pages for easy reading and printing.',
-    'LuvUPDF’s free online PDF rotator works directly in your browser, letting you rotate individual pages or entire documents with no installation and no account required.',
+    'Fix sideways scans or upside-down pages. Correct orientation for reading and printing.',
+    'Works in your browser. No upload. No account. 100% private.',
   ],
 
-  stepSectionTitle: 'Step-by-Step: Rotating PDFs with LuvUPDF',
+  stepSectionTitle: 'Rotate PDF in 3 Steps',
   stepCircleColor: '#F59E0B',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your PDF File',
-      desc: 'Click the upload area or drag and drop your PDF. LuvUPDF supports files up to 100MB and all PDF versions.',
+      title: 'Upload',
+      desc: 'Select or drag your PDF. Supports files up to 100MB. All processing stays in your browser.',
     },
     {
       step: 2,
-      title: 'Select Pages and Rotation',
-      desc: 'Choose which pages you want to rotate and select the direction (90° clockwise, 90° counterclockwise, or 180°).',
+      title: 'Choose Pages',
+      desc: 'Pick pages to rotate. Rotate clockwise, counterclockwise, or 180°. Do individual pages or all.',
     },
     {
       step: 3,
-      title: 'Click Rotate PDF',
-      desc: 'Press the "Rotate PDF" button. The selected pages will be rotated instantly while preserving the original quality.',
-    },
-    {
-      step: 4,
-      title: 'Download Your Rotated PDF',
-      desc: 'Once rotation is complete, click the download button to save your corrected PDF. Files are automatically deleted from servers within 1 hour.',
+      title: 'Download',
+      desc: 'Click rotate. Your fixed PDF is ready instantly. Files never leave your device.',
     },
   ],
 
-  featureSectionTitle: 'Why Use LuvUPDF to Rotate PDFs?',
-  featureIntro: 'Our PDF rotator is fast, secure, and maintains document quality:',
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and fast.',
 
   features: [
     {
       icon: 'DevicePhoneMobileIcon',
-      title: 'Works Everywhere',
-      desc: 'Rotate PDFs on any device using any browser, with no software or account needed.',
+      title: 'Any Device',
+      desc: 'Works on phone, tablet, or desktop.',
       color: '#F59E0B',
       bg: '#FFFBEB',
     },
     {
       icon: 'ShieldCheckIcon',
-      title: 'Secure',
-      desc: 'Files are encrypted during transfer and automatically deleted from servers within 1 hour.',
+      title: 'Private',
+      desc: 'Files stay in your browser. Nothing uploaded.',
       color: '#0EA5B0',
       bg: '#EDFCFD',
     },
     {
       icon: 'DocumentCheckIcon',
       title: 'Quality Preserved',
-      desc: 'Rotation does not alter images, text, fonts, or formatting of your PDF.',
+      desc: 'Text, images, and formatting unchanged.',
       color: '#7C5CBF',
       bg: '#F3EEFF',
     },
     {
       icon: 'BoltIcon',
-      title: 'Fast & Simple',
-      desc: 'Rotate PDFs in seconds with an intuitive, browser-based interface.',
+      title: 'Fast',
+      desc: 'Rotates in seconds. No waiting.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
   ],
 
-  useCaseSectionTitle: 'When Should You Rotate a PDF?',
-  useCaseIntro: 'Rotating PDF pages is helpful in scenarios such as:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you might need to rotate a PDF:',
 
   useCases: [
-    'Scanned documents appear sideways or upside-down',
-    'Presentations or reports need page orientation correction',
-    'Archiving PDFs in a readable format',
-    'Correcting pages before printing or sharing',
-    'Rotating only selected pages for specific needs',
+    'Fix sideways scanned documents',
+    'Correct upside-down pages',
+    'Adjust page orientation before printing',
+    'Fix mixed-orientation files',
   ],
 
-  securitySectionTitle: 'Is It Safe to Rotate PDFs Online?',
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'Yes. All files are transferred over HTTPS with encryption.',
-    'Uploaded files are automatically deleted within 1 hour.',
-    'LuvUPDF never stores, reads, or shares your documents.',
+    'Files processed in your browser. No servers, no uploads.',
+    'We never see or store your documents.',
+    'Original quality preserved — only orientation changes.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Rotate PDF',
+  faqSectionTitle: 'Common Questions',
+
   faqs: [
     {
-      q: 'Can I rotate individual pages in a PDF?',
-      a: 'Yes. LuvUPDF allows you to select specific pages to rotate or rotate the entire document.',
+      q: 'Can I rotate only one page?',
+      a: 'Yes. Select individual pages to rotate while leaving others unchanged.',
     },
     {
-      q: 'Does rotating a PDF affect its quality?',
-      a: 'No. Rotation preserves all text, images, fonts, and formatting exactly as in the original file.',
+      q: 'Will rotating affect text or images?',
+      a: 'No. Only the page orientation changes. All content stays exactly the same.',
     },
     {
-      q: 'Can I rotate PDFs on my phone or tablet?',
-      a: 'Absolutely! The tool works fully in mobile browsers without any downloads.',
+      q: 'Can I rotate multiple times?',
+      a: 'Yes. Rotate as many times as needed until orientation is correct.',
     },
     {
-      q: 'Is it possible to rotate PDFs multiple times?',
-      a: 'Yes. You can rotate a PDF as many times as needed until the desired orientation is achieved.',
+      q: 'Where are my files processed?',
+      a: 'Right in your browser. Files never leave your device.',
+    },
+    {
+      q: 'Works on mobile?',
+      a: 'Yes. Works on iPhone, Android, iPad, and desktop.',
+    },
+    {
+      q: 'Do you keep copies of my PDF?',
+      a: 'No. Files stay on your device. We have no access to your documents.',
     },
   ],
 };

@@ -1,30 +1,63 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import RotatePDFUploader from './components/RotatePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { rotatePDFData } from './components/rotatePDFData';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Rotate PDF Online Free — Permanently Rotate PDF Pages | LuvUPDF',
+  title: 'Rotate PDF Online Free — Fix Page Orientation | LoveUPDF',
   description:
-    'Rotate PDF pages online for free. Permanently rotate individual pages or entire documents with 1-click. Fast, secure, and preserves original file quality.',
+    'Rotate PDF pages permanently. Fix sideways scans or upside-down pages. Free, private, no upload — all in your browser.',
+  keywords:
+    'rotate PDF online free, fix sideways PDF, rotate PDF pages, PDF orientation changer, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Rotate PDF Online Free — Fix Sideways PDFs | LuvUPDF',
-    description:
-      'Permanently rotate PDF pages clockwise or counter-clockwise. A free, browser-based tool from LuvUPDF to fix your scanned documents.',
+    title: 'Rotate PDF Online Free | LoveUPDF',
+    description: 'Rotate PDF pages instantly. Free and private — files never leave your device.',
     type: 'website',
-    url: 'https://luvupdf.com/rotate-pdf',
+    url: `${SITE_URL}/rotate-pdf`,
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rotate PDF Online Free | LuvUPDF',
-    description:
-      'Rotate individual PDF pages or whole documents to the perfect orientation with a simple, free web tool.',
+    title: 'Rotate PDF Online Free | LoveUPDF',
+    description: 'Fix page orientation instantly. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/rotate-pdf',
+    canonical: `${SITE_URL}/rotate-pdf`,
   },
+};
+
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Rotate a PDF Online',
+  description: 'Fix sideways or upside-down pages in seconds.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Upload PDF',
+      text: 'Select or drag your PDF file into the tool.',
+      url: `${SITE_URL}/rotate-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Rotate Pages',
+      text: 'Click rotate on pages you want to fix. Choose clockwise, counterclockwise, or 180°.',
+      url: `${SITE_URL}/rotate-pdf`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Download',
+      text: 'Click apply and download your rotated PDF instantly.',
+      url: `${SITE_URL}/rotate-pdf`,
+    },
+  ],
 };
 
 const faqJsonLd = {
@@ -33,26 +66,34 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is it free to rotate PDF pages with LuvUPDF?',
+      name: 'How do I rotate a PDF online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Rotate PDF tool is planned to be completely free to use, with no watermarks and no registration required.',
+        text: 'Upload your PDF, click rotate on pages you want to fix, and download. All in your browser.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Will rotating pages reduce the quality of my PDF?',
+      name: 'Can I rotate only specific pages?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. Rotating pages simply updates their orientation. The text, images, and layout of your PDF remain exactly the same.',
+        text: 'Yes. Select individual pages to rotate while leaving others unchanged.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Can I rotate only specific pages instead of the whole document?',
+      name: 'Will rotating affect PDF quality?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The Rotate PDF experience is being designed so you can select individual pages or ranges of pages to rotate without affecting the rest of the file.',
+        text: 'No. Text, images, and formatting stay exactly the same. Only orientation changes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I rotate pages multiple times?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. Rotate as many times as needed until orientation is correct.',
       },
     },
   ],
@@ -61,12 +102,12 @@ const faqJsonLd = {
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Rotate PDF',
+  name: 'LoveUPDF Rotate PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/rotate-pdf',
+  url: `${SITE_URL}/rotate-pdf`,
   description:
-    'Free online Rotate PDF tool. Fix sideways or upside-down pages without installing any software.',
+    'Free online PDF rotator. Fix page orientation in your browser. No upload, no installation.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -74,19 +115,59 @@ const softwareAppJsonLd = {
   },
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: SITE_URL,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: `${SITE_URL}/tools`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Rotate PDF',
+      item: `${SITE_URL}/rotate-pdf`,
+    },
+  ],
+};
 
 export default function RotatePDFPage() {
   return (
     <>
-      {/* ... scripts stay the same */}
-      <main>
-        {/* Page Hero */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="rotate-pdf-heading"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(245,158,11,0.08) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(245,158,11,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -100,94 +181,73 @@ export default function RotatePDFPage() {
               color="#F59E0B"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#FFFBEB', border: '1.5px solid #FDE68A' }}
-            >
-              <Icon
-                name="ArrowPathIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#F59E0B' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#F59E0B',
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Permanently Rotate PDF
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              id="rotate-pdf-heading"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Rotate PDF Pages{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #F59E0B 0%, #F97316 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                Instantly
-              </span>
+              Rotate PDF Pages
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Rotate individual PDF pages or entire documents to the perfect orientation. Fix sideways
-              scans and upside-down pages for free, right in your browser.
+              Fix sideways scans or upside-down pages.
+              <span className="block mt-1">No upload. No account. 100% private.</span>
             </p>
+
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#F59E0B' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Client-side · No server upload
+                </span>
+              </div>
+            </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <RotatePDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center px-4"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
-              not call any APIs or send your files to a server. All processing is done entirely on
-              the client side for your privacy.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including rotate PDF, merge PDF, split PDF, compress
+                PDF, lock PDF, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 

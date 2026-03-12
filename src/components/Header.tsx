@@ -37,16 +37,17 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-[0_2px_20px_rgba(26,26,46,0.08)]'
-          : 'bg-white/80 backdrop-blur-sm'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-[0_2px_20px_rgba(26,26,46,0.08)]'
+            : 'bg-white/80 backdrop-blur-sm'
+        }`}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center group" aria-label="LuvUPDF Home">
+          <Link href="/" className="flex items-center group" aria-label="LoveUPDF Home">
             <Image
-              src="/assets/images/favicon.png"
+              src="/assets/images/app_logo.png"
               alt="LoveUPDF Icon"
               width={48}
               height={48}
@@ -59,7 +60,7 @@ export default function Header() {
                 color: '#1A1A2E',
                 fontWeight: 900,
                 fontSize: '22px',
-                lineHeight: '1'
+                lineHeight: '1',
               }}
             >
               LoveU<span style={{ color: '#E8445A' }}>PDF</span>
@@ -91,10 +92,11 @@ export default function Header() {
 
               {/* Dropdown Menu - 2 Columns */}
               <div
-                className={`absolute top-full left-1/2 -translate-x-1/2 w-[480px] pt-2 transition-all duration-200 ${toolsDropdownOpen
-                  ? 'opacity-100 visible translate-y-0'
-                  : 'opacity-0 invisible -translate-y-2'
-                  }`}
+                className={`absolute top-full left-1/2 -translate-x-1/2 w-[480px] pt-2 transition-all duration-200 ${
+                  toolsDropdownOpen
+                    ? 'opacity-100 visible translate-y-0'
+                    : 'opacity-0 invisible -translate-y-2'
+                }`}
               >
                 <div className="bg-white rounded-2xl shadow-[0_10px_50px_rgba(26,26,46,0.15)] border border-brand-surface overflow-hidden p-3 grid grid-cols-2 gap-1">
                   {tools.map((tool) => (
@@ -123,10 +125,11 @@ export default function Header() {
                 <Link
                   key={link?.href}
                   href={link?.href}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${isActive
-                    ? 'bg-primary-light text-primary font-semibold'
-                    : 'text-brand-mid hover:text-brand-dark hover:bg-brand-surface'
-                    }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? 'bg-primary-light text-primary font-semibold'
+                      : 'text-brand-mid hover:text-brand-dark hover:bg-brand-surface'
+                  }`}
                   style={{
                     color: isActive ? '#E8445A' : '#4A4A6A',
                     background: isActive ? '#FFF0F2' : undefined,

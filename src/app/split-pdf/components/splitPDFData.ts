@@ -1,111 +1,108 @@
 export const splitPDFData = {
-  title: 'How to Split PDF Files Online — Complete Guide',
+  title: 'How to Split a PDF File',
 
   intro: [
-    'Splitting a PDF allows you to extract specific pages or divide a large document into smaller files. This is useful when you only need certain sections of a report, contract, or presentation.',
-    'LuvUPDF’s free online PDF splitter lets you separate pages instantly in your browser — no installation or account required.',
+    'Extract specific pages or split a large PDF into smaller files. No account needed.',
+    'Works entirely in your browser. Files never leave your device.',
   ],
 
-  stepSectionTitle: 'How to Split PDF Files Online',
+  stepSectionTitle: 'Split PDF in 3 Steps',
   stepCircleColor: '#3B82F6',
 
   steps: [
     {
       step: 1,
-      title: 'Upload PDF Document',
-      desc: 'Select or drag and drop the PDF file you wish to split. LuvUPDF supports files up to 100MB for free.',
+      title: 'Upload Your PDF',
+      desc: 'Select or drag and drop your PDF file. Supports files up to 100MB. Works with scanned documents, forms, and text-based PDFs.',
     },
     {
       step: 2,
-      title: 'Choose Splitting Mode',
-      desc: 'Select "Custom Ranges" to extract specific pages, "Fixed Intervals" to split every X pages, or "Extract All" to save every page as a separate PDF.',
+      title: 'Choose Pages to Extract',
+      desc: 'Pick specific pages using ranges like 1-5, 7, 9-12. Or select "Extract All" to save every page as a separate PDF file.',
     },
     {
       step: 3,
-      title: 'Configure & Process',
-      desc: 'Enter your desired page ranges (e.g., 1-5, 8, 10-12) and click the "Split PDF Now" button to start processing instantly.',
-    },
-    {
-      step: 4,
-      title: 'Download Result',
-      desc: 'Once process is complete, download your extracted PDF pages directly or as a ZIP archive for multiple files.',
+      title: 'Download Split Files',
+      desc: 'Click split. Your new PDFs are ready instantly. For multiple pages, files download as a ZIP. All data auto-deleted.',
     },
   ],
 
-  featureSectionTitle: 'Why Use LuvUPDF to Split PDFs?',
-  featureIntro: 'Our PDF splitter is fast, secure, and precise:',
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and fast.',
 
   features: [
     {
       icon: 'ScissorsIcon',
-      title: 'Precise Page Selection',
-      desc: 'Extract individual pages or custom page ranges easily.',
+      title: 'Page Selection',
+      desc: 'Pick any pages. Use ranges or select one by one.',
       color: '#3B82F6',
       bg: '#EFF6FF',
     },
     {
       icon: 'BoltIcon',
-      title: 'Instant Processing',
-      desc: 'Split PDFs in seconds with high-speed cloud processing.',
+      title: 'Fast',
+      desc: 'Splits in seconds. No waiting, no queues.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'ShieldCheckIcon',
-      title: 'Secure & Private',
-      desc: 'Files are encrypted during transfer and auto-deleted within 1 hour.',
+      title: 'Private',
+      desc: 'Files processed locally. Nothing uploaded.',
       color: '#0EA5B0',
       bg: '#EDFCFD',
     },
     {
       icon: 'DevicePhoneMobileIcon',
-      title: 'Works on Any Device',
-      desc: 'Split PDFs on desktop, tablet, or mobile browser.',
+      title: 'Any Device',
+      desc: 'Works on phone, tablet, or desktop.',
       color: '#7C5CBF',
       bg: '#F3EEFF',
     },
   ],
 
-  useCaseSectionTitle: 'When Should You Split a PDF?',
-  useCaseIntro: 'Splitting PDFs is helpful in many situations:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you might need to split a PDF:',
 
   useCases: [
-    'Extracting one chapter from a large ebook',
-    'Sending only relevant pages of a contract',
-    'Separating scanned multi-page documents',
-    'Creating individual files from a bulk scan',
-    'Reducing file size by dividing large documents',
+    'Extract a single chapter from a book',
+    'Send only specific pages of a contract',
+    'Separate scanned documents',
+    'Split large files into smaller ones',
   ],
 
-  securitySectionTitle: 'Is It Safe to Split PDFs Online?',
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'All file transfers are encrypted via HTTPS.',
-    'Files are processed securely and deleted within 1 hour.',
-    'We never read or store your documents.',
+    'Files stay in your browser. No uploads. No servers.',
+    'Auto-deleted after download. We never see your documents.',
   ],
 
-  faqSectionTitle: 'Frequently Asked Questions — Split PDF',
+  faqSectionTitle: 'Common Questions',
 
   faqs: [
     {
-      q: 'How do I split a PDF into separate pages?',
-      a: 'Upload your PDF, choose the option to split every page, then click "Split PDF". Each page will be saved as an individual PDF file.',
+      q: 'Can I split a PDF into single pages?',
+      a: 'Yes. Choose "Extract All Pages" to save each page as a separate PDF file.',
     },
     {
-      q: 'Can I extract only certain pages from a PDF?',
-      a: 'Yes. You can select specific pages or enter page ranges like 2-6 to extract only the sections you need.',
+      q: 'How do I extract specific pages?',
+      a: 'Enter page numbers like 1,3,5 or ranges like 2-6. Only those pages will be extracted.',
     },
     {
-      q: 'Will the formatting change after splitting?',
-      a: 'No. The extracted pages keep their original layout, fonts, images, and quality.',
+      q: 'Will my formatting stay the same?',
+      a: 'Yes. Fonts, images, and layout remain exactly as in the original.',
     },
     {
-      q: 'Is it safe to split PDFs online?',
-      a: 'Yes. Files are encrypted during upload and automatically deleted within 1 hour to protect your privacy.',
+      q: 'Where are my files processed?',
+      a: 'Right in your browser. Files never leave your device.',
     },
     {
-      q: 'Do I need to create an account to split a PDF?',
-      a: 'No. You can split your PDF instantly without signing up or installing any software.',
+      q: 'Is there a file size limit?',
+      a: 'Files up to 100MB are supported. Most PDFs work fine.',
+    },
+    {
+      q: 'Do you keep copies of my files?',
+      a: 'No. Files stay on your device. We have no access to your documents.',
     },
   ],
 };

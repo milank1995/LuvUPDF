@@ -1,62 +1,60 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import RemovePagesPDFUploader from './components/RemovePagesPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { removePagesPDFData } from './components/removePagesPDFData';
-import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Remove Pages from PDF Online Free — Delete PDF Pages Instantly | LuvUPDF',
+  title: 'Remove Pages from PDF Online Free — Delete PDF Pages | LoveUPDF',
   description:
-    'Remove unwanted pages from a PDF online for free. Delete specific pages instantly while preserving quality. Secure, fast, and no registration required.',
+    'Delete unwanted pages from any PDF. Free, private, no account needed. Client-side processing — files never leave your device.',
   keywords:
-    'remove pages from PDF, delete PDF pages, remove PDF page online, delete pages from PDF free, PDF page remover, how to delete pages from PDF, online PDF editor, free PDF tools',
+    'remove pages from PDF online free, delete PDF pages, PDF page remover, LoveUPDF, luvupdf',
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Remove Pages from PDF Online Free | LuvUPDF',
+    title: 'Remove Pages from PDF Online Free | LoveUPDF',
     description:
-      'Delete unwanted pages from your PDF instantly. Free, secure, and easy to use online PDF page remover.',
+      'Delete unwanted PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
-    url: 'https://luvupdf.com/remove-pages',
-    siteName: 'LuvUPDF',
+    url: `${SITE_URL}/remove-pages`,
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Remove Pages from PDF Online Free | LuvUPDF',
-    description: 'Delete unwanted pages from your PDF instantly. Free, secure, and no registration required.',
+    title: 'Remove Pages from PDF Online Free | LoveUPDF',
+    description: 'Delete PDF pages instantly. Free and private.',
   },
-  alternates: { canonical: 'https://luvupdf.com/remove-pages' },
+  alternates: { canonical: `${SITE_URL}/remove-pages` },
 };
 
 const howToJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
-  name: 'How to Remove Pages from a PDF Online Free',
-  description: 'Learn how to delete unwanted pages from your PDF document using LuvUPDF.',
+  name: 'How to Remove Pages from a PDF',
+  description: 'Delete unwanted pages from your PDF in seconds.',
   step: [
     {
       '@type': 'HowToStep',
       name: 'Upload PDF',
-      text: 'Click the upload area or drag and drop your PDF file into the page remover tool.',
-      url: 'https://luvupdf.com/remove-pages',
+      text: 'Select or drag your PDF file into the tool.',
+      url: `${SITE_URL}/remove-pages`,
     },
     {
       '@type': 'HowToStep',
       name: 'Select Pages',
-      text: 'Click on the thumbnails of the pages you want to delete from your PDF.',
-      url: 'https://luvupdf.com/remove-pages',
+      text: 'Click on page thumbnails to choose which to delete.',
+      url: `${SITE_URL}/remove-pages`,
     },
     {
       '@type': 'HowToStep',
-      name: 'Process Deletion',
-      text: 'Click the "Remove Pages" button to process your document instantly.',
-      url: 'https://luvupdf.com/remove-pages',
-    },
-    {
-      '@type': 'HowToStep',
-      name: 'Download File',
-      text: 'Download your updated PDF to your device.',
-      url: 'https://luvupdf.com/remove-pages',
+      name: 'Download',
+      text: 'Click remove and download your updated PDF instantly.',
+      url: `${SITE_URL}/remove-pages`,
     },
   ],
 };
@@ -67,34 +65,34 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'How do I remove pages from a PDF online?',
+      name: 'How do I remove pages from a PDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Upload your PDF, select the pages you want to delete, click "Remove Pages", and download your updated PDF instantly.',
+        text: 'Upload your PDF, select pages to delete, click remove, and download your updated file.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Will removing pages affect PDF quality?',
+      name: 'Will removing pages affect quality?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No. Removing pages does not affect the quality, formatting, or content of the remaining pages in your PDF.',
+        text: 'No. Remaining pages keep their original quality, formatting, and content.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Can I remove PDF pages for free?',
+      name: 'Is it safe to remove PDF pages online?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes, LuvUPDF is a 100% free tool that allows you to delete PDF pages online without registration or watermarks.',
+        text: 'Yes. Files are processed in your browser and never uploaded to any server.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is it safe to remove pages from my PDF online?',
+      name: 'Can I select multiple pages to remove?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. All file transfers are encrypted via SSL, and files are automatically deleted from our servers within 1 hour.',
+        text: 'Yes. Click multiple page thumbnails to select them all before removing.',
       },
     },
   ],
@@ -103,11 +101,11 @@ const faqJsonLd = {
 const softwareAppJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'LuvUPDF Remove Pages',
-  applicationCategory: 'MultimediaApplication',
+  name: 'LoveUPDF Remove Pages',
+  applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/remove-pages',
-  description: 'Free online PDF tool to remove unwanted pages from PDF documents instantly.',
+  url: `${SITE_URL}/remove-pages`,
+  description: 'Free online PDF page remover. Delete unwanted pages instantly in your browser.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -115,19 +113,59 @@ const softwareAppJsonLd = {
   },
 };
 
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: SITE_URL,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'All Tools',
+      item: `${SITE_URL}/tools`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Remove Pages',
+      item: `${SITE_URL}/remove-pages`,
+    },
+  ],
+};
 
 export default function RemovePagesPDFPage() {
   return (
     <>
-      {/* ... scripts and Script stay the same */}
-      <main>
-        {/* Page Hero */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      <main itemScope itemType="https://schema.org/SoftwareApplication">
+        {/* Hero Section */}
         <section
           className="pt-24 pb-10 px-4 sm:px-6"
+          aria-labelledby="remove-pages-heading"
           style={{
             background:
-              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.07) 0%, transparent 65%), #FFFFFF',
+              'radial-gradient(ellipse 70% 50% at 50% -5%, rgba(232,68,90,0.05) 0%, transparent 70%), #FFFFFF',
           }}
         >
           <div className="max-w-4xl mx-auto text-center">
@@ -141,129 +179,73 @@ export default function RemovePagesPDFPage() {
               color="#EF4444"
             />
 
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
-              style={{ background: '#FEF2F2', border: '1.5px solid #FECACA' }}
-            >
-              <Icon
-                name="TrashIcon"
-                size={13}
-                variant="solid"
-                style={{ color: '#EF4444' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#EF4444',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                Free PDF Page Remover
-              </span>
-            </div>
-
             {/* H1 */}
             <h1
-              className="font-heading font-extrabold mb-4"
+              id="remove-pages-heading"
+              className="font-heading font-extrabold mb-3"
               style={{
-                fontSize: 'clamp(28px, 5vw, 52px)',
+                fontSize: 'clamp(32px, 5vw, 48px)',
                 color: '#1A1A2E',
-                letterSpacing: '-0.025em',
                 lineHeight: 1.1,
               }}
             >
-              Remove Pages from PDF{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                For Free
-              </span>
+              Remove Pages from PDF
             </h1>
 
             <p
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
               style={{
                 color: '#4A4A6A',
-                fontSize: 'clamp(15px, 2vw, 18px)',
-                maxWidth: '520px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.65,
+                fontSize: '17px',
+                maxWidth: '500px',
               }}
             >
-              Delete unwanted or blank pages from your PDF in seconds while preserving formatting
-              and quality.
+              Delete unwanted or blank pages instantly.
+              <span className="block mt-1">No upload. No account. 100% private.</span>
             </p>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              {[
-                { icon: 'ShieldCheckIcon', text: 'SSL Secured' },
-                { icon: 'TrashIcon', text: 'Selective Removal' },
-                { icon: 'CurrencyDollarIcon', text: '100% Free' },
-                { icon: 'BoltIcon', text: 'Instant Results' },
-              ].map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{
-                    background: '#F8F8FC',
-                    border: '1px solid #EEEEF5',
-                  }}
-                >
-                  <Icon
-                    name={badge.icon as any}
-                    size={12}
-                    variant="solid"
-                    style={{ color: '#EF4444' } as React.CSSProperties}
-                  />
-                  <span
-                    style={{
-                      color: '#4A4A6A',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-              ))}
+            {/* Privacy Badge */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: '#F8F8FC' }}
+              >
+                <Icon
+                  name="ShieldCheckIcon"
+                  size={14}
+                  variant="solid"
+                  style={{ color: '#EF4444' }}
+                />
+                <span className="text-xs font-medium" style={{ color: '#4A4A6A' }}>
+                  Client-side · No server upload
+                </span>
+              </div>
             </div>
 
             {/* Upload Tool */}
             <div
-              className="p-6 sm:p-8 rounded-3xl"
+              className="p-6 rounded-2xl"
               style={{
                 background: 'white',
-                boxShadow: '0 4px 32px rgba(26,26,46,0.07)',
                 border: '1.5px solid #EEEEF5',
               }}
             >
               <RemovePagesPDFUploader />
             </div>
 
-            {/* Privacy Statement */}
-            <p
-              className="mt-5 text-center px-4"
-              style={{
-                color: '#8888A8',
-                fontSize: '12px',
-                fontFamily: 'var(--font-body)',
-                lineHeight: 1.7,
-              }}
-            >
-              🔒 <strong style={{ color: '#4A4A6A' }}>Your privacy is our priority.</strong> We do
-              not call any APIs or send your files to a server. All processing is done entirely on
-              the client side for your privacy.
+            {/* Privacy Note */}
+            <p className="mt-4 text-xs" style={{ color: '#8888A8' }}>
+              Files processed in your browser. Nothing is uploaded or stored.
             </p>
+
+            {/* Hidden SEO Content */}
+            <div className="sr-only">
+              <p>
+                LoveUPDF offers free PDF tools including remove pages, merge PDF, split PDF,
+                compress PDF, rotate PDF, lock PDF, unlock PDF, and organize PDF pages. All tools
+                prioritize your privacy with client-side processing whenever possible.
+              </p>
+            </div>
           </div>
         </section>
 

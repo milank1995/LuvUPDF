@@ -35,7 +35,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center">
               <Image
-                src="/assets/images/favicon.png"
+                src="/assets/images/app_logo.png"
                 alt="LoveUPDF Icon"
                 width={120}
                 height={120}
@@ -114,7 +114,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="mt-12 pt-6 border-t border-[#EEEEF5] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs" style={{ color: '#8888A8', fontFamily: 'var(--font-body)' }}>
-            © 2026 LuvUPDF. All rights reserved.
+            © 2026 LoveUPDF. All rights reserved.
           </p>
 
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FFF0F2] border border-[#FFD6DB]">
