@@ -4,6 +4,7 @@ import UnlockPDFUploader from './components/UnlockPDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { unlockPDFData } from './components/unlockPDFData';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Unlock PDF Online Free — Remove PDF Passwords | LoveUPDF',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Unlock PDF Online Free | LoveUPDF',
     description: 'Remove passwords from your own PDF files. Free and private.',
     type: 'website',
-    url: 'https://luvupdf.com/unlock-pdf',
+    url: `${SITE_URL}/unlock-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     description: 'Remove PDF passwords instantly. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/unlock-pdf',
+    canonical: `${SITE_URL}/unlock-pdf`,
   },
 };
 
@@ -42,19 +43,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your locked PDF file into the tool.',
-      url: 'https://luvupdf.com/unlock-pdf',
+      url: `${SITE_URL}/unlock-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Enter Password',
       text: 'Type the password used to lock the PDF.',
-      url: 'https://luvupdf.com/unlock-pdf',
+      url: `${SITE_URL}/unlock-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click unlock and download your password-free PDF instantly.',
-      url: 'https://luvupdf.com/unlock-pdf',
+      url: `${SITE_URL}/unlock-pdf`,
     },
   ],
 };
@@ -112,7 +113,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Unlock PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/unlock-pdf',
+  url: `${SITE_URL}/unlock-pdf`,
   description: 'Free online PDF unlock tool. Remove passwords from your own PDF files.',
   offers: {
     '@type': 'Offer',
@@ -129,19 +130,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Unlock PDF',
-      item: 'https://luvupdf.com/unlock-pdf',
+      item: `${SITE_URL}/unlock-pdf`,
     },
   ],
 };

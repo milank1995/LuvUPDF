@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Disclaimer | LoveUPDF — Terms of Responsibility',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       'Legal disclaimer for LoveUPDF. Understand your rights and responsibilities when using our privacy-first PDF tools.',
     type: 'website',
-    url: 'https://luvupdf.com/disclaimer',
+    url: `${SITE_URL}/disclaimer`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Terms of responsibility for using our free PDF tools.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/disclaimer',
+    canonical: `${SITE_URL}/disclaimer`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Disclaimer',
-      item: 'https://luvupdf.com/disclaimer',
+      item: `${SITE_URL}/disclaimer`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const disclaimerJsonLd = {
   name: 'Disclaimer',
   description:
     'Legal disclaimer for LoveUPDF free PDF tools. No warranties, limitation of liability, and external links policy.',
-  url: 'https://luvupdf.com/disclaimer',
+  url: `${SITE_URL}/disclaimer`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

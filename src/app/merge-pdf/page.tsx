@@ -4,6 +4,7 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { mergePDFData } from './components/mergePDFData';
 import Icon from '@/components/ui/AppIcon';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Merge PDF Online Free — Combine PDF Files | LoveUPDF',
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     description:
       'Free PDF merger. Combine PDFs instantly. 100% private — files never leave your device.',
     type: 'website',
-    url: 'https://luvupdf.com/merge-pdf',
+    url: `${SITE_URL}/merge-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     description: 'Combine PDF files instantly. No upload, no account, 100% free.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/merge-pdf',
+    canonical: `${SITE_URL}/merge-pdf`,
   },
 };
 
@@ -43,19 +44,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDFs',
       text: 'Select or drag your PDF files into the tool.',
-      url: 'https://luvupdf.com/merge-pdf',
+      url: `${SITE_URL}/merge-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Arrange Order',
       text: 'Drag files to arrange them in your desired order.',
-      url: 'https://luvupdf.com/merge-pdf',
+      url: `${SITE_URL}/merge-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click merge and download your combined PDF instantly.',
-      url: 'https://luvupdf.com/merge-pdf',
+      url: `${SITE_URL}/merge-pdf`,
     },
   ],
 };
@@ -97,7 +98,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF PDF Merger',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/merge-pdf',
+  url: `${SITE_URL}/merge-pdf`,
   description:
     'Free online PDF merger. Combine multiple PDF files into one document. Privacy-first, no server upload.',
   offers: {
@@ -115,19 +116,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Merge PDF',
-      item: 'https://luvupdf.com/merge-pdf',
+      item: `${SITE_URL}/merge-pdf`,
     },
   ],
 };

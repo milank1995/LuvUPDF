@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
 import Link from 'next/link';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'About LoveUPDF — Privacy-First & Free Online PDF Tools',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     description:
       'We built LoveUPDF to provide free, private PDF tools with zero file storage. Your documents stay yours.',
     type: 'website',
-    url: 'https://luvupdf.com/about',
+    url: `${SITE_URL}/about`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     description: 'Privacy-first PDF tools. Free, secure, zero storage.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/about',
+    canonical: `${SITE_URL}/about`,
   },
 };
 
@@ -39,13 +40,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'About',
-      item: 'https://luvupdf.com/about',
+      item: `${SITE_URL}/about`,
     },
   ],
 };
@@ -56,11 +57,11 @@ const aboutJsonLd = {
   name: 'About LoveUPDF',
   description:
     'Privacy-first, free online PDF tools with zero file storage and 256-bit SSL encryption.',
-  url: 'https://luvupdf.com/about',
+  url: `${SITE_URL}/about`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 
@@ -68,8 +69,8 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'LoveUPDF',
-  url: 'https://luvupdf.com',
-  logo: 'https://luvupdf.com/logo.png',
+  url: SITE_URL,
+  logo: `${SITE_URL}/assets/images/app_logo.png`,
   sameAs: ['https://twitter.com/luvupdf', 'https://facebook.com/luvupdf'],
   description:
     'Privacy-first, free online PDF tools. Merge, split, compress, rotate, lock, unlock, organize, and remove pages from PDFs with zero file storage.',

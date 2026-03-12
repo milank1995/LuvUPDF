@@ -4,6 +4,7 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { splitPDFData } from './components/splitPDFData';
 import Icon from '@/components/ui/AppIcon';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Split PDF Online Free — Extract Pages | LoveUPDF',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Split PDF Online Free | LoveUPDF',
     description: 'Split PDF files instantly. Free and private — files never leave your device.',
     type: 'website',
-    url: 'https://luvupdf.com/split-pdf',
+    url: `${SITE_URL}/split-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Split PDF Online Free | LoveUPDF',
     description: 'Extract PDF pages instantly. Free and private.',
   },
-  alternates: { canonical: 'https://luvupdf.com/split-pdf' },
+  alternates: { canonical: `${SITE_URL}/split-pdf` },
 };
 
 const howToJsonLd = {
@@ -40,19 +41,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/split-pdf',
+      url: `${SITE_URL}/split-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Choose Pages',
       text: 'Select pages to extract or choose split options.',
-      url: 'https://luvupdf.com/split-pdf',
+      url: `${SITE_URL}/split-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click split and download your files instantly.',
-      url: 'https://luvupdf.com/split-pdf',
+      url: `${SITE_URL}/split-pdf`,
     },
   ],
 };
@@ -94,7 +95,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Split PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/split-pdf',
+  url: `${SITE_URL}/split-pdf`,
   description: 'Free online PDF splitter. Extract pages or split PDFs into multiple files.',
   offers: {
     '@type': 'Offer',
@@ -111,19 +112,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Split PDF',
-      item: 'https://luvupdf.com/split-pdf',
+      item: `${SITE_URL}/split-pdf`,
     },
   ],
 };

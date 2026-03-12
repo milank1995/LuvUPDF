@@ -5,6 +5,7 @@ import { organizePDFData } from './components/organizePDFData';
 import Icon from '@/components/ui/AppIcon';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 const colors = TOOL_COLORS.organize;
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     description:
       'Rearrange and organize PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
-    url: 'https://luvupdf.com/organize-pdf',
+    url: `${SITE_URL}/organize-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     title: 'Organize PDF Pages Online Free | LoveUPDF',
     description: 'Reorder PDF pages with drag and drop. Free and private.',
   },
-  alternates: { canonical: 'https://luvupdf.com/organize-pdf' },
+  alternates: { canonical: `${SITE_URL}/organize-pdf` },
 };
 
 const howToJsonLd = {
@@ -44,19 +45,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/organize-pdf',
+      url: `${SITE_URL}/organize-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Arrange Pages',
       text: 'Drag thumbnails to reorder. Use rotate or delete icons as needed.',
-      url: 'https://luvupdf.com/organize-pdf',
+      url: `${SITE_URL}/organize-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click organize and download your rearranged PDF instantly.',
-      url: 'https://luvupdf.com/organize-pdf',
+      url: `${SITE_URL}/organize-pdf`,
     },
   ],
 };
@@ -106,7 +107,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Organize PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/organize-pdf',
+  url: `${SITE_URL}/organize-pdf`,
   description: 'Free online PDF organizer. Rearrange, rotate, and delete pages in your browser.',
   offers: {
     '@type': 'Offer',
@@ -123,19 +124,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Organize PDF',
-      item: 'https://luvupdf.com/organize-pdf',
+      item: `${SITE_URL}/organize-pdf`,
     },
   ],
 };

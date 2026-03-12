@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 interface BreadcrumbItem {
   label: string;
@@ -23,7 +24,7 @@ export default function Breadcrumbs({ items, color = '#E8445A' }: BreadcrumbsPro
       '@type': 'ListItem',
       position: index + 1,
       name: item.label,
-      item: item.href ? `https://luvupdf.com${item.href}` : undefined,
+      item: item.href ? `${SITE_URL}${item.href}` : undefined,
     })),
   };
 

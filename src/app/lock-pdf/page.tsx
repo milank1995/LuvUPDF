@@ -4,6 +4,7 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { lockPDFData } from './components/lockPDFData';
 import Icon from '@/components/ui/AppIcon';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Lock PDF Online Free — Password Protect PDF | LoveUPDF',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Lock PDF Online Free | LoveUPDF',
     description: 'Add password protection to any PDF. 256-bit encryption. Free and private.',
     type: 'website',
-    url: 'https://luvupdf.com/lock-pdf',
+    url: `${SITE_URL}/lock-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     description: 'Password protect PDFs with 256-bit AES encryption. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/lock-pdf',
+    canonical: `${SITE_URL}/lock-pdf`,
   },
 };
 
@@ -42,19 +43,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/lock-pdf',
+      url: `${SITE_URL}/lock-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Set Password',
       text: 'Enter and confirm a strong password.',
-      url: 'https://luvupdf.com/lock-pdf',
+      url: `${SITE_URL}/lock-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click lock and download your encrypted PDF instantly.',
-      url: 'https://luvupdf.com/lock-pdf',
+      url: `${SITE_URL}/lock-pdf`,
     },
   ],
 };
@@ -112,7 +113,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Lock PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/lock-pdf',
+  url: `${SITE_URL}/lock-pdf`,
   description: 'Free online PDF lock tool. Password protect PDFs with 256-bit AES encryption.',
   offers: {
     '@type': 'Offer',
@@ -129,19 +130,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Lock PDF',
-      item: 'https://luvupdf.com/lock-pdf',
+      item: `${SITE_URL}/lock-pdf`,
     },
   ],
 };

@@ -1,7 +1,8 @@
+import { SITE_URL } from '@/constants/site';
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://luvupdf.com';
+  const baseUrl = SITE_URL;
 
   const today = new Date('2026-03-03');
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions | LoveUPDF — Free PDF Tool Usage',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       'Terms of use for LoveUPDF. Free PDF tools with zero file storage and no account required.',
     type: 'website',
-    url: 'https://luvupdf.com/terms-and-conditions',
+    url: `${SITE_URL}/terms-and-conditions`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Free PDF tools terms. Zero storage, no accounts, 100% private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/terms-and-conditions',
+    canonical: `${SITE_URL}/terms-and-conditions`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Terms & Conditions',
-      item: 'https://luvupdf.com/terms-and-conditions',
+      item: `${SITE_URL}/terms-and-conditions`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const termsJsonLd = {
   name: 'Terms & Conditions',
   description:
     'Terms of use for LoveUPDF free PDF tools. Zero file storage, no accounts, privacy-first processing.',
-  url: 'https://luvupdf.com/terms-and-conditions',
+  url: `${SITE_URL}/terms-and-conditions`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

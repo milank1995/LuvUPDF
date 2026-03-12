@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Contact Us | LoveUPDF — Support & Feedback',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       "Get in touch with the LoveUPDF team. Questions, feedback, or support — we're here to help.",
     type: 'website',
-    url: 'https://luvupdf.com/contact',
+    url: `${SITE_URL}/contact`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: "Questions or feedback? We're here to help.",
   },
   alternates: {
-    canonical: 'https://luvupdf.com/contact',
+    canonical: `${SITE_URL}/contact`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Contact',
-      item: 'https://luvupdf.com/contact',
+      item: `${SITE_URL}/contact`,
     },
   ],
 };
@@ -54,11 +55,11 @@ const contactPageJsonLd = {
   '@type': 'ContactPage',
   name: 'Contact LoveUPDF',
   description: 'Contact page for LoveUPDF support and feedback.',
-  url: 'https://luvupdf.com/contact',
+  url: `${SITE_URL}/contact`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

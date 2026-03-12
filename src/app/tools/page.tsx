@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import ToolsGrid from '@/components/landing/ToolsGrid';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'All PDF Tools — Merge, Split, Compress, Lock & Unlock | LoveUPDF',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     description:
       'Complete collection of free PDF tools. Merge, split, compress, lock, unlock, rotate, organize, and remove pages. Privacy-first, no account needed.',
     type: 'website',
-    url: 'https://luvupdf.com/tools',
+    url: `${SITE_URL}/tools`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     description: '8+ free PDF tools. Privacy-first, no account needed.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/tools',
+    canonical: `${SITE_URL}/tools`,
   },
 };
 
@@ -39,13 +40,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const collectionPageJsonLd = {
   '@type': 'CollectionPage',
   name: 'All Free PDF Tools',
   description: 'Complete collection of free online PDF tools from LoveUPDF.',
-  url: 'https://luvupdf.com/tools',
+  url: `${SITE_URL}/tools`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
   mainEntity: {
     '@type': 'ItemList',
@@ -68,49 +69,49 @@ const collectionPageJsonLd = {
         '@type': 'ListItem',
         position: 1,
         name: 'Merge PDF',
-        url: 'https://luvupdf.com/merge-pdf',
+        url: `${SITE_URL}/merge-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Split PDF',
-        url: 'https://luvupdf.com/split-pdf',
+        url: `${SITE_URL}/split-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Compress PDF',
-        url: 'https://luvupdf.com/compress-pdf',
+        url: `${SITE_URL}/compress-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 4,
         name: 'Rotate PDF',
-        url: 'https://luvupdf.com/rotate-pdf',
+        url: `${SITE_URL}/rotate-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 5,
         name: 'Lock PDF',
-        url: 'https://luvupdf.com/lock-pdf',
+        url: `${SITE_URL}/lock-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 6,
         name: 'Unlock PDF',
-        url: 'https://luvupdf.com/unlock-pdf',
+        url: `${SITE_URL}/unlock-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 7,
         name: 'Organize PDF',
-        url: 'https://luvupdf.com/organize-pdf',
+        url: `${SITE_URL}/organize-pdf`,
       },
       {
         '@type': 'ListItem',
         position: 8,
         name: 'Remove PDF Pages',
-        url: 'https://luvupdf.com/remove-pages',
+        url: `${SITE_URL}/remove-pages`,
       },
     ],
   },

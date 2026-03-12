@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/constants/site';
 import HeroSection from '../components/landing/HeroSection';
 import ToolsGrid from '../components/landing/ToolsGrid';
 import HowItWorksSection from '../components/landing/HowItWorksSection';
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     description:
       'Free PDF tools that respect your privacy. Merge, split, compress, and edit PDFs online. No account needed, files auto-delete. Trusted by thousands.',
     type: 'website',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
       'Privacy-first PDF tools. Merge, split, compress, and edit PDFs. No storage, no login, completely free.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/',
+    canonical: `${SITE_URL}/`,
   },
   robots: {
     index: true,
@@ -46,7 +47,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'LoveUPDF',
   alternateName: 'luvupdf',
-  url: 'https://luvupdf.com',
+  url: SITE_URL,
   description:
     'Secure and free online PDF tools. Merge PDF files, split documents, remove pages, compress, and organize PDFs without any data storage or account required.',
   applicationCategory: 'UtilitiesApplication',
@@ -69,12 +70,12 @@ const jsonLd = {
     'No account required',
     'Privacy-first processing',
   ],
-  screenshot: 'https://luvupdf.com/site-image.png',
+  screenshot: `${SITE_URL}/site-image.png`,
   softwareVersion: '1.0',
   provider: {
     '@type': 'Organization',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 
@@ -133,13 +134,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Free PDF Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
   ],
 };

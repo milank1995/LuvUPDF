@@ -4,6 +4,7 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { removePagesPDFData } from './components/removePagesPDFData';
 import Icon from '@/components/ui/AppIcon';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Remove Pages from PDF Online Free — Delete PDF Pages | LoveUPDF',
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     description:
       'Delete unwanted PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
-    url: 'https://luvupdf.com/remove-pages',
+    url: `${SITE_URL}/remove-pages`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     title: 'Remove Pages from PDF Online Free | LoveUPDF',
     description: 'Delete PDF pages instantly. Free and private.',
   },
-  alternates: { canonical: 'https://luvupdf.com/remove-pages' },
+  alternates: { canonical: `${SITE_URL}/remove-pages` },
 };
 
 const howToJsonLd = {
@@ -41,19 +42,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/remove-pages',
+      url: `${SITE_URL}/remove-pages`,
     },
     {
       '@type': 'HowToStep',
       name: 'Select Pages',
       text: 'Click on page thumbnails to choose which to delete.',
-      url: 'https://luvupdf.com/remove-pages',
+      url: `${SITE_URL}/remove-pages`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click remove and download your updated PDF instantly.',
-      url: 'https://luvupdf.com/remove-pages',
+      url: `${SITE_URL}/remove-pages`,
     },
   ],
 };
@@ -103,7 +104,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Remove Pages',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/remove-pages',
+  url: `${SITE_URL}/remove-pages`,
   description: 'Free online PDF page remover. Delete unwanted pages instantly in your browser.',
   offers: {
     '@type': 'Offer',
@@ -120,19 +121,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Remove Pages',
-      item: 'https://luvupdf.com/remove-pages',
+      item: `${SITE_URL}/remove-pages`,
     },
   ],
 };

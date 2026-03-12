@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { ToastProvider } from '@/components/ui/Toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { SITE_URL } from '@/constants/site';
 import '../styles/index.css';
 
 export const viewport: Viewport = {
@@ -13,7 +14,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://luvupdf.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'LoveUPDF — Free & Secure Online PDF Tools',
     template: '%s | LoveUPDF',
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
     title: 'LoveUPDF — Free & Secure Online PDF Tools',
     description:
       'Privacy-first PDF tools. Merge, split, compress, rotate, lock, unlock, organize, and remove pages. No account, no storage, 100% free.',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
     siteName: 'LoveUPDF',
     images: [
       {
@@ -84,9 +85,9 @@ export const metadata: Metadata = {
     site: '@luvupdf',
   },
   alternates: {
-    canonical: 'https://luvupdf.com',
+    canonical: SITE_URL,
     languages: {
-      'en-US': 'https://luvupdf.com',
+      'en-US': SITE_URL,
     },
   },
   appleWebApp: {
@@ -104,8 +105,8 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'LoveUPDF',
-  url: 'https://luvupdf.com',
-  logo: 'https://luvupdf.com/assets/images/app_logo.png', // Updated to use app_logo.png
+  url: SITE_URL,
+  logo: `${SITE_URL}/assets/images/app_logo.png`, // Updated to use app_logo.png
   sameAs: ['https://twitter.com/luvupdf', 'https://facebook.com/luvupdf'],
   description: 'Privacy-first, free online PDF tools with zero file storage.',
   email: 'hello@luvupdf.com',
@@ -123,12 +124,12 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'LoveUPDF',
-  url: 'https://luvupdf.com',
+  url: SITE_URL,
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://luvupdf.com/search?q={search_term_string}',
+      urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
     },
     'query-input': 'required name=search_term_string',
   },

@@ -4,6 +4,7 @@ import RotatePDFUploader from './components/RotatePDFUploader';
 import PDFToolContent from '@/components/common/PDFToolContent';
 import { rotatePDFData } from './components/rotatePDFData';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Rotate PDF Online Free — Fix Page Orientation | LoveUPDF',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Rotate PDF Online Free | LoveUPDF',
     description: 'Rotate PDF pages instantly. Free and private — files never leave your device.',
     type: 'website',
-    url: 'https://luvupdf.com/rotate-pdf',
+    url: `${SITE_URL}/rotate-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     description: 'Fix page orientation instantly. Free and private.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/rotate-pdf',
+    canonical: `${SITE_URL}/rotate-pdf`,
   },
 };
 
@@ -42,19 +43,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/rotate-pdf',
+      url: `${SITE_URL}/rotate-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Rotate Pages',
       text: 'Click rotate on pages you want to fix. Choose clockwise, counterclockwise, or 180°.',
-      url: 'https://luvupdf.com/rotate-pdf',
+      url: `${SITE_URL}/rotate-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click apply and download your rotated PDF instantly.',
-      url: 'https://luvupdf.com/rotate-pdf',
+      url: `${SITE_URL}/rotate-pdf`,
     },
   ],
 };
@@ -104,7 +105,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Rotate PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/rotate-pdf',
+  url: `${SITE_URL}/rotate-pdf`,
   description:
     'Free online PDF rotator. Fix page orientation in your browser. No upload, no installation.',
   offers: {
@@ -122,19 +123,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Rotate PDF',
-      item: 'https://luvupdf.com/rotate-pdf',
+      item: `${SITE_URL}/rotate-pdf`,
     },
   ],
 };

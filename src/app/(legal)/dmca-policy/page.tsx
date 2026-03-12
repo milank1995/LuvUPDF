@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'DMCA Policy | LoveUPDF — Copyright Notices & Takedown Requests',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       'How to file DMCA takedown requests and counter-notices for LoveUPDF. We respect intellectual property rights.',
     type: 'website',
-    url: 'https://luvupdf.com/dmca-policy',
+    url: `${SITE_URL}/dmca-policy`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Copyright notices and takedown requests for LoveUPDF.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/dmca-policy',
+    canonical: `${SITE_URL}/dmca-policy`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'DMCA Policy',
-      item: 'https://luvupdf.com/dmca-policy',
+      item: `${SITE_URL}/dmca-policy`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const dmcaJsonLd = {
   name: 'DMCA Policy',
   description:
     'DMCA copyright notice and takedown policy for LoveUPDF. Instructions for filing claims and counter-notices.',
-  url: 'https://luvupdf.com/dmca-policy',
+  url: `${SITE_URL}/dmca-policy`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

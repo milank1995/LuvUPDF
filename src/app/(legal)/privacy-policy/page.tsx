@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | LoveUPDF — Zero Storage, 100% Private PDF Tools',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       'We never store your files. 256-bit SSL encryption. Instant auto-deletion. Your documents stay yours.',
     type: 'website',
-    url: 'https://luvupdf.com/privacy-policy',
+    url: `${SITE_URL}/privacy-policy`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Zero storage. 256-bit SSL. Instant auto-deletion.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/privacy-policy',
+    canonical: `${SITE_URL}/privacy-policy`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Privacy Policy',
-      item: 'https://luvupdf.com/privacy-policy',
+      item: `${SITE_URL}/privacy-policy`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const privacyPolicyJsonLd = {
   name: 'Privacy Policy',
   description:
     'LoveUPDF privacy policy — zero file storage, 256-bit SSL encryption, instant auto-deletion.',
-  url: 'https://luvupdf.com/privacy-policy',
+  url: `${SITE_URL}/privacy-policy`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

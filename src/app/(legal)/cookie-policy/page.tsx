@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Icon from '@/components/ui/AppIcon';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy | LoveUPDF — Minimal & Privacy-First Tracking',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     description:
       'We use only necessary cookies. No tracking, no profiling, no data selling. Your privacy matters.',
     type: 'website',
-    url: 'https://luvupdf.com/cookie-policy',
+    url: `${SITE_URL}/cookie-policy`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Minimal cookies. Privacy-first. No tracking.',
   },
   alternates: {
-    canonical: 'https://luvupdf.com/cookie-policy',
+    canonical: `${SITE_URL}/cookie-policy`,
   },
 };
 
@@ -38,13 +39,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Cookie Policy',
-      item: 'https://luvupdf.com/cookie-policy',
+      item: `${SITE_URL}/cookie-policy`,
     },
   ],
 };
@@ -55,11 +56,11 @@ const cookiePolicyJsonLd = {
   name: 'Cookie Policy',
   description:
     'LoveUPDF cookie policy — minimal necessary cookies only. No tracking, no profiling, no data selling.',
-  url: 'https://luvupdf.com/cookie-policy',
+  url: `${SITE_URL}/cookie-policy`,
   isPartOf: {
     '@type': 'WebSite',
     name: 'LoveUPDF',
-    url: 'https://luvupdf.com',
+    url: SITE_URL,
   },
 };
 

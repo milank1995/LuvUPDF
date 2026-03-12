@@ -4,6 +4,7 @@ import PDFToolContent from '@/components/common/PDFToolContent';
 import { compressPDFData } from './components/compressPDFData';
 import Icon from '@/components/ui/AppIcon';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
   title: 'Compress PDF Online Free — Reduce File Size | LoveUPDF',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Compress PDF Online Free | LoveUPDF',
     description: 'Reduce PDF file size instantly. Free, secure, auto-deleted.',
     type: 'website',
-    url: 'https://luvupdf.com/compress-pdf',
+    url: `${SITE_URL}/compress-pdf`,
     siteName: 'LoveUPDF',
   },
   twitter: {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Compress PDF Online Free | LoveUPDF',
     description: 'Reduce PDF file size instantly. Free and secure.',
   },
-  alternates: { canonical: 'https://luvupdf.com/compress-pdf' },
+  alternates: { canonical: `${SITE_URL}/compress-pdf` },
 };
 
 const howToJsonLd = {
@@ -40,19 +41,19 @@ const howToJsonLd = {
       '@type': 'HowToStep',
       name: 'Upload PDF',
       text: 'Select or drag your PDF file into the tool.',
-      url: 'https://luvupdf.com/compress-pdf',
+      url: `${SITE_URL}/compress-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Choose Level',
       text: 'Select compression level (low, medium, or high).',
-      url: 'https://luvupdf.com/compress-pdf',
+      url: `${SITE_URL}/compress-pdf`,
     },
     {
       '@type': 'HowToStep',
       name: 'Download',
       text: 'Click compress and download your smaller file instantly.',
-      url: 'https://luvupdf.com/compress-pdf',
+      url: `${SITE_URL}/compress-pdf`,
     },
   ],
 };
@@ -102,7 +103,7 @@ const softwareAppJsonLd = {
   name: 'LoveUPDF Compress PDF',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: 'https://luvupdf.com/compress-pdf',
+  url: `${SITE_URL}/compress-pdf`,
   description: 'Free online PDF compressor. Reduce file size while maintaining quality.',
   offers: {
     '@type': 'Offer',
@@ -119,19 +120,19 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://luvupdf.com',
+      item: SITE_URL,
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'All Tools',
-      item: 'https://luvupdf.com/tools',
+      item: `${SITE_URL}/tools`,
     },
     {
       '@type': 'ListItem',
       position: 3,
       name: 'Compress PDF',
-      item: 'https://luvupdf.com/compress-pdf',
+      item: `${SITE_URL}/compress-pdf`,
     },
   ],
 };
