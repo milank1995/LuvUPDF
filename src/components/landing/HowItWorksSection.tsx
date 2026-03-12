@@ -5,7 +5,8 @@ const steps = [
     number: '01',
     icon: 'ArrowUpTrayIcon',
     title: 'Upload Your File',
-    description: 'Drag & drop or click to upload your PDF. We support files up to 100MB.',
+    description:
+      'Drag & drop or select your PDF. For client-side tools, nothing leaves your device.',
     color: '#E8445A',
     bg: '#FFF0F2',
   },
@@ -13,7 +14,8 @@ const steps = [
     number: '02',
     icon: 'AdjustmentsHorizontalIcon',
     title: 'Choose Your Action',
-    description: 'Select your tool — merge, lock, unlock, or rotate. Configure options as needed.',
+    description:
+      'Select merge, split, compress, lock, unlock, rotate, organize, or remove pages. Configure your options.',
     color: '#7C5CBF',
     bg: '#F3EEFF',
   },
@@ -21,7 +23,8 @@ const steps = [
     number: '03',
     icon: 'ArrowDownTrayIcon',
     title: 'Download Instantly',
-    description: 'Your processed PDF is ready in seconds. Download and use it right away.',
+    description:
+      'Your processed PDF is ready in seconds. Files are permanently deleted from our servers immediately after download.',
     color: '#0EA5B0',
     bg: '#EDFCFD',
   },
@@ -29,12 +32,29 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ background: 'white' }}>
+    <section
+      className="py-20 px-4 sm:px-6"
+      style={{ background: 'white' }}
+      aria-labelledby="how-it-works-heading"
+    >
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
+        {/* Header with semantic HTML */}
         <div className="text-center mb-14">
-          <span className="section-label block mb-3">How It Works</span>
+          <p
+            className="block mb-3"
+            style={{
+              color: '#E8445A',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              fontSize: '13px',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-heading)',
+            }}
+          >
+            How It Works
+          </p>
           <h2
+            id="how-it-works-heading"
             className="font-heading font-extrabold mb-4"
             style={{
               fontSize: 'clamp(26px, 4vw, 40px)',
@@ -47,34 +67,48 @@ export default function HowItWorksSection() {
           <p
             style={{
               color: '#4A4A6A',
-              fontSize: '16px',
-              maxWidth: '440px',
+              fontSize: '17px',
+              maxWidth: '560px',
               margin: '0 auto',
               fontFamily: 'var(--font-body)',
             }}
           >
-            No account needed. No software to install. Just upload, process, and download.
+            <strong className="font-semibold" style={{ color: '#1A1A2E' }}>
+              No account. No software. No storage.
+            </strong>{' '}
+            Just secure PDF processing that respects your data.
           </p>
         </div>
 
-        {/* Steps */}
+        {/* Steps with enhanced accessibility */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {/* Connector line (desktop) */}
+          {/* Connector line (desktop) - decorative only */}
           <div
             className="hidden md:block absolute top-8 left-[calc(16.67%+32px)] right-[calc(16.67%+32px)] h-px"
             style={{
               background: 'linear-gradient(90deg, #FFD6DB 0%, #FFD6DB 100%)',
               borderTop: '2px dashed #FFD6DB',
             }}
+            aria-hidden="true"
           />
 
           {steps.map((step, i) => (
-            <div key={step.number} className="flex flex-col items-center text-center relative">
+            <div
+              key={step.number}
+              className="flex flex-col items-center text-center relative"
+              itemScope
+              itemType="https://schema.org/HowToStep"
+            >
+              {/* Step number (schema) */}
+              <meta itemProp="position" content={String(i + 1)} />
+              <meta itemProp="name" content={step.title} />
+
               {/* Number + Icon */}
               <div className="relative mb-6">
                 <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10"
                   style={{ background: step.bg, border: `2px solid ${step.color}22` }}
+                  aria-hidden="true"
                 >
                   <Icon
                     name={step.icon as any}
@@ -91,14 +125,17 @@ export default function HowItWorksSection() {
                     fontFamily: 'var(--font-heading)',
                     fontSize: '10px',
                   }}
+                  aria-label={`Step ${i + 1}`}
                 >
                   {i + 1}
                 </span>
               </div>
 
+              {/* Content with schema markup */}
               <h3
                 className="font-heading font-bold mb-2.5"
-                style={{ fontSize: '17px', color: '#1A1A2E', letterSpacing: '-0.01em' }}
+                style={{ fontSize: '18px', color: '#1A1A2E', letterSpacing: '-0.01em' }}
+                itemProp="headline"
               >
                 {step.title}
               </h3>
@@ -108,8 +145,9 @@ export default function HowItWorksSection() {
                   fontSize: '14px',
                   lineHeight: 1.65,
                   fontFamily: 'var(--font-body)',
-                  maxWidth: '220px',
+                  maxWidth: '240px',
                 }}
+                itemProp="text"
               >
                 {step.description}
               </p>
@@ -117,35 +155,87 @@ export default function HowItWorksSection() {
           ))}
         </div>
 
-        {/* Security Note */}
+        {/* Enhanced Security Note with privacy emphasis */}
         <div
-          className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 p-5 rounded-2xl"
-          style={{ background: '#F8F8FC', border: '1.5px solid #EEEEF5' }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-4 p-6 rounded-2xl"
+          style={{
+            background: '#F8F8FC',
+            border: '1.5px solid #EEEEF5',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+          }}
+          role="complementary"
+          aria-label="Privacy guarantees"
         >
           {[
-            { icon: 'ShieldCheckIcon', text: 'Files encrypted with SSL' },
-            { icon: 'EyeSlashIcon', text: 'Privacy-first: No data storage' },
-            { icon: 'TrashIcon', text: 'Auto-deleted after processing' },
+            {
+              icon: 'LockClosedIcon',
+              text: '256-bit SSL encryption',
+              desc: 'Bank-grade security for all transfers',
+            },
+            { icon: 'EyeSlashIcon', text: 'Zero data storage', desc: 'Files never saved to disk' },
+            {
+              icon: 'TrashIcon',
+              text: 'Instant auto-deletion',
+              desc: 'Permanently removed after processing',
+            },
+            {
+              icon: 'ShieldCheckIcon',
+              text: 'Client-side processing',
+              desc: 'Files stay on your device when possible',
+            },
           ].map((item) => (
-            <div key={item.text} className="flex items-center gap-2">
-              <Icon
-                name={item.icon as any}
-                size={16}
-                variant="solid"
-                style={{ color: '#E8445A' } as React.CSSProperties}
-              />
-              <span
-                style={{
-                  color: '#4A4A6A',
-                  fontSize: '13.5px',
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 500,
-                }}
+            <div
+              key={item.text}
+              className="flex items-start gap-2.5 px-3 py-2"
+              style={{ minWidth: '180px' }}
+            >
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ background: '#FFF0F2' }}
+                aria-hidden="true"
               >
-                {item.text}
-              </span>
+                <Icon
+                  name={item.icon as any}
+                  size={16}
+                  variant="solid"
+                  style={{ color: '#E8445A' } as React.CSSProperties}
+                />
+              </div>
+              <div className="text-left">
+                <div
+                  style={{
+                    color: '#1A1A2E',
+                    fontSize: '14px',
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 700,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {item.text}
+                </div>
+                <div
+                  style={{
+                    color: '#8888A8',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
+                  {item.desc}
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Hidden descriptive text for search engines */}
+        <div className="sr-only">
+          <p>
+            LoveUPDF offers 8 free PDF tools: merge PDF, split PDF, compress PDF, rotate PDF, lock
+            PDF with password, unlock PDF, organize PDF pages, and remove PDF pages. All tools
+            prioritize your privacy with client-side browser processing whenever possible. For
+            features that require server processing (compress, lock, unlock), files are encrypted
+            with 256-bit SSL and automatically deleted immediately after download.
+          </p>
         </div>
       </div>
     </section>

@@ -1,67 +1,70 @@
 'use client';
 
-import { useState } from 'react';
-import Icon from '@/components/ui/AppIcon';
 import FAQAccordion from '../common/FAQAccordion';
 
 const faqs = [
   {
-    question: 'Why is LuvUPDF completely free to use?',
-    answer:
-      "We believe that basic document tools should be accessible to everyone. LuvUPDF is 100% free — no hidden fees, no subscriptions, and no credit cards. Our platform 'Merge PDF online free' and 'Remove PDF pages' tools are supported by high-quality, non-intrusive advertising so we can keep our servers running for you.",
+    question: 'Is LoveUPDF really free?',
+    answer: 'Yes. All tools are 100% free. No hidden fees, no subscriptions, no credit cards.',
   },
   {
-    question: 'How secure are my files on LuvUPDF?',
+    question: 'Are my files private?',
     answer:
-      'Your privacy is our highest priority. All file transfers are encrypted with bank-grade 256-bit SSL. Crucially, we do not store any document data; files are processed on secure servers and automatically deleted immediately after you download them, or after 1 hour of inactivity.',
+      '100% private. Files are encrypted with 256-bit SSL and auto-deleted immediately after processing. We never store your documents.',
   },
   {
-    question: 'Do I need to create an account or install software?',
-    answer:
-      'Not at all. LuvUPDF is an entirely browser-based platform. You can merge, edit, and manage your PDFs without ever creating an account, sharing your email, or downloading any software to your device.',
+    question: 'Do I need an account?',
+    answer: 'No account, no email, no login. Just use the tools directly in your browser.',
   },
   {
-    question: 'Can I use these PDF tools on my phone or tablet?',
+    question: 'Works on mobile?',
     answer:
-      'Yes! Our platform is fully responsive and works perfectly on iPhones, Android devices, iPads, and all desktop computers. As long as you have a web browser and an internet connection, you can use LuvUPDF anywhere.',
+      'Yes. Works perfectly on iPhone, Android, iPad, and desktop. Any device with a browser.',
   },
   {
-    question: 'Will more tools like Compress and Split be added soon?',
+    question: 'What tools are available?',
     answer:
-      "Absolutely. We are actively working on expanding our suite. 'Split PDF', 'Compress PDF', and 'PDF to Word' are in development and will be released shortly. Like all our existing tools, these new features will be 100% free and secure.",
+      'Merge, split, compress, rotate, lock, unlock, organize, and remove pages. All free, all private.',
   },
 ];
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ background: 'white' }}>
+    <section
+      className="py-20 px-4 sm:px-6"
+      style={{ background: 'white' }}
+      aria-labelledby="faq-heading"
+    >
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <span className="section-label block mb-3">FAQ</span>
+        <div className="text-center mb-10">
+          <p
+            className="text-sm font-semibold mb-3"
+            style={{ color: '#E8445A', letterSpacing: '0.05em' }}
+          >
+            FAQ
+          </p>
           <h2
-            className="font-heading font-extrabold mb-4"
+            id="faq-heading"
+            className="font-heading font-extrabold mb-3"
             style={{
-              fontSize: 'clamp(26px, 4vw, 40px)',
+              fontSize: 'clamp(26px, 4vw, 36px)',
               color: '#1A1A2E',
-              letterSpacing: '-0.02em',
             }}
           >
-            Frequently Asked Questions
+            Common Questions
           </h2>
-          <p style={{ color: '#4A4A6A', fontSize: '16px', fontFamily: 'var(--font-body)' }}>
-            Everything you need to know about LuvUPDF and our free PDF tools.
+          <p style={{ color: '#4A4A6A', fontSize: '15px' }}>
+            Quick answers about our privacy-first PDF tools.
           </p>
         </div>
 
         {/* FAQ List */}
         <FAQAccordion faqs={faqs} />
 
-        {/* CTA */}
+        {/* Simple CTA */}
         <div
-          className="mt-10 p-6 rounded-2xl text-center"
+          className="mt-8 p-5 rounded-xl text-center"
           style={{
             background: 'linear-gradient(135deg, #FFF0F2 0%, #FFE8EB 100%)',
             border: '1.5px solid #FFD6DB',
@@ -76,7 +79,7 @@ export default function FAQSection() {
               marginBottom: '6px',
             }}
           >
-            Still have questions?
+            Need help?
           </p>
           <p
             style={{
@@ -86,7 +89,7 @@ export default function FAQSection() {
               marginBottom: '16px',
             }}
           >
-            Our support team is here to help you get the most out of LuvUPDF.
+            Our support team is here to help you get the most out of LoveUPDF.
           </p>
           <button
             className="btn-primary px-6 py-2.5 text-sm"
