@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://luvupdf.com/merge-pdf',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const faqJsonLd = {

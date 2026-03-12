@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://luvupdf.com/rotate-pdf',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const faqJsonLd = {

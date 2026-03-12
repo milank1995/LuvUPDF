@@ -18,6 +18,10 @@ export const metadata: Metadata = {
     url: 'https://luvupdf.com/split-pdf',
   },
   alternates: { canonical: 'https://luvupdf.com/split-pdf' },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const faqJsonLd = {

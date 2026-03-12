@@ -18,6 +18,10 @@ export const metadata: Metadata = {
     url: 'https://luvupdf.com/compress-pdf',
   },
   alternates: { canonical: 'https://luvupdf.com/compress-pdf' },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const faqJsonLd = {

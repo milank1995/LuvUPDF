@@ -1,78 +1,70 @@
 export const lockPDFData = {
-  title: 'How to Lock a PDF with a Password — Complete Guide',
+  title: 'How to Lock a PDF with a Password',
 
   intro: [
-    "Protecting sensitive PDF documents with a password is one of the most important steps you can take to secure your information. Whether you're sharing confidential business contracts, personal financial documents, medical records, or private correspondence, password-protecting your PDF ensures that only authorized recipients can access its contents.",
-    "LuvUPDF's free online PDF lock tool makes it incredibly easy to add 256-bit AES encryption to any PDF file — directly in your browser, with no software installation and no account required.",
+    'Add password protection to sensitive PDFs. 256-bit AES encryption keeps your documents secure.',
+    'Server-side processing with instant auto-delete. No account needed. Files never stored.',
   ],
 
   /* ================= STEPS ================= */
 
-  stepSectionTitle: 'Step-by-Step: How to Lock a PDF with LuvUPDF\n',
-
+  stepSectionTitle: 'Lock PDF in 4 Steps',
   stepCircleColor: '#7C5CBF',
 
   steps: [
     {
       step: 1,
-      title: 'Upload Your PDF File',
-      desc: 'Click the upload area or drag and drop your PDF file onto the page. LuvUPDF accepts any PDF file up to 100MB. Your file is immediately encrypted during transfer using SSL technology.',
+      title: 'Upload PDF',
+      desc: 'Select or drag your file. Up to 100MB. Encrypted during transfer.',
     },
     {
       step: 2,
-      title: 'Set a Strong Password',
-      desc: 'Enter your chosen password in the "Set Password" field. LuvUPDF\'s password strength indicator will show you how secure your password is in real-time. For maximum security, use a password with at least 8 characters including uppercase letters, numbers, and symbols.',
+      title: 'Set Password',
+      desc: 'Choose a strong password. Use 8+ characters with letters, numbers, and symbols.',
     },
     {
       step: 3,
-      title: 'Confirm Your Password',
-      desc: 'Re-enter your password in the confirmation field to ensure there are no typos. A green checkmark will appear when both passwords match. Remember: this password will be required every time someone tries to open the PDF.',
+      title: 'Confirm',
+      desc: "Re-enter password to avoid typos. We don't store or see your password.",
     },
     {
       step: 4,
-      title: 'Click Lock PDF',
-      desc: 'Press the "Lock PDF with Password" button. Our secure tool will apply 256-bit AES encryption to your document in just a few seconds, right in your browser.',
-    },
-    {
-      step: 5,
-      title: 'Download Your Protected PDF',
-      desc: 'Once locked, click the download button to save your password-protected PDF. Because we value your privacy, your files are never stored on our servers — everything happens locally.',
+      title: 'Download',
+      desc: 'Click lock. Your encrypted PDF is ready instantly. Files auto-deleted.',
     },
   ],
 
   /* ================= FEATURES ================= */
 
-  featureSectionTitle: 'Understanding PDF Encryption: 256-bit AES',
-
-  featureIntro:
-    "LuvUPDF uses 256-bit AES (Advanced Encryption Standard) to protect your PDF files — the gold standard in data encryption. Here's what that means in practice:",
+  featureSectionTitle: 'Why Use LoveUPDF',
+  featureIntro: 'Simple, private, and secure.',
 
   features: [
     {
       icon: 'ShieldCheckIcon',
-      title: 'Strong Encryption',
-      desc: '256-bit AES is used by governments, militaries, and banks worldwide. It would take billions of years to crack with brute force.',
+      title: '256-bit AES',
+      desc: 'Bank-grade encryption. Same standard used by governments.',
       color: '#7C5CBF',
       bg: '#F3EEFF',
     },
     {
       icon: 'KeyIcon',
-      title: 'Open & Restricted Permissions',
-      desc: 'PDF passwords can restrict not just opening, but also printing, copying, and editing the document.',
+      title: 'Passwords Private',
+      desc: 'We never store or see your password. Applied and forgotten.',
       color: '#E8445A',
       bg: '#FFF0F2',
     },
     {
       icon: 'DevicePhoneMobileIcon',
-      title: 'Universal Compatibility',
-      desc: 'Password-protected PDFs work with all PDF readers including Adobe Acrobat, Preview, Chrome, and mobile apps.',
+      title: 'Any Device',
+      desc: 'Works on phone, tablet, or desktop.',
       color: '#0EA5B0',
       bg: '#EDFCFD',
     },
     {
       icon: 'CloudIcon',
-      title: 'No Password Storage',
-      desc: "LuvUPDF never stores, logs, or has access to your password. It's applied client-side and immediately forgotten.",
+      title: 'Auto-Deleted',
+      desc: 'Files processed in memory. Permanently deleted after download.',
       color: '#F59E0B',
       bg: '#FFFBEB',
     },
@@ -80,62 +72,59 @@ export const lockPDFData = {
 
   /* ================= USE CASES ================= */
 
-  useCaseSectionTitle: 'When Should You Lock a PDF?',
-
-  useCaseIntro:
-    'Password protecting a PDF is recommended in many situations. Here are the most common scenarios where locking a PDF is essential:',
+  useCaseSectionTitle: 'Common Uses',
+  useCaseIntro: 'When you should password protect a PDF:',
 
   useCases: [
-    'Sending contracts, NDAs, or legal agreements to clients or partners',
-    'Sharing financial reports, tax documents, or bank statements',
-    'Distributing medical records, prescriptions, or health information',
-    'Protecting intellectual property like research papers or creative work',
-    'Sharing HR documents such as salary information or performance reviews',
-    'Sending personal identification documents like passports or licenses',
-    'Protecting academic transcripts, certificates, or diplomas',
-    'Securing business proposals before final agreement',
+    'Sending contracts or legal agreements',
+    'Sharing financial statements or tax documents',
+    'Protecting medical records',
+    'Securing HR documents',
+    'Sending personal identification',
   ],
 
   /* ================= SECURITY ================= */
 
-  securitySectionTitle: 'Is It Safe to Lock a PDF Online?',
-
+  securitySectionTitle: 'Your Privacy',
   security: [
-    'Yes. Your files are encrypted during transfer using secure HTTPS connections.',
-    'All uploaded files are automatically deleted from our servers within a short period.',
-    'We do not read, scan, or store your document contents.',
+    '256-bit SSL encryption during transfer.',
+    'Files processed in server memory — never stored on disk.',
+    'Permanently deleted immediately after download.',
+    'Passwords never logged or saved.',
   ],
 
   /* ================= FAQ ================= */
 
-  faqSectionTitle: 'Frequently Asked Questions — Lock PDF',
+  faqSectionTitle: 'Common Questions',
 
   faqs: [
     {
-      q: 'How do I password protect a PDF file online?',
-      a: 'To password protect a PDF using LuvUPDF: 1) Go to our Lock PDF page, 2) Upload your PDF file by dragging it into the upload area or clicking "Select PDF File", 3) Enter a strong password and confirm it, 4) Click "Lock PDF with Password", 5) Download your password-protected PDF. The process takes under 10 seconds.',
+      q: 'How do I password protect a PDF?',
+      a: 'Upload your PDF, enter a password, confirm it, and click lock. Download your encrypted file instantly.',
     },
     {
-      q: 'What type of encryption does LuvUPDF use to lock PDFs?',
-      a: 'LuvUPDF uses 256-bit AES encryption (Advanced Encryption Standard) to lock PDF files — the same encryption standard used by governments and financial institutions worldwide. This is the strongest PDF encryption available and is virtually impossible to crack with modern computing.',
+      q: 'What encryption do you use?',
+      a: '256-bit AES — the same standard used by banks and governments worldwide.',
     },
     {
-      q: 'Can I unlock a PDF that I locked with LuvUPDF?',
-      a: "Yes, you can use our Unlock PDF tool to remove the password from a PDF you previously locked, as long as you know the correct password. Enter the password you set, and we'll remove the protection. Note: LuvUPDF never stores your passwords, so you must know it to unlock.",
+      q: 'Can I unlock it later?',
+      a: 'Yes. Use our Unlock PDF tool with the same password to remove protection.',
     },
     {
-      q: 'What happens if I forget my PDF password?',
-      a: 'Unfortunately, if you forget your PDF password, you will not be able to open the locked file through normal means. LuvUPDF does not store passwords for security reasons. We recommend storing passwords in a secure password manager. If you lose your password, you may need a specialized PDF recovery tool.',
+      q: 'What if I forget my password?',
+      a: "We don't store passwords. If you forget it, the PDF cannot be unlocked.",
     },
     {
-      q: 'Does locking a PDF affect its quality or content?',
-      a: 'No. Adding password protection to a PDF does not affect its content, formatting, images, or quality in any way. The locking process only adds an encryption layer around the existing document — everything inside remains exactly the same.',
+      q: 'Does locking affect quality?',
+      a: 'No. Content, images, and formatting stay exactly the same.',
     },
     {
-      q: 'Can I lock a PDF on my phone or tablet?',
-      a: "Yes! LuvUPDF is fully optimized for mobile devices. You can upload a PDF from your phone's storage, set a password, and download the locked file — all from your mobile browser. No app download is required.",
+      q: 'Do you keep my files?',
+      a: 'No. Files processed in memory and permanently deleted after download.',
+    },
+    {
+      q: 'Works on mobile?',
+      a: 'Yes. Works on iPhone, Android, iPad, and desktop.',
     },
   ],
-
 };
-
