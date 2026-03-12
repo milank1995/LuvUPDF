@@ -6,34 +6,49 @@ import BenefitsSection from '../components/landing/BenefitsSection';
 import FAQSection from '../components/landing/FAQSection';
 
 export const metadata: Metadata = {
-  title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
+  title: 'LoveUPDF - Free, Secure PDF Tools Online | Merge, Split & More',
   description:
-    'Combine PDF files or remove pages from PDF online for free. 100% secure, no login required, and files are automatically deleted after processing. Privacy-first PDF tools.',
+    'LoveUPDF offers private, secure PDF tools you can trust. Merge PDF files, split documents, remove pages, compress, and edit PDFs online free. No login required, files auto-deleted. Previously known as luvupdf.',
   keywords:
-    'Merge PDF online free, Combine PDF files, Remove pages from PDF online, Delete PDF pages free, Secure PDF tools, free PDF merger, PDF privacy',
+    'LoveUPDF, luvupdf, merge PDF online free, combine PDF files, split PDF online, remove pages from PDF, compress PDF free, secure PDF tools, free PDF merger, PDF editor online, privacy-first PDF tools, delete PDF pages free, rotate PDF online, organize PDF pages',
   openGraph: {
-    title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
+    title: 'LoveUPDF - Private, Secure PDF Tools',
     description:
-      'Combine PDF files or remove pages from PDF online. 100% Secure, No Login, Files Auto-Deleted. The privacy-first way to manage your PDFs.',
+      'Free PDF tools that respect your privacy. Merge, split, compress, and edit PDFs online. No account needed, files auto-delete. Trusted by thousands, previously known as luvupdf.',
     type: 'website',
     url: 'https://luvupdf.com',
+    siteName: 'LoveUPDF',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Merge PDF Online Free — Secure & Privacy-First | LuvUPDF',
-    description: 'Free, secure PDF tools. Merge and remove pages online with zero data storage.',
+    title: 'LoveUPDF - Free, Secure PDF Tools Online',
+    description:
+      'Privacy-first PDF tools. Merge, split, compress, and edit PDFs. No storage, no login, completely free.',
   },
   alternates: {
     canonical: 'https://luvupdf.com/',
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  }
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'LuvUPDF',
+  name: 'LoveUPDF',
+  alternateName: 'luvupdf',
   url: 'https://luvupdf.com',
-  description: 'Secure and free online PDF tools. Merge PDF files and remove pages without any data storage or account required.',
+  description:
+    'Secure and free online PDF tools. Merge PDF files, split documents, remove pages, compress, and organize PDFs without any data storage or account required. Previously operated as luvupdf.',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
   offers: {
@@ -43,11 +58,24 @@ const jsonLd = {
   },
   featureList: [
     'Merge PDF online free',
+    'Split PDF documents',
     'Remove pages from PDF online',
-    'Combine PDF files',
-    'Delete PDF pages free',
+    'Compress PDF files',
+    'Rotate PDF pages',
+    'Organize PDF pages',
+    'Lock PDF with password',
+    'Unlock PDF files',
     'Secure PDF tools',
+    'No account required',
+    'Privacy-first processing',
   ],
+  screenshot: 'https://luvupdf.com/og-image.png', // Add your actual screenshot URL
+  softwareVersion: '1.0',
+  provider: {
+    '@type': 'Organization',
+    name: 'LoveUPDF',
+    url: 'https://luvupdf.com',
+  },
 };
 
 const faqJsonLd = {
@@ -56,27 +84,62 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is LuvUPDF really free to use?',
+      name: 'Is LoveUPDF really free to use?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes, LuvUPDF is completely free to use. All PDF tools are available at no cost without any account creation or subscription.',
+        text: 'Yes, LoveUPDF is completely free to use. All PDF tools are available at no cost without any account creation, registration, or subscription. Whether you know us as LoveUPDF or luvupdf, you get the same free service.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Are my PDF files safe and secure?',
+      name: 'Are my PDF files safe and secure on LoveUPDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'LuvUPDF is a privacy-first platform. All file transfers are encrypted with 256-bit SSL. Crucially, we do not store any files or document data; all files are automatically deleted immediately after processing.',
+        text: 'Absolutely. LoveUPDF is built as a privacy-first platform. All file transfers are encrypted with 256-bit SSL. We do not store any files or document data on our servers. All files are automatically and permanently deleted immediately after processing. Your documents never leave your device for most operations, and even server-processed files are deleted instantly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Do I need to create an account to use LuvUPDF?',
+      name: 'Do I need to create an account to use LoveUPDF?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No account is required. You can use all PDF tools immediately without registering or signing in.',
+        text: "No account or login is required. You can use all PDF tools immediately when you visit LoveUPDF. We don't track users or require any personal information.",
       },
+    },
+    {
+      '@type': 'Question',
+      name: 'What PDF tools does LoveUPDF offer?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'LoveUPDF offers a complete suite of PDF tools including: Merge PDF, Split PDF, Compress PDF, Rotate PDF, Lock PDF with password, Unlock PDF, Organize PDF pages, and Remove PDF pages. All tools are free and privacy-focused.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does LoveUPDF protect my privacy?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'LoveUPDF protects your privacy in multiple ways: Most operations (Merge, Split, Rotate, Organize, Remove Pages) happen entirely in your browser with no server upload. For features requiring server processing (Compress, Lock, Unlock), files are transferred securely via 256-bit SSL encryption and permanently deleted from our servers immediately after processing. We never store, log, or track your documents.',
+      },
+    },
+  ],
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://luvupdf.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'PDF Tools',
+      item: 'https://luvupdf.com',
     },
   ],
 };
@@ -91,6 +154,10 @@ export default function LandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <main>
         <HeroSection />
