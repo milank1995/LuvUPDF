@@ -69,7 +69,7 @@ const jsonLd = {
     'No account required',
     'Privacy-first processing',
   ],
-  screenshot: 'https://luvupdf.com/og-image.png', // Add your actual screenshot URL
+  screenshot: 'https://luvupdf.com/site-image.png',
   softwareVersion: '1.0',
   provider: {
     '@type': 'Organization',
