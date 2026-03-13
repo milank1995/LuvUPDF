@@ -3,8 +3,7 @@ import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_URL;
-
-  const today = new Date('2026-03-03');
+  const today = new Date();
 
   const tools = [
     'merge-pdf',
@@ -31,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}/${tool}`,
     lastModified: today,
     changeFrequency: 'weekly' as const,
-    priority: 0.9,
+    priority: 0.8,
   }));
 
   const legalRoutes = legal.map((page) => ({
@@ -52,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: today,
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'daily',
       priority: 1,
     },
     ...toolRoutes,
