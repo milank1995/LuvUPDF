@@ -58,5 +58,4 @@ self.onmessage = async (e: MessageEvent) => {
       self.postMessage({ type: 'ERROR', message: err.message || 'Unknown error during merge' });
     }
   }
-
 };

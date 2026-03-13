@@ -67,11 +67,10 @@ export default function SplitPDFUploader() {
         // Pre-flight: check for encryption
         const alreadyEncrypted = await isEncryptedPDF(f);
         if (alreadyEncrypted) {
-          showToast(
-            'This PDF is password-protected. Please unlock it first.',
-            'error',
-            { text: 'Unlock PDF', href: '/unlock-pdf' }
-          );
+          showToast('This PDF is password-protected. Please unlock it first.', 'error', {
+            text: 'Unlock PDF',
+            href: '/unlock-pdf',
+          });
           return;
         }
 
@@ -424,10 +423,11 @@ export default function SplitPDFUploader() {
                 <button
                   key={mode.id}
                   onClick={() => setSplitMode(mode.id as SplitMode)}
-                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${splitMode === mode.id
-                    ? 'shadow-sm'
-                    : 'bg-transparent border-transparent hover:bg-brand-surface'
-                    }`}
+                  className={`w-full group flex items-start gap-3 p-3 rounded-2xl border transition-all text-left ${
+                    splitMode === mode.id
+                      ? 'shadow-sm'
+                      : 'bg-transparent border-transparent hover:bg-brand-surface'
+                  }`}
                   style={{
                     backgroundColor: splitMode === mode.id ? SPLIT_THEME.primaryLight : undefined,
                     borderColor: splitMode === mode.id ? SPLIT_THEME.primaryBorder : undefined,
