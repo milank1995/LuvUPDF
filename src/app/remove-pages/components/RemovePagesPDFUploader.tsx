@@ -56,11 +56,10 @@ export default function RemovePagesPDFUploader() {
         // Pre-flight: check for encryption
         const alreadyEncrypted = await isEncryptedPDF(f);
         if (alreadyEncrypted) {
-          showToast(
-            'This PDF is password-protected. Please unlock it first.',
-            'error',
-            { text: 'Unlock PDF', href: '/unlock-pdf' }
-          );
+          showToast('This PDF is password-protected. Please unlock it first.', 'error', {
+            text: 'Unlock PDF',
+            href: '/unlock-pdf',
+          });
           return;
         }
 

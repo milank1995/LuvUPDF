@@ -577,14 +577,15 @@ export default function LockPDFUploader() {
                             : step.status === 'error'
                               ? '#FEF2F2'
                               : '#F8F8FC',
-                      border: `1.5px solid ${step.status === 'active'
-                        ? colors.border
-                        : step.status === 'done'
-                          ? '#BBF7D0'
-                          : step.status === 'error'
-                            ? '#FECACA'
-                            : '#EEEEF5'
-                        }`,
+                      border: `1.5px solid ${
+                        step.status === 'active'
+                          ? colors.border
+                          : step.status === 'done'
+                            ? '#BBF7D0'
+                            : step.status === 'error'
+                              ? '#FECACA'
+                              : '#EEEEF5'
+                      }`,
                     }}
                   >
                     <StepIcon status={step.status} />
