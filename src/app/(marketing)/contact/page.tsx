@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | LoveUPDF — Support & Feedback',
+  title: 'Contact Us — Support & Feedback',
   description:
     'Have questions or feedback? Contact the LoveUPDF team. We are here to help with your free and secure PDF tool needs. Privacy-first support.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Contact Us | LoveUPDF — Support & Feedback',
+    title: 'Contact Us — Support & Feedback',
     description:
       "Get in touch with the LoveUPDF team. Questions, feedback, or support — we're here to help.",
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact Us | LoveUPDF',
+    title: 'Contact Us',
     description: "Questions or feedback? We're here to help.",
   },
   alternates: {

@@ -10,7 +10,7 @@ import { SITE_URL } from '@/constants/site';
 const colors = TOOL_COLORS.organize;
 
 export const metadata: Metadata = {
-  title: 'Organize PDF Pages Online Free — Reorder & Arrange | LoveUPDF',
+  title: 'Organize PDF Pages Online Free — Reorder & Arrange',
   description:
     'Organize PDF pages online free. Drag and drop to reorder, rotate, or delete pages. Client-side processing — files never leave your device.',
   keywords:
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Organize PDF Pages Online Free | LoveUPDF',
+    title: 'Organize PDF Pages Online Free',
     description:
       'Rearrange and organize PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Organize PDF Pages Online Free | LoveUPDF',
+    title: 'Organize PDF Pages Online Free',
     description: 'Reorder PDF pages with drag and drop. Free and private.',
   },
   alternates: { canonical: `${SITE_URL}/organize-pdf` },

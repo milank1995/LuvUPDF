@@ -5,7 +5,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'All PDF Tools — Merge, Split, Compress, Lock & Unlock | LoveUPDF',
+  title: 'All PDF Tools — Merge, Split, Compress, Lock & Unlock',
   description:
     'Browse all free online PDF tools from LoveUPDF. Merge, split, compress, lock, unlock, rotate, organize, and remove pages from PDFs — no sign-up, no upload, 100% private.',
   keywords:
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'All Free PDF Tools | LoveUPDF',
+    title: 'All Free PDF Tools',
     description:
       'Complete collection of free PDF tools. Merge, split, compress, lock, unlock, rotate, organize, and remove pages. Privacy-first, no account needed.',
     type: 'website',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'All Free PDF Tools | LoveUPDF',
+    title: 'All Free PDF Tools',
     description: '8+ free PDF tools. Privacy-first, no account needed.',
   },
   alternates: {

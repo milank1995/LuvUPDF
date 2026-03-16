@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy | LoveUPDF — Minimal & Privacy-First Tracking',
+  title: 'Cookie Policy — Minimal & Privacy-First Tracking',
   description:
     'LoveUPDF uses minimal necessary cookies to ensure site functionality and security. We do not track personal behavior, build profiles, or sell your data. Privacy-first by design.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Cookie Policy | LoveUPDF — Minimal & Privacy-First',
+    title: 'Cookie Policy — Minimal & Privacy-First',
     description:
       'We use only necessary cookies. No tracking, no profiling, no data selling. Your privacy matters.',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cookie Policy | LoveUPDF',
+    title: 'Cookie Policy',
     description: 'Minimal cookies. Privacy-first. No tracking.',
   },
   alternates: {

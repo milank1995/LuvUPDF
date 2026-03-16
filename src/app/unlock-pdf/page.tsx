@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Unlock PDF Online Free — Remove PDF Passwords | LoveUPDF',
+  title: 'Unlock PDF Online Free — Remove PDF Passwords',
   description:
     'Remove passwords from your own PDF files. Free, secure, no account needed. Files processed in memory and auto-deleted instantly.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Unlock PDF Online Free | LoveUPDF',
+    title: 'Unlock PDF Online Free',
     description: 'Remove passwords from your own PDF files. Free and private.',
     type: 'website',
     url: `${SITE_URL}/unlock-pdf`,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Unlock PDF Online Free | LoveUPDF',
+    title: 'Unlock PDF Online Free',
     description: 'Remove PDF passwords instantly. Free and private.',
   },
   alternates: {

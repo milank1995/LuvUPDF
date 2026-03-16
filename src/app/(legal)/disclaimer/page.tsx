@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Disclaimer | LoveUPDF — Terms of Responsibility',
+  title: 'Disclaimer — Terms of Responsibility',
   description:
     'Legal disclaimer for LoveUPDF free online PDF tools. Understand the limitations of liability, service expectations, and your responsibilities when using our privacy-first platform.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Disclaimer | LoveUPDF — Free PDF Tools',
+    title: 'Disclaimer — Free PDF Tools',
     description:
       'Legal disclaimer for LoveUPDF. Understand your rights and responsibilities when using our privacy-first PDF tools.',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Disclaimer | LoveUPDF',
+    title: 'Disclaimer',
     description: 'Terms of responsibility for using our free PDF tools.',
   },
   alternates: {

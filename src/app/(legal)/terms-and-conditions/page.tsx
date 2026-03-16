@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions | LoveUPDF — Free PDF Tool Usage',
+  title: 'Terms & Conditions — Free PDF Tool Usage',
   description:
     'Read the terms of use for LoveUPDF. Learn about our services, your responsibilities, and our 100% secure PDF processing policy. No file storage, no accounts required.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Terms & Conditions | LoveUPDF — Free PDF Tools',
+    title: 'Terms & Conditions — Free PDF Tools',
     description:
       'Terms of use for LoveUPDF. Free PDF tools with zero file storage and no account required.',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms & Conditions | LoveUPDF',
+    title: 'Terms & Conditions',
     description: 'Free PDF tools terms. Zero storage, no accounts, 100% private.',
   },
   alternates: {

@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Remove Pages from PDF Online Free — Delete PDF Pages | LoveUPDF',
+  title: 'Remove Pages from PDF Online Free — Delete PDF Pages',
   description:
     'Delete unwanted pages from any PDF. Free, private, no account needed. Client-side processing — files never leave your device.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Remove Pages from PDF Online Free | LoveUPDF',
+    title: 'Remove Pages from PDF Online Free',
     description:
       'Delete unwanted PDF pages instantly. Free and private — files stay in your browser.',
     type: 'website',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Remove Pages from PDF Online Free | LoveUPDF',
+    title: 'Remove Pages from PDF Online Free',
     description: 'Delete PDF pages instantly. Free and private.',
   },
   alternates: { canonical: `${SITE_URL}/remove-pages` },
