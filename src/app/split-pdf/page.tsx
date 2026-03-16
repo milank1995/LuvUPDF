@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Split PDF Online Free — Extract Pages | LoveUPDF',
+  title: 'Split PDF Online Free — Extract Pages',
   description:
     'Split PDF files into multiple documents or extract specific pages. Free, private, no account needed. Files stay in your browser.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Split PDF Online Free | LoveUPDF',
+    title: 'Split PDF Online Free',
     description: 'Split PDF files instantly. Free and private — files never leave your device.',
     type: 'website',
     url: `${SITE_URL}/split-pdf`,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Split PDF Online Free | LoveUPDF',
+    title: 'Split PDF Online Free',
     description: 'Extract PDF pages instantly. Free and private.',
   },
   alternates: { canonical: `${SITE_URL}/split-pdf` },

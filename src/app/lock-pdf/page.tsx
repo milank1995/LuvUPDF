@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Lock PDF Online Free — Password Protect PDF | LoveUPDF',
+  title: 'Lock PDF Online Free — Password Protect PDF',
   description:
     'Password protect PDF files with 256-bit AES encryption. Free, secure, no account needed. Files processed in memory and auto-deleted.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Lock PDF Online Free | LoveUPDF',
+    title: 'Lock PDF Online Free',
     description: 'Add password protection to any PDF. 256-bit encryption. Free and private.',
     type: 'website',
     url: `${SITE_URL}/lock-pdf`,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lock PDF Online Free | LoveUPDF',
+    title: 'Lock PDF Online Free',
     description: 'Password protect PDFs with 256-bit AES encryption. Free and private.',
   },
   alternates: {

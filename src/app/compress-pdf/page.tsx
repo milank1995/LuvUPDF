@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Compress PDF Online Free — Reduce File Size | LoveUPDF',
+  title: 'Compress PDF Online Free — Reduce File Size',
   description:
     'Compress PDF files online for free. Reduce file size while maintaining quality. Secure server processing — files auto-deleted instantly.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Compress PDF Online Free | LoveUPDF',
+    title: 'Compress PDF Online Free',
     description: 'Reduce PDF file size instantly. Free, secure, auto-deleted.',
     type: 'website',
     url: `${SITE_URL}/compress-pdf`,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compress PDF Online Free | LoveUPDF',
+    title: 'Compress PDF Online Free',
     description: 'Reduce PDF file size instantly. Free and secure.',
   },
   alternates: { canonical: `${SITE_URL}/compress-pdf` },

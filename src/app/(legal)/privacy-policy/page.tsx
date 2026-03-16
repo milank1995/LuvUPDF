@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | LoveUPDF — Zero Storage, 100% Private PDF Tools',
+  title: 'Privacy Policy — Zero Storage, 100% Private PDF Tools',
   description:
     'LoveUPDF is a privacy-first platform. We never store your files. All processing uses 256-bit SSL encryption with instant auto-deletion. No accounts, no tracking, no data sharing.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Privacy Policy | LoveUPDF — Zero Storage PDF Tools',
+    title: 'Privacy Policy — Zero Storage PDF Tools',
     description:
       'We never store your files. 256-bit SSL encryption. Instant auto-deletion. Your documents stay yours.',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Privacy Policy | LoveUPDF',
+    title: 'Privacy Policy',
     description: 'Zero storage. 256-bit SSL. Instant auto-deletion.',
   },
   alternates: {

@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Merge PDF Online Free — Combine PDF Files | LoveUPDF',
+  title: 'Merge PDF Online Free — Combine PDF Files',
   description:
     'Merge multiple PDF files into one document. Free, private, no account needed. Files stay in your browser — never uploaded.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Merge PDF Online Free — Combine PDF Files | LoveUPDF',
+    title: 'Merge PDF Online Free — Combine PDF Files',
     description:
       'Free PDF merger. Combine PDFs instantly. 100% private — files never leave your device.',
     type: 'website',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Merge PDF Online Free | LoveUPDF',
+    title: 'Merge PDF Online Free',
     description: 'Combine PDF files instantly. No upload, no account, 100% free.',
   },
   alternates: {

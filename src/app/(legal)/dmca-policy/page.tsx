@@ -4,7 +4,7 @@ import Icon from '@/components/ui/AppIcon';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'DMCA Policy | LoveUPDF — Copyright Notices & Takedown Requests',
+  title: 'DMCA Policy — Copyright Notices & Takedown Requests',
   description:
     'Learn how to file a DMCA notice or counter-notice with LoveUPDF. We respect intellectual property rights and handle copyright claims seriously and promptly.',
   keywords:
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'DMCA Policy | LoveUPDF — Copyright Notices',
+    title: 'DMCA Policy — Copyright Notices',
     description:
       'How to file DMCA takedown requests and counter-notices for LoveUPDF. We respect intellectual property rights.',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DMCA Policy | LoveUPDF',
+    title: 'DMCA Policy',
     description: 'Copyright notices and takedown requests for LoveUPDF.',
   },
   alternates: {

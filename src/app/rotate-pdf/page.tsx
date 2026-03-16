@@ -7,7 +7,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { SITE_URL } from '@/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Rotate PDF Online Free — Fix Page Orientation | LoveUPDF',
+  title: 'Rotate PDF Online Free — Fix Page Orientation',
   description:
     'Rotate PDF pages permanently. Fix sideways scans or upside-down pages. Free, private, no upload — all in your browser.',
   keywords:
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Rotate PDF Online Free | LoveUPDF',
+    title: 'Rotate PDF Online Free',
     description: 'Rotate PDF pages instantly. Free and private — files never leave your device.',
     type: 'website',
     url: `${SITE_URL}/rotate-pdf`,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rotate PDF Online Free | LoveUPDF',
+    title: 'Rotate PDF Online Free',
     description: 'Fix page orientation instantly. Free and private.',
   },
   alternates: {
