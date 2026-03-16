@@ -220,23 +220,22 @@ export default function Footer() {
             </p>
 
             {/* Social Media Links - Exact Brand SVGs with descriptive labels */}
-            <div className="flex items-center gap-3" role="list" aria-label="Social media links">
+            <ul className="flex items-center gap-3" aria-label="Social media links">
               {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="p-2 rounded-full bg-[#F8F8FC] hover:bg-[#FFF0F2] text-[#8888A8] hover:text-[#E8445A] transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E8445A]"
-                  aria-label={social.label}
-                  title={social.title}
-                >
-                  {social.svg}
-                  {/* Hidden text for screen readers (additional) */}
-                  <span className="sr-only">{social.title}</span>
-                </a>
+                <li key={social.name}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F8F8FC] hover:bg-[#FFF0F2] text-[#8888A8] hover:text-[#E8445A] transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E8445A]"
+                    aria-label={social.label}
+                    title={social.title}
+                  >
+                    {social.svg}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
           {/* Trust Badges */}
