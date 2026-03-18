@@ -7,6 +7,7 @@ import { BRAND_COLORS, PDF_CONFIG, UI_STYLES } from '@/constants/pdfConfig';
 import UploadZone from '@/components/pdf/UploadZone';
 import FileListItem from '@/components/pdf/FileListItem';
 import { usePDFWorker } from '@/hooks/usePDFWorker';
+import { setCustomTag } from '@/components/analytics/ClarityTracker';
 
 interface UploadedFile {
   id: string;
@@ -54,8 +55,16 @@ export default function MergePDFUploader() {
           file: f,
         }));
 
-        setFiles((prev) => [...prev, ...mapped]);
+        const updatedFiles = [...files, ...mapped];
+        setFiles(updatedFiles);
         setIsDone(false);
+
+        // Clarity: track files added
+        const totalBytes = updatedFiles.reduce((acc, f) => acc + f.size, 0);
+        setCustomTag('tool', 'merge-pdf');
+        setCustomTag('merge_files_added', String(uniqueFiles.length));
+        setCustomTag('merge_file_count', String(updatedFiles.length));
+        setCustomTag('merge_total_size_kb', String(Math.round(totalBytes / 1024)));
       } else if (validFiles.length > 0) {
         showToast('Files already added.', 'info');
       }
@@ -66,7 +75,14 @@ export default function MergePDFUploader() {
   const removeFile = useCallback(
     (id: string) => {
       if (isProcessing) return;
-      setFiles((prev) => prev.filter((f) => f.id !== id));
+      setFiles((prev) => {
+        const next = prev.filter((f) => f.id !== id);
+        // Clarity: track file removal
+        setCustomTag('tool', 'merge-pdf');
+        setCustomTag('merge_file_removed', 'true');
+        setCustomTag('merge_file_count', String(next.length));
+        return next;
+      });
       setIsDone(false);
     },
     [isProcessing]
@@ -80,6 +96,9 @@ export default function MergePDFUploader() {
         const swapIndex = direction === 'up' ? index - 1 : index + 1;
         if (swapIndex < 0 || swapIndex >= arr.length) return arr;
         [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
+        // Clarity: track reorder
+        setCustomTag('tool', 'merge-pdf');
+        setCustomTag('merge_file_reordered', direction);
         return arr;
       });
     },
@@ -97,6 +116,11 @@ export default function MergePDFUploader() {
   const handleMerge = async () => {
     if (files.length < 2) return;
 
+    // Clarity: merge started
+    setCustomTag('tool', 'merge-pdf');
+    setCustomTag('merge_started', 'true');
+    setCustomTag('merge_file_count', String(files.length));
+
     try {
       const { blob, errors } = await processPDFs(
         'MERGE_PDFS',
@@ -112,6 +136,12 @@ export default function MergePDFUploader() {
             ? { text: 'Unlock this PDF', href: '/unlock-pdf' }
             : undefined;
           showToast(message, 'error', link);
+
+          // Clarity: per-file error type
+          setCustomTag(
+            err.isEncrypted ? 'merge_error_encrypted' : 'merge_error_corrupted',
+            err.fileName
+          );
         });
 
         // Remove invalid files
@@ -130,11 +160,19 @@ export default function MergePDFUploader() {
             : `Merged ${successfulFilesCount} files.`,
           errors.length === 0 ? 'success' : 'info'
         );
+        // Clarity: merge success
+        setCustomTag('merge_success', 'true');
+        setCustomTag('merge_success_file_count', String(successfulFilesCount));
+        setCustomTag('merge_output_size_kb', String(Math.round(blob.size / 1024)));
       } else {
         showToast('At least 2 valid PDF files are required for merging.', 'error');
+        // Clarity: merge failed — not enough valid files
+        setCustomTag('merge_error_not_enough_valid', 'true');
       }
     } catch (err: any) {
       showToast(err.message || 'Failed to merge PDFs', 'error');
+      // Clarity: unexpected merge failure
+      setCustomTag('merge_failed', err.message || 'unknown');
     }
   };
 
@@ -142,6 +180,9 @@ export default function MergePDFUploader() {
     setFiles([]);
     setIsDone(false);
     setMergedBlob(null);
+    // Clarity: user started fresh
+    setCustomTag('tool', 'merge-pdf');
+    setCustomTag('merge_reset', 'true');
   }, []);
 
   const handleDownload = useCallback(() => {
@@ -154,6 +195,10 @@ export default function MergePDFUploader() {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 100);
+    // Clarity: download triggered
+    setCustomTag('tool', 'merge-pdf');
+    setCustomTag('merge_download', 'true');
+    setCustomTag('merge_output_size_kb', String(Math.round(mergedBlob.size / 1024)));
   }, [mergedBlob]);
 
   return (
@@ -352,7 +397,12 @@ export default function MergePDFUploader() {
             </button>
 
             <button
-              onClick={() => setIsDone(false)}
+              onClick={() => {
+                setIsDone(false);
+                // Clarity: user went back to edit
+                setCustomTag('tool', 'merge-pdf');
+                setCustomTag('merge_edit_selection', 'true');
+              }}
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full"
               style={{
                 background: '#F8F8FC',

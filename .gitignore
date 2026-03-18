@@ -6,6 +6,9 @@ package-lock.json
 .next/
 out/
 
+.env
+.env.local
+
 # Production build
 build/
 

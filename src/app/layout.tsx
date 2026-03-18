@@ -5,6 +5,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { SITE_URL } from '@/constants/site';
 import { navLinks, tools } from '@/config/tools';
+import ClarityScript from '@/components/analytics/ClarityScript';
+import ClarityTracker from '@/components/analytics/ClarityTracker';
 import '../styles/index.css';
 
 export const viewport: Viewport = {
@@ -263,6 +265,9 @@ export default function RootLayout({
           header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
           body { margin: 0; padding: 0; }
         `}</style>
+
+        {/* Microsoft Clarity — loads after page is interactive */}
+        <ClarityScript />
       </head>
       <body>
         <noscript>
@@ -280,6 +285,8 @@ export default function RootLayout({
           </div>
         </noscript>
         <ToastProvider>
+          {/* Clarity SPA route-change tracker */}
+          <ClarityTracker />
           <Header />
           {children}
           <Footer />
