@@ -48,6 +48,8 @@ const INITIAL_STEPS: ProcessStep[] = [
   },
 ];
 
+const API_BASE = process.env.API_BASE_URL || 'https://api.luvupdf.com';
+
 export default function CompressPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [mode, setMode] = useState<CompressionMode>('medium');
@@ -145,7 +147,7 @@ export default function CompressPDFUploader() {
       const formData = new FormData();
       formData.append('file', file.file);
 
-      const response = await fetch(`/api/pdf/compress-pdf/${mode}`, {
+      const response = await fetch(`${API_BASE}/api/pdf/compress-pdf/${mode}`, {
         method: 'POST',
         body: formData,
       });

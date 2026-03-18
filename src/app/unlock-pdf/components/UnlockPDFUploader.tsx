@@ -48,6 +48,8 @@ const INITIAL_STEPS: ProcessStep[] = [
   },
 ];
 
+const API_BASE = process.env.API_BASE_URL || 'https://api.luvupdf.com';
+
 export default function UnlockPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [password, setPassword] = useState('');
@@ -156,7 +158,7 @@ export default function UnlockPDFUploader() {
       formData.append('file', file.file);
       formData.append('password', password);
 
-      const res = await fetch('/api/pdf/combined-unlock-pdf', {
+      const res = await fetch(`${API_BASE}/api/pdf/combined-unlock-pdf`, {
         method: 'POST',
         body: formData,
       });

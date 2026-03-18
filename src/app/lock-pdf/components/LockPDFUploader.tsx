@@ -47,6 +47,8 @@ const INITIAL_STEPS: ProcessStep[] = [
   },
 ];
 
+const API_BASE = process.env.API_BASE_URL || 'https://api.luvupdf.com';
+
 export default function LockPDFUploader() {
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [password, setPassword] = useState('');
@@ -203,7 +205,7 @@ export default function LockPDFUploader() {
       formData.append('file', file.file);
       formData.append('password', password);
 
-      const res = await fetch('/api/pdf/combined-lock-pdf', {
+      const res = await fetch(`${API_BASE}/api/pdf/combined-lock-pdf`, {
         method: 'POST',
         body: formData,
       });
