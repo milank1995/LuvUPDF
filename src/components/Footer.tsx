@@ -164,12 +164,12 @@ export default function Footer() {
 
           {/* Tools Section - 4 columns */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start gap-4">
-            <h4
+            <h3
               className="text-sm font-semibold uppercase tracking-wider"
               style={{ color: '#1A1A2E', fontFamily: 'var(--font-heading)' }}
             >
               PDF Tools
-            </h4>
+            </h3>
             <div className="grid grid-cols-2 gap-x-6 gap-y-2">
               {tools.map((tool) => (
                 <Link

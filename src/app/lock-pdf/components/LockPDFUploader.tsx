@@ -6,6 +6,7 @@ import UploadZone from '@/components/pdf/UploadZone';
 import { TOOL_COLORS } from '@/constants/toolColors';
 import { useToast } from '@/components/ui/Toast';
 import { isEncryptedPDF } from '@/utils/pdf';
+import { setCustomTag } from '@/components/analytics/ClarityTracker';
 
 const colors = TOOL_COLORS.lock;
 
@@ -94,6 +95,9 @@ export default function LockPDFUploader() {
       const f = files[0];
       if (!f.name.endsWith('.pdf') && f.type !== 'application/pdf') {
         showToast('Invalid file type. Please upload a PDF.', 'error');
+        // Clarity: invalid file type
+        setCustomTag('tool', 'lock-pdf');
+        setCustomTag('lock_error_invalid_type', f.name);
         return;
       }
       if (f.size > MAX_FILE_SIZE) {
@@ -101,6 +105,9 @@ export default function LockPDFUploader() {
           `File too large. Maximum allowed size is 50 MB (your file: ${(f.size / (1024 * 1024)).toFixed(1)} MB).`,
           'error'
         );
+        // Clarity: file too large
+        setCustomTag('tool', 'lock-pdf');
+        setCustomTag('lock_error_file_too_large', String(Math.round(f.size / 1024)));
         return;
       }
       setFile({ id: crypto.randomUUID(), name: f.name, size: f.size, file: f });
@@ -108,6 +115,10 @@ export default function LockPDFUploader() {
       setErrors({});
       setSteps(INITIAL_STEPS);
       setOverallProgress(0);
+      // Clarity: file selected
+      setCustomTag('tool', 'lock-pdf');
+      setCustomTag('lock_file_selected', 'true');
+      setCustomTag('lock_file_size_kb', String(Math.round(f.size / 1024)));
     },
     [showToast]
   );
@@ -161,6 +172,12 @@ export default function LockPDFUploader() {
     setSteps(INITIAL_STEPS);
     setOverallProgress(0);
 
+    // Clarity: lock started
+    setCustomTag('tool', 'lock-pdf');
+    setCustomTag('lock_started', 'true');
+    setCustomTag('lock_file_size_kb', String(Math.round(file.size / 1024)));
+    setCustomTag('lock_password_strength', getPasswordStrength(password).label || 'unknown');
+
     try {
       // ── Pre-flight: client-side encryption check ──
       setStepStatus('upload', 'active');
@@ -174,6 +191,8 @@ export default function LockPDFUploader() {
           'error',
           { text: 'Unlock this PDF', href: '/unlock-pdf' }
         );
+        // Clarity: already encrypted
+        setCustomTag('lock_error_already_encrypted', 'true');
         return;
       }
 
@@ -205,8 +224,12 @@ export default function LockPDFUploader() {
 
         if (isAlreadyLockedError(apiMessage)) {
           showToast(apiMessage, 'error', { text: 'Unlock PDF →', href: '/unlock-pdf' });
+          // Clarity: API-side already locked
+          setCustomTag('lock_error_api_already_locked', 'true');
         } else {
           showToast(apiMessage, 'error');
+          // Clarity: generic API error
+          setCustomTag('lock_error_api', apiMessage.slice(0, 80));
         }
         return;
       }
@@ -228,10 +251,16 @@ export default function LockPDFUploader() {
       await new Promise((r) => setTimeout(r, 400));
       setIsDone(true);
       showToast('PDF locked successfully!', 'success');
+
+      // Clarity: lock success
+      setCustomTag('lock_success', 'true');
+      setCustomTag('lock_output_size_kb', String(Math.round(blob.size / 1024)));
     } catch (err: any) {
       const msg: string = err.message || 'Failed to lock PDF. Please try again.';
       showToast(msg, 'error');
       setSteps((prev) => prev.map((s) => (s.status === 'active' ? { ...s, status: 'error' } : s)));
+      // Clarity: unexpected failure
+      setCustomTag('lock_failed', msg.slice(0, 80));
     } finally {
       setIsProcessing(false);
     }
@@ -246,6 +275,9 @@ export default function LockPDFUploader() {
     setLockedBlob(null);
     setSteps(INITIAL_STEPS);
     setOverallProgress(0);
+    // Clarity: user reset
+    setCustomTag('tool', 'lock-pdf');
+    setCustomTag('lock_reset', 'true');
   };
 
   const handleDownload = () => {
@@ -258,6 +290,10 @@ export default function LockPDFUploader() {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 100);
+    // Clarity: download triggered
+    setCustomTag('tool', 'lock-pdf');
+    setCustomTag('lock_download', 'true');
+    setCustomTag('lock_output_size_kb', String(Math.round(lockedBlob.size / 1024)));
   };
 
   const strength = getPasswordStrength(password);
@@ -367,6 +403,9 @@ export default function LockPDFUploader() {
                 setErrors({});
                 setSteps(INITIAL_STEPS);
                 setOverallProgress(0);
+                // Clarity: file removed from form
+                setCustomTag('tool', 'lock-pdf');
+                setCustomTag('lock_file_removed', 'true');
               }}
               className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-red-50 text-red-400"
               aria-label="Remove file"
